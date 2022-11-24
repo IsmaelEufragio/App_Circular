@@ -22,12 +22,12 @@ CREATE SCHEMA [Genl]
 GO
 CREATE SCHEMA [User]
 GO
---CREATE SCHEMA [Prod]
---GO
---CREATE SCHEMA [Serv]
---GO
---CREATE SCHEMA [Nest]
---GO
+CREATE SCHEMA [Prod]
+GO
+CREATE SCHEMA [Serv]
+GO
+CREATE SCHEMA [UsPa]
+GO
 --CREATE SCHEMA [Desp]
 --GO
 --CREATE SCHEMA [Habi]
@@ -56,7 +56,7 @@ GO
 /*Sección #3*/
 CREATE TABLE [Genl].tbCountry(
 	[cou_Id]              INT  IDENTITY(1,1),
-	[cou_Description]     NVARCHAR(100)		NOT NULL, 
+	[cou_Description]     NVARCHAR(250)		NOT NULL, 
 
 	CONSTRAINT  PK_Genl_tbCountry_cou_Id	PRIMARY KEY (cou_Id)
 );
@@ -67,7 +67,7 @@ CREATE TABLE [Genl].tbDepartments
 (
 	[dep_Id]				INT  IDENTITY(1,1),
 	[dep_Code]				NVARCHAR(2)		NOT NULL,
-	[dep_Description]		NVARCHAR(100)		NOT NULL,
+	[dep_Description]		NVARCHAR(250)		NOT NULL,
 	[cou_Id]				INT				NOT NULL,
 	CONSTRAINT  PK_Genl_tbDepartments_depto_Id			 PRIMARY KEY (dep_Id),
 	CONSTRAINT  FK_Genl_tbDepartments_tbCountry_pai_Id		 FOREIGN KEY(cou_Id) REFERENCES Genl.tbCountry(cou_Id)
@@ -79,7 +79,7 @@ CREATE TABLE [Genl].tbMunicipalities
 (
 	[mun_Id]              INT IDENTITY(1,1),
 	[mun_Code]            VARCHAR(4)		NOT NULL,
-	[mun_Description]     NVARCHAR(100)		NOT NULL,
+	[mun_Description]     NVARCHAR(250)		NOT NULL,
 	[dep_Id]              INT				NOT NULL,
 	CONSTRAINT  PK_Genl_tbMunicipalities_mun_Id				  PRIMARY KEY(mun_Id, dep_Id),
 	CONSTRAINT  FK_Genl_tbDepartments_tbMunicipalities_dep_Id FOREIGN KEY(dep_Id) REFERENCES [Genl].tbDepartments(dep_Id)
@@ -101,10 +101,18 @@ CREATE TABLE [Genl].tbLocation
 GO
 
 /*Sección #7*/
+CREATE TABLE [Genl].tbDesperdicioCategoria(
+[desCa_Id]					INT IDENTITY(1,1),
+[desCa_Descripcion]			NVARCHAR(250)
+CONSTRAINT PK_Genl_tbDesperdicioCategoria		PRIMARY KEY(desCa_Id)
+);
+GO
+
+/*Sección #7*/
 CREATE TABLE [User].tbTypeUser
 (
 	[tyUs_Id]				INT IDENTITY(1,1),
-	[tyUs_description]		NVARCHAR(50)		NOT NULL,
+	[tyUs_description]		NVARCHAR(250)		NOT NULL,
 	CONSTRAINT  PK_User_tbTypeUser_tyUs_Id					PRIMARY KEY(tyUs_Id),
 );
 GO
@@ -115,7 +123,7 @@ CREATE TABLE [User].tbUser
 	[use_Id]				INT IDENTITY(1,1),
 	[tyUs_Id]				INT					NOT NULL,
 	[user_Name]				NVARCHAR(250)		NOT NULL,
-	[user_description]		NVARCHAR(50)		NOT NULL,
+	[user_description]		NVARCHAR(1000)		NOT NULL,
 	[user_Image]			NVARCHAR(MAX)		NOT NULL,
 	[user_Phone]			NVARCHAR(20)		NOT NULL,
 	[sche_Id]				INT					NOT NULL,
@@ -206,4 +214,129 @@ CREATE TABLE [User].tbMicroenterprise
 	CONSTRAINT  FK_User_tbMicroenterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id)
 );
 GO
+
+/*Sección #15*/
+CREATE TABLE [Prod].tbProductoCAtegoria(
+[prodC_Id]					INT IDENTITY(1,1) NOT NULL,
+[prodC_Descripcion]			NVARCHAR(250) NOT NULL,
+CONSTRAINT PK_tbProductoCAtegoria_prodC_Id	PRIMARY KEY(prodC_Id)
+);
+GO
+
+
+CREATE TABLE [Prod].tbProducto(
+[prod_Id]					INT IDENTITY(1,1) NOT NULL,
+[micro_Id]					INT NOT NULL,
+[prod_Nombre]				NVARCHAR(100) NOT NULL,
+[prod_Descripcion]			NVARCHAR(1000) NOT NULL,
+[prod_Precion]				DECIMAL(18,2) NOT NULL,
+[prod_ReaccionBuena]		INT,
+[prod_ReaccionMala]			INT,
+[prod_ReaccionReporte]		INT,
+[prod_Imagen]				NVARCHAR(MAX) NOT NULL,
+[prodC_Id]					INT NOT NULL,
+[prod_Existencia]			NVARCHAR(1) NOT NULL,
+CONSTRAINT PK_Prod_tbProducto_prod_Id								PRIMARY KEY(prod_Id),
+CONSTRAINT CK_Prod_tbProducto_prod_Existencia						CHECK(prod_Existencia IN ('1', '0')),
+CONSTRAINT FK_Prod_tbProducto_tbMicroenterprise_prodC_Id			FOREIGN KEY(prodC_Id) REFERENCES [Prod].tbProductoCAtegoria(prodC_Id),
+CONSTRAINT FK_Prod_tbProducto_tbProductoCAtegoria_micro_Id			FOREIGN KEY(micro_Id) REFERENCES [User].tbMicroenterprise(micro_Id)
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Prod].tbProductoDesperdicio(
+[prodDes_Id]				INT IDENTITY(1,1),
+[prod_Id]					INT NOT NULL,
+[desCa_Id]					INT NOT NULL,
+[prodDes_Nombre]			NVARCHAR(100) NOT NULL,
+[prodDes_Gratis]			NVARCHAR(1) NOT NULL,
+[prodDes_Imagen]			NVARCHAR(MAX) NOT NULL,
+CONSTRAINT PK_Prod_tbProductoDesperdicio										PRIMARY KEY(prodDes_Id),
+CONSTRAINT CK_Prod_tbProductoDesperdicio_prodDes_Gratis							CHECK(prodDes_Gratis IN ('1', '0')),
+CONSTRAINT FK_Prod_tbProductoDesperdicio_Genl_tbDesperdicioCategoria_desCa_Id	FOREIGN KEY(desCa_Id) REFERENCES [Genl].tbDesperdicioCategoria(desCa_Id),
+CONSTRAINT FK_Prod_tbProductoDesperdicio_Prod_tbProducto_prod_Id				FOREIGN KEY(prod_Id)	REFERENCES [Prod].tbProducto(prod_Id)
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Prod].tbOrigen(
+[orgn_Id]					INT IDENTITY(1,1) NOT NULL,
+[prod_Id]					INT NOT NULL,
+[orgn_Descripcion]			NVARCHAR(1000) NOT NULL,
+[orgn_Imagen]				NVARCHAR(MAX) NOT NULL,
+CONSTRAINT PK_Prod_tbOrigen_orgn_Id						PRIMARY KEY(orgn_Id),
+CONSTRAINT FK_Prod_tbOrigen_Prod_tbProducto_prod_Id		FOREIGN KEY(prod_Id)	REFERENCES [Prod].tbProducto(prod_Id)
+);
+GO
+
+
+/*Sección #15*/
+CREATE TABLE [Serv].tbServicioCategoria(
+[serCa_Id]					INT IDENTITY(1,1) NOT NULL,
+[serCa_Descripcion]			NVARCHAR(1000) NOT NULL,
+CONSTRAINT PK_Serv_tbServicioCategoria_serCa_Id						PRIMARY KEY(serCa_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Genl].tbServicioTipo(
+[serTi_Id]					INT IDENTITY(1,1) NOT NULL,
+[serTi_Descripcion]			NVARCHAR(1000) NOT NULL,
+CONSTRAINT PK_Genl_tbServicioTipo_serCa_Id						PRIMARY KEY(serTi_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Serv].tbServicioDesperdicio(
+[serDe_Id]					INT IDENTITY(1,1) NOT NULL,
+[serDe_Nombre]				NVARCHAR(250) NOT NULL,
+[serDe_Descripcion]			NVARCHAR(1000) NOT NULL,
+[serDe_Gratis]				NVARCHAR(1) NOT NULL,
+[serDe_Imagen]				NVARCHAR(MAX) NOT NULL,
+
+CONSTRAINT PK_Genl_tbServicioTipo_serCa_Id						PRIMARY KEY(serDe_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Serv].tbServicio(
+[ser_Id]					INT IDENTITY(1,1) NOT NULL,
+[ser_Descripcion]			NVARCHAR(1000) NOT NULL,
+[ser_Precion]				DECIMAL(18,2) NOT NULL,
+[ser_ReaccionBuena]			INT NOT NULL,
+[ser_ReaccionMala]			INT NOT NULL,
+[ser_ReaccionReporte]		INT NOT NULL,
+[ser_Imagen]				NVARCHAR(MAX),
+[serDe_Id]					INT NOT NULL,
+[micro_Id]					INT NOT NULL,
+[serTi_Id]					INT NOT NULL,
+[serCa_Id]					INT NOT NULL,
+CONSTRAINT PK_Serv_tbServicio_ser_Id								PRIMARY KEY(ser_Id),
+CONSTRAINT FK_Serv_tbServicio_Serv_tbServicioDesperdicio_serDa_Id	FOREIGN KEY(serDe_Id)	REFERENCES [Serv].tbServicioDesperdicio(serDe_Id),
+CONSTRAINT FK_Serv_tbServicio_Genl_tbServicioTipo_serTi_Id			FOREIGN KEY(serTi_Id)	REFERENCES [Genl].tbServicioTipo(serTi_Id),
+CONSTRAINT FK_Serv_tbServicio_Serv_tbServicioCategoria_serCa_Id		FOREIGN KEY(serCa_Id)	REFERENCES [Serv].tbServicioCategoria(serCa_Id),
+CONSTRAINT FK_Serv_tbServicio_User_tbMicroenterprise_micro_Id		FOREIGN KEY(micro_Id)	REFERENCES [User].tbMicroenterprise(micro_Id)
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [UsPa].tbHabilidades(
+[serDe_Id]					INT IDENTITY(1,1) NOT NULL,
+[habi_Nombre]				NVARCHAR(250) NOT NULL,
+[habi_Descripcion]			NVARCHAR(1000) NOT NULL,
+[habi_Precio]				DECIMAL(18,2) NOT NULL,
+[habi_ReccionBuena]			INT NOT NULL,
+[habi_ReccionMala]			INT NOT NULL,
+[habi_ReccionReporte]		INT NOT NULL,
+[serDe_Imagen]				NVARCHAR(MAX) NOT NULL,
+[serTi_Id]					INT NOT NULL,
+[usNor_Id]					INT NOT NULL
+CONSTRAINT PK_UsPa_tbHabilidades_serCa_Id						PRIMARY KEY(serDe_Id),
+CONSTRAINT FK_UsPa_tbHabilidades_Genl_tbServicioTipo_serTi_Id	FOREIGN KEY(serTi_Id)	REFERENCES [Genl].tbServicioTipo(serTi_Id),
+CONSTRAINT FK_UsPa_tbHabilidades_User_tbUserNormal_usNor_Id		FOREIGN KEY(usNor_Id)	REFERENCES [User].tbUserNormal(usNor_Id)
+);
+GO
+
+
+
 
