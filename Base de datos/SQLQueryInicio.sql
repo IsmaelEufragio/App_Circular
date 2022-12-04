@@ -1,4 +1,4 @@
-﻿--========================================================
+﻿ --========================================================
 ----IMPORTANTE
 ----1. CREAR LA BASE DE DATOS Y NO DESCOMENTARLO.
 ----2. EJECUTAR EL USE.
@@ -28,8 +28,8 @@ CREATE SCHEMA [Serv]
 GO
 CREATE SCHEMA [UsPa]
 GO
---CREATE SCHEMA [Desp]
---GO
+CREATE SCHEMA [Empre]
+GO
 --CREATE SCHEMA [Habi]
 --GO
 --CREATE SCHEMA [Ongd]
@@ -147,14 +147,15 @@ GO
 CREATE TABLE [User].tbEnterprise
 (
 	[empr_Index]			INT IDENTITY(1,1)	NOT NULL,
-	[enpr_Id]				INT,
+	[use_Id]				INT,
 	[enpr_RTN]				NVARCHAR(100)		NOT NULL,
 	[enpr_FoundationDate]	DATE				NOT NULL,
 	[enpr_WebPage]			NVARCHAR(500)		NOT NULL,
 	[enpr_Gmail]			NVARCHAR(200)		NOT NULL,
 	[rug_Id]				INT					NOT NULL,
 	CONSTRAINT  PK_User_tbEnterprise_enpr_Id					PRIMARY KEY(enpr_Id),
-	CONSTRAINT  FK_User_tbEnterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id)
+	CONSTRAINT  FK_User_tbEnterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id),
+	CONSTRAINT  FK_User_tbEnterprise_tbUser_rug_Id				FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id)
 );
 GO
 
@@ -171,14 +172,16 @@ GO
 CREATE TABLE [User].tbONGD
 (
 	[ongd_Index]			INT IDENTITY(1,1)	NOT NULL,
-	[ongd_Id]				INT,
+	[use_Id]				INT,
+	[arONG_Id]				INT					NOT NULL,
 	[ongd_RTNFoundation]	NVARCHAR(100)		NOT NULL,
 	[ongd_RTN]				NVARCHAR(100)		NOT NULL,
 	[ongd_FoundationDate]	DATE				NOT NULL,
 	[arONG_Id]				INT					NOT NULL,
-	CONSTRAINT  PK_User_tbONGD_ongd_Id					PRIMARY KEY(ongd_Id),
-	CONSTRAINT  FK_User__tbAriaONGD_tbONGD_loc_Id	FOREIGN KEY(arONG_Id) REFERENCES [User].tbAriaONGD (arONG_Id),
-	CONSTRAINT	UK_User_tbONGD_ongd_RTNFoundation_ongd_RTN					UNIQUE(ongd_RTNFoundation,ongd_RTN)
+	CONSTRAINT  PK_User_tbONGD_ongd_Id						PRIMARY KEY(use_Id),
+	CONSTRAINT  FK_User__tbAriaONGD_tbONGD_loc_Id			FOREIGN KEY(arONG_Id) REFERENCES [User].tbAriaONGD (arONG_Id),
+	CONSTRAINT	UK_User_tbONGD_ongd_RTNFoundation_ongd_RTN	UNIQUE(ongd_RTNFoundation,ongd_RTN),
+	CONSTRAINT  FK_User_tbONGD_tbUser_rug_Id				FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id)
 );
 GO 
 
@@ -186,11 +189,12 @@ GO
 CREATE TABLE [User].tbUserNormal
 (
 	[usNor_Index]		INT IDENTITY(1,1)	NOT NULL,
-	[usNor_Id]			INT ,
+	[use_Id]			INT ,
 	[usNor_RTN]			NVARCHAR(50)		NOT NULL,
 	[usNor_Type]		TINYINT				NOT NULL,
 	CONSTRAINT  PK_User_tbUserNormal_usNor_Id					PRIMARY KEY(usNor_Id),
-	CONSTRAINT	UK_User_tbUserNOrmal_usNor_RTN					UNIQUE(usNor_Id,usNor_RTN)
+	CONSTRAINT	UK_User_tbUserNOrmal_usNor_RTN					UNIQUE(usNor_Id,usNor_RTN),
+	CONSTRAINT  FK_User_tbUserNormal_tbUser_use_Id				FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id)
 );
 GO
 
@@ -198,7 +202,7 @@ GO
 CREATE TABLE [User].tbMicroenterprise
 (
 	[micro_Index]			INT IDENTITY(1,1)	NOT NULL,
-	[micro_Id]				INT ,
+	[use_Id]				INT ,
 	[micro_RTNFoundation]	NVARCHAR(50)		NOT NULL,
 	[micro_RTN]				NVARCHAR(50)		NOT NULL,
 	[micro_Type]			TINYINT				NOT NULL,
@@ -211,7 +215,8 @@ CREATE TABLE [User].tbMicroenterprise
 	CONSTRAINT	UQ_User_tbMicroenterprise_micro_RTNFoundation_micro_RTN	UNIQUE(micro_RTNFoundation, micro_RTN),
 	CONSTRAINT	CK_User_tbMicroenterprise_micro_WhatsApp				CHECK(micro_WhatsApp IN ('1', '0')),
 	CONSTRAINT	CK_User_tbMicroenterprise_micro_Shipping				CHECK(micro_Shipping IN ('1', '0')),
-	CONSTRAINT  FK_User_tbMicroenterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id)
+	CONSTRAINT  FK_User_tbMicroenterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id),
+	CONSTRAINT  FK_User_tbMicroenterprise_tbUser_use_Id					FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id)
 );
 GO
 
@@ -244,7 +249,7 @@ CONSTRAINT FK_Prod_tbProducto_tbProductoCAtegoria_micro_Id			FOREIGN KEY(micro_I
 GO
 
 /*Sección #15*/
-CREATE TABLE [Prod].tbProductoDesperdicio(
+CREATE TABLE [Prod].tbDesperdicio(
 [prodDes_Id]				INT IDENTITY(1,1),
 [prod_Id]					INT NOT NULL,
 [desCa_Id]					INT NOT NULL,
@@ -293,8 +298,9 @@ CREATE TABLE [Serv].tbServicioDesperdicio(
 [serDe_Descripcion]			NVARCHAR(1000) NOT NULL,
 [serDe_Gratis]				NVARCHAR(1) NOT NULL,
 [serDe_Imagen]				NVARCHAR(MAX) NOT NULL,
-
-CONSTRAINT PK_Genl_tbServicioTipo_serCa_Id						PRIMARY KEY(serDe_Id),
+[desCa_Id]					INT NOT NULL,
+CONSTRAINT PK_Genl_tbServicioTipo_serCa_Id										PRIMARY KEY(serDe_Id),
+CONSTRAINT FK_Serv_tbServicioDesperdicio_Genl_tbDesperdicioCategoria_desCa_Id	FOREIGN KEY(desCa_Id) REFERENCES [Genl].tbDesperdicioCategoria(desCa_Id),
 );
 GO
 
@@ -337,6 +343,116 @@ CONSTRAINT FK_UsPa_tbHabilidades_User_tbUserNormal_usNor_Id		FOREIGN KEY(usNor_I
 );
 GO
 
+---------------------------------------############################___))#####----------------------
+/*Sección #15*/
+CREATE TABLE [Empre].tbCatEducacion(
+[catEd_Id]					INT IDENTITY(1,1),
+[catEd_Nombre]				NVARCHAR(150) NOT NULL,
+CONSTRAINT PK_Empre_tbCatEducacion_catEd_Id						PRIMARY KEY(catEd_Id)
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Empre].tbNivelEducativo(
+[niEd_Id]					INT IDENTITY(1,1),
+[niEd_Nombre]				NVARCHAR(350) NOT NULL,
+[niEd_Numero]				INT NOT NULL,
+CONSTRAINT PK_Empre_tbNivelEducativo_niEd_Id						PRIMARY KEY(niEd_Id)
+);
+GO
 
 
+/*Sección #15*/
+CREATE TABLE [Empre].tbEducacion(
+[educ_Id]					INT IDENTITY(1,1),
+[educ_Requerido]			NVARCHAR(1) NOT NULL,
+[catEd_Id]					INT NOT NULL,
+[niEd_Id]					INT NOT NULL,
+CONSTRAINT PK_Empre_tbCatEducacion_catEd_Id						PRIMARY KEY(educ_Id),
+CONSTRAINT CK_Empre_tbEducacion_educ_Requerido					CHECK(educ_Requerido IN ('1', '0')),
+CONSTRAINT PK_Empre_tbEducacion_catEd_Id_tbCatEducacion			FOREIGN KEY(catEd_Id)	REFERENCES [Empre].tbCatEducacion(catEd_Id),
+CONSTRAINT PK_Empre_tbEducacion_niEd_Id_tbNivelEducativo		FOREIGN KEY(niEd_Id)	REFERENCES [Empre].tbNivelEducativo(niEd_Id)
+);
+GO
 
+/*Sección #15*/
+CREATE TABLE [Empre].tbIdiomas(
+[idom_Id]					INT IDENTITY(1,1),
+[idom_Nombre]				NVARCHAR(150) NOT NULL,
+CONSTRAINT PK_Empre_tbIdiomas_idom_Id							PRIMARY KEY(idom_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Empre].tbAriaPuesto(
+[arPu_Id]					INT IDENTITY(1,1),
+[arPu_Nombre]				NVARCHAR(150) NOT NULL,
+CONSTRAINT PK_Empre_tbAriaPuesto_arPu_Id						PRIMARY KEY(arPu_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Empre].tbCargo(
+[carg_Id]					INT IDENTITY(1,1),
+[carg_Nombre]				NVARCHAR(150) NOT NULL,
+CONSTRAINT PK_Empre_tbCargo_carg_Id								PRIMARY KEY(carg_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Empre].tbTipoContrato(
+[tipCon_Id]					INT IDENTITY(1,1),
+[tipCon_Nombre]				NVARCHAR(150) NOT NULL,
+CONSTRAINT PK_Empre_tbTipoContrato_tipCon_Id					PRIMARY KEY(tipCon_Id),
+);
+GO
+
+CREATE TABLE [Empre].tbMoneda(
+[mone_Id]					INT IDENTITY(1,1),
+[mone_Descripcion]			NVARCHAR(150) NOT NULL,
+[mone_Simbolo]				NVARCHAR(10),
+CONSTRAINT PK_Empre_tbMoneda_tipCon_Id					PRIMARY KEY(mone_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Empre].tbExperiencia(
+[expr_Id]					INT IDENTITY(1,1),
+[expr_OpcionRequerida]		NVARCHAR(1) NOT NULL,
+[carg_Id]					INT NOT NULL,
+CONSTRAINT PK_Empre_tbExperiencia_expr_Id						PRIMARY KEY(expr_Id),
+CONSTRAINT CK_Empre_tbExperiencia_expr_OpcionRequerida			CHECK(expr_OpcionRequerida IN ('1', '0')),
+CONSTRAINT FK_Empre_tbExperiencia_tbCargo_carg_Id				FOREIGN KEY(carg_Id) REFERENCES [Empre].tbCargo(carg_Id),
+);
+GO
+
+/*Sección #15*/
+CREATE TABLE [Empre].tbVacante(
+[vact_Id]					INT IDENTITY(1,1),
+[arPu_Id]					INT NOT NULL,
+[enpr_Id]					INT NOT NULL,
+[carg_Id]					INT NOT NULL,
+[vact_PuestoVacante]		NVARCHAR(350),
+[tipCon_Id]					INT NOT NULL,
+[vact_Genero]				NVARCHAR(1),
+[vact_Edad]					INT NOT NULL,
+[vact_SalarioMax]			DECIMAL(18,2) NOT NULL,
+[vact_SalarioMim]			DECIMAL(18,2) NOT NULL,
+[mone_Id]					INT NOT NULL,
+[vact_Vehiculo]				NVARCHAR(1) NOT NULL,
+[vact_DescripcionDeOferta]	NVARCHAR(MAX) NOT NULL,
+[vact_OtrosConocimentos]	NVARCHAR(MAX),
+[expr_Id]					INT NOT NULL,
+[educ_Id]					INT NOT NULL,
+[idom_Id]					INT NOT NULL,
+CONSTRAINT PK_Empre_tbVacante_vact_Id						PRIMARY KEY(vact_Id),
+CONSTRAINT CK_Empre_tbVacante_vact_Genero					CHECK(vact_Genero IN ('M', 'F')),
+CONSTRAINT FK_Empre_tbVacante_tbAriaPuesto_arPu_Id			FOREIGN KEY(arPu_Id) REFERENCES [Empre].tbAriaPuesto(arPu_Id),
+CONSTRAINT FK_Empre_tbVacante_User_tbEnterprise_enpr_Id		FOREIGN KEY(enpr_Id) REFERENCES [User].tbEnterprise(enpr_Id),
+CONSTRAINT FK_Empre_tbVacante_tbCargo_carg_Id				FOREIGN KEY(carg_Id) REFERENCES [Empre].tbCargo(carg_Id),
+CONSTRAINT FK_Empre_tbVacante_tbTipoContrato_tipCon_Id		FOREIGN KEY(tipCon_Id) REFERENCES [Empre].tbTipoContrato(tipCon_Id),
+CONSTRAINT FK_Empre_tbVacante_tbExperiencia_expr_Id			FOREIGN KEY(expr_Id) REFERENCES [Empre].tbExperiencia(expr_Id),
+CONSTRAINT FK_Empre_tbVacante_tbEducacion_educ_Id			FOREIGN KEY(educ_Id) REFERENCES [Empre].tbEducacion(educ_Id),
+CONSTRAINT FK_Empre_tbVacante_tbIdiomas_idom_Id			FOREIGN KEY(idom_Id) REFERENCES [Empre].tbIdiomas(idom_Id),
+);
+GO
