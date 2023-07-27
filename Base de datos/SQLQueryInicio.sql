@@ -17,528 +17,609 @@ ALTER DATABASE [AppECO]  SET ENABLE_BROKER
 GO 
 --===============ESQUEMAS================
 /*Sección #1*/
+ALTER DATABASE [AppECO] COLLATE SQL_Latin1_General_CP1_CI_AS;
 GO
-CREATE SCHEMA [Genl] --Generales
-GO
-CREATE SCHEMA [User] --Usuarios
-GO
-CREATE SCHEMA [Prod] --Producto
-GO
-CREATE SCHEMA [Serv] --Servicio
-GO
-CREATE SCHEMA [UsPa] --Usuario Particular
-GO
-CREATE SCHEMA [Empre] --Empresa
-GO
-CREATE SCHEMA [Ongd] -- ONGD.
-GO
---CREATE SCHEMA [Habi]
---GO
---CREATE SCHEMA [Ongd]
---GO
---CREATE SCHEMA [Vact]
---GO
---CREATE SCHEMA [VeRe]
---GO
---CREATE SCHEMA [Vent]
 
---===============TABLAS==================
+GO
+CREATE  SCHEMA [Genl] --Generales
+GO
+
 /*Sección #2*/
-CREATE TABLE [Genl].tbSchedule(
-	[sche_Id]           INT IDENTITY(1,1),
-	[sche_DayNumber]	TINYINT			NOT NULL,
-	[sche_nameDay]		NVARCHAR(10)	NOT NULL,
-	[sche_startTime]	TIME			NOT NULL,
-	[sche_endTime]		TIME			NOT NULL,
-
-	CONSTRAINT  PK_Genl_tbSchedule_sche_ID  PRIMARY KEY(sche_Id)
-);
+CREATE TABLE [Genl].tbTipoUsuario(
+	[tipUs_Id]				INT IDENTITY(1,1),
+	[tipUs_Descripcion]		NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbTipoUsuario_tipUs_Id	PRIMARY KEY(tipUs_Id)
+)  
 GO
 
 /*Sección #3*/
-CREATE TABLE [Genl].tbCountry(
-	[cou_Id]              INT  IDENTITY(1,1),
-	[cou_Description]     NVARCHAR(250)		NOT NULL, 
-
-	CONSTRAINT  PK_Genl_tbCountry_cou_Id	PRIMARY KEY (cou_Id)
-);
+CREATE TABLE [Genl].tbInfoUnicaUsuario(
+	[ipInf_Id]					INT IDENTITY(1,1),
+	[tInf_Nombre]				NVARCHAR(500)	NOT NULL,
+	[tInf_RutaLogo]				NVARCHAR(2000),
+	[tInf_RutaPaginaWed]		NVARCHAR(2000),
+	[tInf_IgualSubInfo]			BIT NOT NULL DEFAULT 1,
+	[tipUs_Id]					INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbInfoUnicaUsuario_tipInfUs_Id	PRIMARY KEY(ipInf_Id),
+	CONSTRAINT  FK_Genl_tbInfoUnicaUsuario_tbTipoUsuario_tipUs_Id	FOREIGN KEY(tipUs_Id) REFERENCES Genl.tbTipoUsuario(tipUs_Id)
+)  
 GO
 
 /*Sección #4*/
-CREATE TABLE [Genl].tbDepartments
-(
-	[dep_Id]				INT  IDENTITY(1,1),
-	[dep_Code]				NVARCHAR(2)		NOT NULL,
-	[dep_Description]		NVARCHAR(250)		NOT NULL,
-	[cou_Id]				INT				NOT NULL,
-	CONSTRAINT  PK_Genl_tbDepartments_depto_Id			 PRIMARY KEY (dep_Id),
-	CONSTRAINT  FK_Genl_tbDepartments_tbCountry_pai_Id		 FOREIGN KEY(cou_Id) REFERENCES Genl.tbCountry(cou_Id)
-);
+CREATE TABLE [Genl].tbPais(
+	[pais_Id]						INT IDENTITY(1,1),
+	[pais_Nombre]					NVARCHAR(500)	NOT NULL,
+	[pais_Abrebiatura]				NVARCHAR(10),
+	CONSTRAINT  PK_Genl_tbPais_pais_Id	PRIMARY KEY(pais_Id)
+)  
 GO
 
 /*Sección #5*/
-CREATE TABLE [Genl].tbMunicipalities
-(
-	[mun_Id]              INT IDENTITY(1,1),
-	[mun_Code]            VARCHAR(4)		NOT NULL,
-	[mun_Description]     NVARCHAR(250)		NOT NULL,
-	[dep_Id]              INT				NOT NULL,
-	CONSTRAINT  PK_Genl_tbMunicipalities_mun_Id				  PRIMARY KEY(mun_Id, dep_Id),
-	CONSTRAINT  FK_Genl_tbDepartments_tbMunicipalities_dep_Id FOREIGN KEY(dep_Id) REFERENCES [Genl].tbDepartments(dep_Id)
-);
+CREATE TABLE [Genl].tbDepartamento(
+	[dept_Id]						INT IDENTITY(1,1),
+	[dept_Nombre]					NVARCHAR(500)	NOT NULL,
+	[pais_Id]						INT	NOT NULL,
+	[dept_NuIdentidad]				INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbDepartamento_dept_Id			PRIMARY KEY(dept_Id),
+	CONSTRAINT  FK_Genl_tbDepartamento_tbPais_pai_Id	FOREIGN KEY(pais_Id) REFERENCES Genl.tbPais(pais_Id)
+)  
 GO
 
 /*Sección #6*/
-CREATE TABLE [Genl].tbLocation
-(
-	[loc_Id]				INT IDENTITY(1,1),
-	[loc_Suburb]			NVARCHAR(300)		NOT NULL,
-	[loc_Latitude]			NVARCHAR(MAX)		NOT NULL,
-	[loc_length]			NVARCHAR(MAX)		NOT NULL,
-	[dep_Id]				INT					NOT NULL,
-	[mun_Id]				INT					NOT NULL,
-	CONSTRAINT  PK_Genl_tbLocation_loc_Id					PRIMARY KEY(loc_Id),
-	CONSTRAINT  FK_Genl_tbMunicipalities_tbLocation_mun_Id	FOREIGN KEY(mun_Id,dep_Id) REFERENCES [Genl].tbMunicipalities(mun_Id,dep_Id)
-);
+CREATE TABLE [Genl].tbMunicipio(
+	[muni_Id]						INT IDENTITY(1,1),
+	[muni_Nombre]					NVARCHAR(500)	NOT NULL,
+	[dept_Id]						INT	NOT NULL,
+	[muni_NuIdentidad]				INT NOT NULL,
+	[muni_ValidaciosTelefono]		NVARCHAR(1000),
+	[muni_ValidaciosTelefonoFijo]	NVARCHAR(1000),
+	CONSTRAINT  PK_Genl_tbMunicipio_muni_Id			PRIMARY KEY(muni_Id),
+	CONSTRAINT  FK_Genl_tbMunicipio_tbDepartamento_dept_Id	FOREIGN KEY(dept_Id) REFERENCES Genl.tbDepartamento(dept_Id)
+)  
 GO
 
 /*Sección #7*/
-CREATE TABLE [Genl].tbDesperdicioCategoria(
-[desCa_Id]					INT IDENTITY(1,1),
-[desCa_Descripcion]			NVARCHAR(250)
-CONSTRAINT PK_Genl_tbDesperdicioCategoria		PRIMARY KEY(desCa_Id)
-);
+CREATE TABLE [Genl].tbCategoriaLugar(
+	[catLug_Id]						INT IDENTITY(1,1),
+	[catLug_Nombre]					NVARCHAR(500)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbCategoriaLugar_catLug_Id			PRIMARY KEY(catLug_Id)
+)  
 GO
 
 /*Sección #8*/
-CREATE TABLE [User].tbTypeUser
-(
-	[tyUs_Id]				INT IDENTITY(1,1),
-	[tyUs_description]		NVARCHAR(250)		NOT NULL,
-	CONSTRAINT  PK_User_tbTypeUser_tyUs_Id					PRIMARY KEY(tyUs_Id),
-);
+CREATE TABLE [Genl].tbLugar(
+	[lug_Id]						INT IDENTITY(1,1),
+	[lug_Nombre]					NVARCHAR(500)	NOT NULL,
+	[catLug_Id]						INT				NOT NULL,
+	[muni_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbLugar_lug_Id			PRIMARY KEY(lug_Id),
+	CONSTRAINT  FK_Genl_tbLugar_tbCategoriaLugar_catLug_Id	FOREIGN KEY(catLug_Id) REFERENCES Genl.tbCategoriaLugar(catLug_Id),
+	CONSTRAINT  FK_Genl_tbLugar_tbMunicipio_muni_Id			FOREIGN KEY(muni_Id) REFERENCES Genl.tbMunicipio(muni_Id),
+)  
+GO	
+
+/*Sección #7*/
+CREATE TABLE [Genl].tbCategoriaSubdivicion(
+	[sub_Id]						INT IDENTITY(1,1),
+	[sub_Nombre]					NVARCHAR(500)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbCategoriaSubdivicion_sub_Id		PRIMARY KEY(sub_Id)
+)  
 GO
 
+/*Sección #8*/
+CREATE TABLE [Genl].tbSubdivicionLugar(
+	[subLug_Id]						INT IDENTITY(1,1),
+	[subLug_Nombre]	 				NVARCHAR(500)	NOT NULL,
+	[sub_Id]						INT				NOT NULL,
+	[lug_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbSubdivicionLugar_subLug_Id			PRIMARY KEY(subLug_Id),
+	CONSTRAINT  FK_Genl_tbSubdivicionLugar_tbCategoriaSubdivicion_sub_Id	FOREIGN KEY(sub_Id) REFERENCES Genl.tbCategoriaSubdivicion(sub_Id),
+	CONSTRAINT  FK_Genl_tbSubdivicionLugar_tbLugar_lug_Id	FOREIGN KEY(lug_Id) REFERENCES Genl.tbLugar(lug_Id),
+)  
+GO	
+
 /*Sección #9*/
-CREATE TABLE [User].tbUser
-(
-	[use_Id]				INT IDENTITY(1,1),
-	[tyUs_Id]				INT					NOT NULL,
-	[user_Name]				NVARCHAR(250)		NOT NULL,
-	[user_description]		NVARCHAR(1000)		NOT NULL,
-	[user_Image]			NVARCHAR(MAX)		NOT NULL,
-	[user_Phone]			NVARCHAR(20)		NOT NULL,
-	[sche_Id]				INT					NOT NULL,
-	[loc_Id]				INT					NOT NULL,
-	CONSTRAINT  PK_User_tbUser_use_Id					PRIMARY KEY(use_Id),
-	CONSTRAINT  FK_User__tbLocation_tbUser_loc_Id	FOREIGN KEY(loc_Id) REFERENCES [Genl].tbLocation (loc_Id),
-	CONSTRAINT  FK_User_tbSchedule_tbUser_sche_Id	FOREIGN KEY(sche_Id) REFERENCES [Genl].tbSchedule (sche_Id)
-);
+CREATE TABLE [Genl].tbUbicacion(
+	[ubc_Id]						INT IDENTITY(1,1),
+	[ubc_Latitud]					NVARCHAR(200)	NOT NULL,
+	[ubc_Longitub]					NVARCHAR(200)	NOT NULL,
+	[subLug_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbUbicacion_ubc_Id			PRIMARY KEY(ubc_Id),
+	CONSTRAINT  FK_Genl_tbUbicacion_tbSubdivicionLugar_subLug_Id	FOREIGN KEY(subLug_Id) REFERENCES Genl.tbSubdivicionLugar(subLug_Id),
+)  
 GO
 
 /*Sección #10*/
-CREATE TABLE [User].tbRugro
-(
-	[rug_Id]				INT IDENTITY(1,1),
-	[rug_description]		NVARCHAR(50)		NOT NULL,
-	CONSTRAINT  PK_User_tbRugro_rug_Id					PRIMARY KEY(rug_Id)
-);
+CREATE TABLE [Genl].tbAria(
+	[aria_Id]						INT IDENTITY(1,1),
+	[aria_Nombre]					NVARCHAR(200)		NOT NULL,
+	CONSTRAINT  PK_Genl_tbAria_aria_Id			PRIMARY KEY(aria_Id)
+)  
 GO
+
 
 /*Sección #11*/
-CREATE TABLE [User].tbEnterprise
-(
-	[empr_Index]			INT IDENTITY(1,1)	NOT NULL,
-	[use_Id]				INT					NOT NULL,
-	[enpr_RTN]				NVARCHAR(100)		NOT NULL,
-	[enpr_FoundationDate]	DATE				NOT NULL,
-	[enpr_WebPage]			NVARCHAR(500)		NOT NULL,
-	[enpr_Gmail]			NVARCHAR(200)		NOT NULL,
-	[rug_Id]				INT					NOT NULL,
-	CONSTRAINT  PK_User_tbEnterprise_use_Id						PRIMARY KEY(use_Id),
-	CONSTRAINT  FK_User_tbEnterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id),
-	CONSTRAINT  FK_User_tbEnterprise_tbUser_rug_Id				FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id)
-);
+CREATE TABLE [Genl].tbRugro(
+	[rug_Id]						INT IDENTITY(1,1),
+	[rug_Nombre]					NVARCHAR(200)	NOT NULL,
+	[aria_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbRugro_rug_Id			PRIMARY KEY(rug_Id),
+	CONSTRAINT  FK_Genl_tbRugro_tbAria_aria_Id	FOREIGN KEY(aria_Id) REFERENCES Genl.tbAria(aria_Id),
+)  
 GO
 
-/*Sección #112*/
-CREATE TABLE [User].tbAriaONGD
-(
-	[arONG_Id]				INT IDENTITY(1,1),
-	[arONG_description]		NVARCHAR(100)		NOT NULL,
-	CONSTRAINT  PK_User_tbAriaONGD_arONG_Id					PRIMARY KEY(arONG_Id),
-);
+/*Sección #12*/
+CREATE TABLE [Genl].tbUsuarios(
+	[user_Id]						INT IDENTITY(1,1),
+	[ipInf_Id]					INT				NOT NULL,
+	[user_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[user_TelefonoPrincipal]		NVARCHAR(50)	NOT NULL,
+	[user_TelefonoSecundario]		NVARCHAR(50),
+	[ubc_Id]						INT				NOT NULL,
+	[user_RTNPersona]				NVARCHAR(100),
+	[user_RTNInstitucion]			NVARCHAR(100),
+	[user_FechaFundacion]			DATE,
+	[user_Correo]					NVARCHAR(100),
+	[user_Facebook]					NVARCHAR(100),
+	[user_Intagram]					NVARCHAR(100),
+	[user_WhatsApp]					BIT NOT NULL DEFAULT 0,
+	[user_Envio]					BIT NOT NULL DEFAULT 0,
+	[rug_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbUsuarios_User_Id			PRIMARY KEY(User_Id),
+	CONSTRAINT  FK_Genl_tbUsuarios_tbInfoUnicaUsuario_ipInf_Id	FOREIGN KEY(ipInf_Id) REFERENCES Genl.tbInfoUnicaUsuario(ipInf_Id),
+	CONSTRAINT  FK_Genl_tbUsuarios_tbUbicacion_ubc_Id				FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id),
+	CONSTRAINT  FK_Genl_tbUsuarios_tbRugro_rug_Id					FOREIGN KEY(rug_Id) REFERENCES Genl.tbRugro(rug_Id)
+)  
+
 GO
 
 /*Sección #13*/
-CREATE TABLE [User].tbONGD
-(
-	[ongd_Index]			INT IDENTITY(1,1)	NOT NULL,
-	[use_Id]				INT,
-	[arONG_Id]				INT					NOT NULL,
-	[ongd_RTNFoundation]	NVARCHAR(100)		NOT NULL,
-	[ongd_RTN]				NVARCHAR(100)		NOT NULL,
-	[ongd_FoundationDate]	DATE				NOT NULL,
-	CONSTRAINT  PK_User_tbONGD_ongd_Id						PRIMARY KEY(use_Id),
-	CONSTRAINT  FK_User_tbAriaONGD_tbONGD_loc_Id			FOREIGN KEY(arONG_Id) REFERENCES [User].tbAriaONGD(arONG_Id),
-	CONSTRAINT	UK_User_tbONGD_ongd_RTNFoundation_ongd_RTN	UNIQUE(ongd_RTNFoundation,ongd_RTN),
-	CONSTRAINT  FK_User_tbONGD_tbUser_rug_Id				FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id)
-);
-GO 
+CREATE TABLE [Genl].tbHorario(
+	[hor_Id]						INT IDENTITY(1,1),
+	[hor_DiaNumero]					INT				NOT NULL,
+	[user_Id]						INT				NOT NULL,
+	[hor_HoraInicio]				TINYINT			NOT NULL,
+	[hor_MinutoInicio]				TINYINT			NOT NULL,
+	[hor_HoraFin]					TINYINT			NOT NULL,
+	[hor_MinutoFin]					TINYINT			NOT NULL,
+	CONSTRAINT  PK_Genl_tbHorario_hor_Id				PRIMARY KEY(hor_Id),
+	CONSTRAINT  FK_Genl_tbHorario_tbUsuarios_User_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
+)  
+GO
 
 /*Sección #14*/
-CREATE TABLE [User].tbItemUsuarios
-(
-	[itUser_Id]					INT IDENTITY(1,1),
-	[itUser_description]		NVARCHAR(100)		NOT NULL,
-	CONSTRAINT  PK_User_tbItemUsuarios_itUser_Id					PRIMARY KEY(itUser_Id),
-);
+CREATE TABLE [Genl].tbTipoPublicacion(
+	[tiPub_Id]						INT IDENTITY(1,1),
+	[tiPub_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbTipoPublicacion_tiPub_Id	PRIMARY KEY(tiPub_Id)
+)  
 GO
 
 /*Sección #15*/
-CREATE TABLE [User].tbUserNormal
-(
-	[usNor_Index]		INT IDENTITY(1,1)	NOT NULL,
-	[use_Id]			INT ,
-	[usNor_RTN]			NVARCHAR(50)		NOT NULL,
-	[itUser_Id]			INT					NOT NULL
-	CONSTRAINT  PK_User_tbUserNormal_usNor_Id					PRIMARY KEY(use_Id),
-	CONSTRAINT	UK_User_tbUserNOrmal_usNor_RTN					UNIQUE(usNor_RTN),
-	CONSTRAINT  FK_User_tbUserNormal_tbUser_use_Id				FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id),
-	CONSTRAINT  FK_User_tbUserNormal_tbItemUsuarios_itUser_Id	FOREIGN KEY(itUser_Id) REFERENCES [User].tbItemUsuarios(itUser_Id)
-);
+CREATE TABLE [Genl].tbGuardar(
+	[guard_Id]						INT IDENTITY(1,1),
+	[user_Id]						INT	NOT NULL,
+	[guard_RutaPublicacion]			INT	NOT NULL,
+	[guard_Publicacion]				INT	NOT NULL,
+	CONSTRAINT  PK_Genl_tbGuardar_guard_Id				PRIMARY KEY(guard_Id),
+	CONSTRAINT  FK_Genl_tbGuardar_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
+)  
 GO
 
+
 /*Sección #16*/
-CREATE TABLE [User].tbMicroenterprise
-(
-	[micro_Index]			INT IDENTITY(1,1)	NOT NULL,
-	[use_Id]				INT ,
-	[micro_RTNFoundation]	NVARCHAR(50)		NOT NULL,
-	[micro_RTN]				NVARCHAR(50)		NOT NULL,
-	[micro_Type]			TINYINT				NOT NULL,
-	[micro_Instagram]		NVARCHAR(MAX)		NOT NULL,
-	[micro_Facebook]		NVARCHAR(MAX)		NOT NULL,
-	[micro_WhatsApp]		BIT,
-	[micro_Shipping]		BIT,
-	[rug_Id]				INT					NOT NULL,
-	[itUser_Id]				INT					NOT NULL,
-	CONSTRAINT  PK_User_tbMicroenterprise_use_Id						PRIMARY KEY(use_Id),
-	CONSTRAINT	UQ_User_tbMicroenterprise_micro_RTNFoundation_micro_RTN	UNIQUE(micro_RTNFoundation, micro_RTN),
-	CONSTRAINT  FK_User_tbMicroenterprise_tbRugro_rug_Id				FOREIGN KEY(rug_Id) REFERENCES [User].tbRugro(rug_Id),
-	CONSTRAINT  FK_User_tbMicroenterprise_tbUser_use_Id					FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id),
-	CONSTRAINT  FK_User_tbMicroenterprise_tbItemUsuarios_use_Id			FOREIGN KEY(itUser_Id) REFERENCES [User].tbItemUsuarios(itUser_Id)
-);
+CREATE TABLE [Genl].tbProdCategoria(
+	[proCa_Id]						INT IDENTITY(1,1),
+	[proCa_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbProdCategoria_proCa_Id	PRIMARY KEY(proCa_Id)
+)  
 GO
 
 /*Sección #17*/
-CREATE TABLE [Prod].tbProductoCAtegoria(
-[prodC_Id]					INT IDENTITY(1,1) NOT NULL,
-[prodC_Descripcion]			NVARCHAR(250) NOT NULL,
-CONSTRAINT PK_tbProductoCAtegoria_prodC_Id	PRIMARY KEY(prodC_Id)
-);
+CREATE TABLE [Genl].tbProducto(
+	[prod_Id]						INT IDENTITY(1,1),
+	[prod_Nombre]					NVARCHAR(100)	NOT NULL,
+	[prod_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[prod_Precio]					DECIMAL(18,2)	NOT NULL,
+	[prod_Reporte]					BIT NOT NULL DEFAULT 0,
+	[prod_JsonReaccion]			NVARCHAR(MAX),
+	[prod_JsonReporte]				NVARCHAR(MAX),
+	[prod_Imagen]					NVARCHAR(3000),
+	[prod_Existencia]				BIT NOT NULL DEFAULT 0,
+	[prod_Negociado]				BIT NOT NULL DEFAULT 0,
+	[proCa_Id]						INT NOT NULL,
+	[user_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbProducto_prod_Id	PRIMARY KEY(prod_Id),
+	CONSTRAINT  FK_Genl_tbProducto_tbProdCategoria_proCa_Id		FOREIGN KEY(proCa_Id) REFERENCES Genl.tbProdCategoria(proCa_Id),
+	CONSTRAINT  FK_Genl_tbProducto_tbUsuarios_user_Id			FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)  
 GO
 
 /*Sección #18*/
-CREATE TABLE [Prod].tbProducto(
-[prod_Id]					INT IDENTITY(1,1)	NOT NULL,
-[use_Id]					INT					NOT  NULL,
-[prod_Nombre]				NVARCHAR(100)		NOT NULL,
-[prod_Descripcion]			NVARCHAR(1000)		NOT NULL,
-[prod_Precion]				DECIMAL(18,2)		NOT NULL,
-[prod_ReaccionBuena]		INT,
-[prod_ReaccionMala]			INT,
-[prod_ReaccionReporte]		INT,
-[prod_Imagen]				NVARCHAR(MAX)		NOT NULL,
-[prodC_Id]					INT					NOT NULL,
-[prod_Existencia]			BIT,
-CONSTRAINT PK_Prod_tbProducto_prod_Id								PRIMARY KEY(prod_Id),
-CONSTRAINT FK_Prod_tbProducto_tbMicroenterprise_prodC_Id			FOREIGN KEY(prodC_Id)	REFERENCES [Prod].tbProductoCAtegoria(prodC_Id),
-CONSTRAINT FK_Prod_tbProducto_tbProductoCAtegoria_use_Id			FOREIGN KEY(use_Id)		REFERENCES [User].tbMicroenterprise(use_Id)
-);
+CREATE TABLE [Genl].tbProductoImagen(
+	[proIm_Id]						INT IDENTITY(1,1),
+	[proIm_Ruta]					NVARCHAR(1000)	NOT NULL,
+	[prod_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbContribuyente_proIm_Id	PRIMARY KEY(proIm_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbProducto_user_Id			FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+)  
 GO
 
 /*Sección #19*/
-CREATE TABLE [Prod].tbOrigen(
-[orgn_Id]					INT IDENTITY(1,1)	NOT NULL,
-[prod_Id]					INT					NOT NULL,
-[orgn_Descripcion]			NVARCHAR(1000)		NOT NULL,
-[orgn_Imagen]				NVARCHAR(MAX)		NOT NULL,
-CONSTRAINT PK_Prod_tbOrigen_orgn_Id						PRIMARY KEY(orgn_Id),
-CONSTRAINT FK_Prod_tbOrigen_Prod_tbProducto_prod_Id		FOREIGN KEY(prod_Id)	REFERENCES [Prod].tbProducto(prod_Id)
-);
+CREATE TABLE [Genl].tbOrigen(
+	[orig_Id]						INT IDENTITY(1,1),
+	[orig_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[orig_Imagen]					NVARCHAR(3000)	NOT NULL,
+	[prod_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbOrigen_orig_Id	PRIMARY KEY(orig_Id),
+	CONSTRAINT  FK_Genl_tbOrigen_tbProducto_prod_Id			FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+)  
 GO
 
 
+/*Sección #19*/
+CREATE TABLE [Genl].tbContribuyente(
+	[contr_Id]						INT IDENTITY(1,1),
+	[contr_Descripcion]				NVARCHAR(1000)	NOT NULL,
+	[prod_Id]						INT NOT NULL,
+	[user_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbContribuyente_contr_Id	PRIMARY KEY(contr_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbProducto_prod_Id			FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbUsuarios_user_Id			FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)  
+GO
+
 /*Sección #20*/
-CREATE TABLE [Serv].tbServicioCategoria(
-[serCa_Id]					INT IDENTITY(1,1) NOT NULL,
-[serCa_Descripcion]			NVARCHAR(1000) NOT NULL,
-CONSTRAINT PK_Serv_tbServicioCategoria_serCa_Id						PRIMARY KEY(serCa_Id),
-);
+CREATE TABLE [Genl].tbTipoServicio(
+	[tipSe_Id]						INT IDENTITY(1,1),
+	[tipSe_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbTipoServicio_tipSe_Id	PRIMARY KEY(tipSe_Id)
+)  
 GO
 
 /*Sección #21*/
-CREATE TABLE [Genl].tbServicioTipo(
-[serTi_Id]					INT IDENTITY(1,1) NOT NULL,
-[serTi_Descripcion]			NVARCHAR(1000) NOT NULL,
-CONSTRAINT PK_Genl_tbServicioTipo_serCa_Id						PRIMARY KEY(serTi_Id),
-);
+CREATE TABLE [Genl].tbServicioCategoria(
+	[serCa_Id]						INT IDENTITY(1,1),
+	[serCa_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbServicioCategoria_serCa_Id	PRIMARY KEY(serCa_Id)
+)  
 GO
-
 
 /*Sección #22*/
-CREATE TABLE [Serv].tbServicio(
-[ser_Id]					INT IDENTITY(1,1)	NOT NULL,
-[ser_Nombre]				NVARCHAR(300)		NOT NULL,
-[ser_Descripcion]			NVARCHAR(1000)		NOT NULL,
-[ser_Precion]				DECIMAL(18,2)		NOT NULL,
-[ser_ReaccionBuena]			INT					NOT NULL,
-[ser_ReaccionMala]			INT					NOT NULL,
-[ser_ReaccionReporte]		INT					NOT NULL,
-[ser_Imagen]				NVARCHAR(MAX),
-[micro_Id]					INT					NOT NULL,
-[serTi_Id]					INT					NOT NULL,
-[serCa_Id]					INT					NOT NULL,
-CONSTRAINT PK_Serv_tbServicio_ser_Id								PRIMARY KEY(ser_Id),
-CONSTRAINT FK_Serv_tbServicio_Genl_tbServicioTipo_serTi_Id			FOREIGN KEY(serTi_Id)	REFERENCES [Genl].tbServicioTipo(serTi_Id),
-CONSTRAINT FK_Serv_tbServicio_Serv_tbServicioCategoria_serCa_Id		FOREIGN KEY(serCa_Id)	REFERENCES [Serv].tbServicioCategoria(serCa_Id),
-CONSTRAINT FK_Serv_tbServicio_User_tbMicroenterprise_micro_Id		FOREIGN KEY(micro_Id)	REFERENCES [User].tbMicroenterprise(use_Id)
-);
+CREATE TABLE [Genl].tbOrigenServicio(
+	[oriS_Id]						INT IDENTITY(1,1),
+	[oriS_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbOrigenServicio_oriS_Id	PRIMARY KEY(oriS_Id)
+)  
 GO
 
-/*Sección #23*/
-CREATE TABLE [Prod].tbDesperdicio(
-[prodDes_Id]				INT IDENTITY(1,1),
-[prod_Id]					INT,
-[ser_Id]					INT,
-[desCa_Id]					INT					NOT NULL,
-[prodDes_Nombre]			NVARCHAR(100)		NOT NULL,
-[prodDes_Descripcion]		NVARCHAR(MAX)		NOT NULL,
-[prodDes_Gratis]			BIT,
-[prodDes_Imagen]			NVARCHAR(MAX)		NOT NULL,
-CONSTRAINT PK_Prod_tbProductoDesperdicio										PRIMARY KEY(prodDes_Id),
-CONSTRAINT FK_Prod_tbProductoDesperdicio_Genl_tbDesperdicioCategoria_desCa_Id	FOREIGN KEY(desCa_Id)	REFERENCES [Genl].tbDesperdicioCategoria(desCa_Id),
-CONSTRAINT FK_Prod_tbProductoDesperdicio_Prod_tbDesperdicio_ser_Id				FOREIGN KEY(ser_Id)		REFERENCES [Serv].tbServicio(ser_Id),
-CONSTRAINT FK_Prod_tbProductoDesperdicio_Prod_tbProducto_prod_Id				FOREIGN KEY(prod_Id)	REFERENCES [Prod].tbProducto(prod_Id)
-);
+
+/*Sección y servicio #23*/
+CREATE TABLE [Genl].tbServicio(
+	[serv_Id]						INT IDENTITY(1,1),
+	[serv_Nombre]					NVARCHAR(200)	NOT NULL,
+	[serv_Descripcion]				NVARCHAR(1000)	NOT NULL,
+	[serv_Precio]					DECIMAL(18,2)	NOT NULL DEFAULT 0,
+	[serv_Negociado]				BIT NOT NULL DEFAULT 0,
+	[serv_JsonReaccion]			NVARCHAR(MAX),
+	[serv_Reporte]					BIT NOT NULL DEFAULT 0,
+	[serv_JsonReporte]				NVARCHAR(MAX),
+	[serv_Imagen]					NVARCHAR(3000),
+	[oriS_Id]						INT NOT NULL,
+	[serCa_Id]						INT NOT NULL,
+	[tipSe_Id]						INT NOT NULL,
+	[user_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbServicio_serv_Id	PRIMARY KEY(serv_Id),
+	CONSTRAINT  FK_Genl_tbServicio_tbOrigenServicio_oriS_Id		FOREIGN KEY(oriS_Id) REFERENCES Genl.tbOrigenServicio(oriS_Id),
+	CONSTRAINT  FK_Genl_tbServicio_tbServicioCategoria_serCa_Id		FOREIGN KEY(serCa_Id) REFERENCES Genl.tbServicioCategoria(serCa_Id),
+	CONSTRAINT  FK_Genl_tbServicio_tbTipoServicio_tipSe_Id		FOREIGN KEY(tipSe_Id) REFERENCES Genl.tbTipoServicio(tipSe_Id),
+	CONSTRAINT  FK_Genl_tbServicio_tbUsuarios_user_Id			FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)  
 GO
 
 /*Sección #24*/
-CREATE TABLE [UsPa].tbHabilidades(
-[serDe_Id]					INT IDENTITY(1,1) NOT NULL,
-[habi_Nombre]				NVARCHAR(250) NOT NULL,
-[habi_Descripcion]			NVARCHAR(1000) NOT NULL,
-[habi_Precio]				DECIMAL(18,2) NOT NULL,
-[habi_ReccionBuena]			INT NOT NULL,
-[habi_ReccionMala]			INT NOT NULL,
-[habi_ReccionReporte]		INT NOT NULL,
-[serDe_Imagen]				NVARCHAR(MAX) NOT NULL,
-[serTi_Id]					INT NOT NULL,
-[usNor_Id]					INT NOT NULL
-CONSTRAINT PK_UsPa_tbHabilidades_serCa_Id						PRIMARY KEY(serDe_Id),
-CONSTRAINT FK_UsPa_tbHabilidades_Genl_tbServicioTipo_serTi_Id	FOREIGN KEY(serTi_Id)	REFERENCES [Genl].tbServicioTipo(serTi_Id),
-CONSTRAINT FK_UsPa_tbHabilidades_User_tbUserNormal_usNor_Id		FOREIGN KEY(usNor_Id)	REFERENCES [User].tbUserNormal(use_Id)
-);
+CREATE TABLE [Genl].tbServicioImagen(
+	[serIm_Id]				INT IDENTITY(1,1),
+	[serIm_Ruta]			NVARCHAR(3000)	NOT NULL,
+	[serv_Id]				INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbServicioImagen_serIm_Id	PRIMARY KEY(serIm_Id),
+	CONSTRAINT  FK_Genl_tbServicioImagen_tbServicio_serv_Id		FOREIGN KEY(serv_Id) REFERENCES Genl.tbServicio(serv_Id),
+)  
 GO
+
+/*Sección #24*/
+CREATE TABLE [Genl].tbDesperdicioCatedoria(
+	[desCa_Id]						INT IDENTITY(1,1),
+	[desCa_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbDesperdicioCatedoria_desCa_Id	PRIMARY KEY(desCa_Id)
+)  
+GO
+
 
 /*Sección #25*/
-CREATE TABLE [UsPa].tbCatgNecesita(
-[catNec_Id]					INT IDENTITY(1,1),
-[catNec_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_UsPa_tbCatgNecesita_catNec_Id						PRIMARY KEY(catNec_Id)
-);
+CREATE TABLE [Genl].tbOrigeDesperdicio(
+	[oriDe_Id]						INT IDENTITY(1,1),
+	[oriDe_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbOrigeDesperdicio_oriDe_Id	PRIMARY KEY(oriDe_Id)
+)  
 GO
 
-/*Sección #26*/
-CREATE TABLE [UsPa].tbFormaPago(
-[forPa_Id]					INT IDENTITY(1,1),
-[forPa_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_UsPa_tbFormaPago_forPa_Id						PRIMARY KEY(forPa_Id)
-);
+
+/*Sección y servicio #26*/
+CREATE TABLE [Genl].tbDesperdicio(
+	[desp_Id]						INT IDENTITY(1,1),
+	[desp_Nombre]					NVARCHAR(200)	NOT NULL,
+	[desp_Descripcion]				NVARCHAR(1000)	NOT NULL,
+	[desp_Precio]					DECIMAL(18,2) NOT NULL DEFAULT 0,
+	[desp_Negociado]				BIT NOT NULL DEFAULT 0,
+	[desp_Gratis]					BIT NOT NULL DEFAULT 0,
+	[desp_JsonReaccion]			NVARCHAR(MAX),
+	[desp_Reporte]					BIT NOT NULL DEFAULT 0,
+	[desp_JsonReporte]				NVARCHAR(MAX),
+	[desp_Imagen]					NVARCHAR(3000),
+	[desCa_Id]						INT NOT NULL,
+	[oriDe_Id]						INT NOT NULL,
+	[prod_Id]						INT,
+	[serv_Id]						INT,
+	[user_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbDesperdicio_desp_Id	PRIMARY KEY(desp_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicio_tbOrigeDesperdicio_oriDe_Id		FOREIGN KEY(oriDe_Id) REFERENCES Genl.tbOrigeDesperdicio(oriDe_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicio_tbDesperdicioCatedoria_desCa_Id	FOREIGN KEY(desCa_Id) REFERENCES Genl.tbDesperdicioCatedoria(desCa_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicio_tbServicio_serv_Id			FOREIGN KEY(serv_Id) REFERENCES Genl.tbServicio(serv_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicio_tbProducto_prod_Id			FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicio_tbUsuarios_user_Id			FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)  
+GO
+
+
+/*Sección #27*/
+CREATE TABLE [Genl].tbDesperdicioImagen(
+	[despIm_Id]					INT IDENTITY(1,1),
+	[despIm_Ruta]				NVARCHAR(300)	NOT NULL,
+	[desp_Id]					INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbDesperdicioImagen_despIm_Id	PRIMARY KEY(despIm_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicioImagen_tbDesperdicio_desp_Id		FOREIGN KEY(desp_Id) REFERENCES Genl.tbDesperdicio(desp_Id),
+)  
 GO
 
 /*Sección #27*/
-CREATE TABLE [UsPa].tbNecesita(
-[necs_Id]					INT IDENTITY(1,1),
-[necs_Nombre]				NVARCHAR(150) NOT NULL,
-[catNec_Id]					INT NOT NULL,
-[necs_Descripcion]			NVARCHAR(1000),
-[necs_Reporte]				INT,
-[necs_imegen]				NVARCHAR(MAX),
-[necs_Cantidad]				INT,
-[forPa_Id]					INT NOT NULL,
-CONSTRAINT PK_UsPa_tbNecesita_necs_Id						PRIMARY KEY(necs_Id),
-CONSTRAINT FK_UsPa_tbNecesita_tbCatgNecesita_usNor_Id		FOREIGN KEY(catNec_Id)	REFERENCES [UsPa].tbCatgNecesita(catNec_Id),
-CONSTRAINT FK_UsPa_tbNecesita_tbFormaPago_forPa_Id			FOREIGN KEY(forPa_Id)	REFERENCES [UsPa].tbFormaPago(forPa_Id)
-);
+CREATE TABLE [Genl].tbFormaAdquirir(
+	[forAd_Id]						INT IDENTITY(1,1),
+	[forAd_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbFormaAdquirir_forAd_Id	PRIMARY KEY(forAd_Id)
+)  
 GO
 
 /*Sección #28*/
-CREATE TABLE [Empre].tbCatEducacion(
-[catEd_Id]					INT IDENTITY(1,1),
-[catEd_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_Empre_tbCatEducacion_catEd_Id						PRIMARY KEY(catEd_Id)
-);
+CREATE TABLE [Genl].tbNeceitaCatedoria(
+	[nesCa_Id]						INT IDENTITY(1,1),
+	[nesCa_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbNeceitaCatedoria_nesCa_Id	PRIMARY KEY(nesCa_Id)
+)  
 GO
 
-/*Sección #29*/
-CREATE TABLE [Empre].tbNivelEducativo(
-[niEd_Id]					INT IDENTITY(1,1),
-[niEd_Nombre]				NVARCHAR(350) NOT NULL,
-[niEd_Numero]				INT NOT NULL,
-CONSTRAINT PK_Empre_tbNivelEducativo_niEd_Id						PRIMARY KEY(niEd_Id)
-);
+
+/*Sección y servicio #29*/
+CREATE TABLE [Genl].tbNecesita(
+	[nece_Id]						INT IDENTITY(1,1),
+	[nece_Nombre]					NVARCHAR(200)	NOT NULL,
+	[nece_Descripcion]				NVARCHAR(1000)	NOT NULL,
+	[nece_Reporte]					BIT NOT NULL DEFAULT 0,
+	[nece_Estado]					BIT NOT NULL DEFAULT 0,
+	[nece_JsonReporte]				NVARCHAR(MAX),
+	[nece_Imagen]					NVARCHAR(3000),
+	[nece_Cantidad]					INT,
+	[nece_RandoInicial]				DECIMAL(18,2)	NOT NULL DEFAULT 0,
+	[nece_RangoFinal]				DECIMAL(18,2)	NOT NULL DEFAULT 0,
+	[nesCa_Id]						INT,
+	[forAd_Id]						INT NOT NULL,
+	[user_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbNecesita_desp_Id	PRIMARY KEY(nece_Id),
+	CONSTRAINT  FK_Genl_tbNecesita_tbNeceitaCatedoria_nesCa_Id	FOREIGN KEY(nesCa_Id) REFERENCES Genl.tbNeceitaCatedoria(nesCa_Id),
+	CONSTRAINT  FK_Genl_tbNecesita_tbFormaAdquirir_forAd_Id		FOREIGN KEY(forAd_Id) REFERENCES Genl.tbFormaAdquirir(forAd_Id),
+	CONSTRAINT  FK_Genl_tbNecesita_tbUsuarios_user_Id			FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)  
 GO
 
+--Vacante---------
 
 /*Sección #30*/
-CREATE TABLE [Empre].tbEducacion(
-[educ_Id]					INT IDENTITY(1,1),
-[educ_Requerido]			NVARCHAR(1) NOT NULL,
-[catEd_Id]					INT NOT NULL,
-[niEd_Id]					INT NOT NULL,
-CONSTRAINT PK_Empre_tbCatEducacion_catEd_Id						PRIMARY KEY(educ_Id),
-CONSTRAINT CK_Empre_tbEducacion_educ_Requerido					CHECK(educ_Requerido IN ('1', '0')),
-CONSTRAINT PK_Empre_tbEducacion_catEd_Id_tbCatEducacion			FOREIGN KEY(catEd_Id)	REFERENCES [Empre].tbCatEducacion(catEd_Id),
-CONSTRAINT PK_Empre_tbEducacion_niEd_Id_tbNivelEducativo		FOREIGN KEY(niEd_Id)	REFERENCES [Empre].tbNivelEducativo(niEd_Id)
-);
+CREATE TABLE [Genl].tbAriaPuesto(
+	[ariaP_Id]						INT IDENTITY(1,1),
+	[ariaP_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbAriaPuesto_ariaP_Id	PRIMARY KEY(ariaP_Id)
+)  
 GO
 
-/*Sección #31*/
-CREATE TABLE [Empre].tbIdiomas(
-[idom_Id]					INT IDENTITY(1,1),
-[idom_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_Empre_tbIdiomas_idom_Id							PRIMARY KEY(idom_Id),
-);
+CREATE TABLE [Genl].tbPuesto(
+	[puest_Id]						INT IDENTITY(1,1),
+	[puest_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[ariaP_Id]						INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbPuesto_puest_Id	PRIMARY KEY(puest_Id),
+	CONSTRAINT  FK_Genl_tbPuesto_tbAriaPuesto_ariaP_Id	FOREIGN KEY(ariaP_Id) REFERENCES Genl.tbAriaPuesto(ariaP_Id),
+)  
 GO
 
 /*Sección #32*/
-CREATE TABLE [Empre].tbAriaPuesto(
-[arPu_Id]					INT IDENTITY(1,1),
-[arPu_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_Empre_tbAriaPuesto_arPu_Id						PRIMARY KEY(arPu_Id),
-);
+CREATE TABLE [Genl].tbTipoContrato(
+	[tipC_Id]						INT IDENTITY(1,1),
+	[tipC_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbTipoContrato_tipC_Id	PRIMARY KEY(tipC_Id)
+)  
 GO
 
 /*Sección #33*/
-CREATE TABLE [Empre].tbCargo(
-[carg_Id]					INT IDENTITY(1,1),
-[carg_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_Empre_tbCargo_carg_Id								PRIMARY KEY(carg_Id),
-);
+CREATE TABLE [Genl].tbGenero(
+	[gene_Id]				INT IDENTITY(1,1),
+	[gene_Descripcion]		NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbGenero_gene_Id	PRIMARY KEY(gene_Id),
+)  
+GO
+
+/*Sección #33*/
+CREATE TABLE [Genl].tbVacante(
+	[vac_Id]					INT IDENTITY(1,1),
+	[vac_DescripcionOferta]		NVARCHAR(2000)	NOT NULL,
+	[user_Id]					INT				NOT NULL, 
+	[ariaP_Id]					INT				NOT NULL,
+	[puest_Id]					INT				NOT NULL,	
+	[tipC_Id]					INT				NOT NULL,
+	[gene_Id]					INT				NOT NULL,
+	[vac_Edad]					DECIMAL(18,2)	NOT NULL,
+	[vac_SalarioMax]			DECIMAL(18,2),
+	[vac_SalarioMinio]			INT				NOT NULL,
+	[vac_Vahiculo]				BIT				NOT NULL DEFAULT 0,
+	CONSTRAINT  PK_Genl_tbVacante_catEd_Id	PRIMARY KEY(vac_Id),
+	CONSTRAINT  FK_Genl_tbVacante_tbUsuarios_user_Id			FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+	CONSTRAINT  FK_Genl_tbVacante_tbAriaPuesto_ariaP_Id			FOREIGN KEY(ariaP_Id) REFERENCES Genl.tbAriaPuesto(ariaP_Id),
+	CONSTRAINT  FK_Genl_tbVacante_tbPuesto_puest_Id			FOREIGN KEY(puest_Id) REFERENCES Genl.tbPuesto(puest_Id),
+	CONSTRAINT  FK_Genl_tbVacante_tbTipoContrato_tipC_Id			FOREIGN KEY(tipC_Id) REFERENCES Genl.tbTipoContrato(tipC_Id),
+	CONSTRAINT  FK_Genl_tbVacante_tbGenero_gene_Id			FOREIGN KEY(gene_Id) REFERENCES Genl.tbGenero(gene_Id),
+)  
+GO
+
+
+/*Sección #31*/
+CREATE TABLE [Genl].tbOtrosConocimientos(
+	[otrCo_Id]						INT IDENTITY(1,1),
+	[otrCo_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[vac_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbOtrosConocimientos_otrCo_Id	PRIMARY KEY(otrCo_Id),
+	CONSTRAINT  FK_Genl_tbOtrosConocimientos_tbVacante_vac_Id			FOREIGN KEY(vac_Id) REFERENCES Genl.tbVacante(vac_Id),
+)  
+GO
+
+/*Sección #31*/
+CREATE TABLE [Genl].tbCargo(
+	[carg_Id]						INT IDENTITY(1,1),
+	[carg_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[vac_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbCargo_carg_Id	PRIMARY KEY(carg_Id),
+	CONSTRAINT  FK_Genl_tbCargo_tbVacante_vac_Id			FOREIGN KEY(vac_Id) REFERENCES Genl.tbVacante(vac_Id),
+)  
+GO
+
+/*Sección #31*/
+CREATE TABLE [Genl].tbExperiencia(
+	[exp_Id]						INT IDENTITY(1,1),
+	[ariaP_Id]						INT	NOT NULL,
+	[exp_Opcional]					BIT NOT NULL DEFAULT 0,
+	[vac_Id]						INT	NOT NULL,
+	CONSTRAINT  PK_Genl_tbExperiencia_exp_Id	PRIMARY KEY(exp_Id),
+	CONSTRAINT  FK_Genl_tbExperiencia_tbAriaPuesto_ariaP_Id			FOREIGN KEY(ariaP_Id) REFERENCES Genl.tbAriaPuesto(ariaP_Id),
+	CONSTRAINT  FK_Genl_tbExperiencia_tbVacante_vac_Id			FOREIGN KEY(vac_Id) REFERENCES Genl.tbVacante(vac_Id),
+)  
 GO
 
 /*Sección #34*/
-CREATE TABLE [Empre].tbTipoContrato(
-[tipCon_Id]					INT IDENTITY(1,1),
-[tipCon_Nombre]				NVARCHAR(150) NOT NULL,
-CONSTRAINT PK_Empre_tbTipoContrato_tipCon_Id					PRIMARY KEY(tipCon_Id),
-);
-GO
-
-/*Sección #35*/
-CREATE TABLE [Empre].tbMoneda(
-[mone_Id]					INT IDENTITY(1,1),
-[mone_Descripcion]			NVARCHAR(150) NOT NULL,
-[mone_Simbolo]				NVARCHAR(10),
-CONSTRAINT PK_Empre_tbMoneda_tipCon_Id					PRIMARY KEY(mone_Id),
-);
-GO
-
-/*Sección #36*/
-CREATE TABLE [Empre].tbExperiencia(
-[expr_Id]					INT IDENTITY(1,1),
-[expr_OpcionRequerida]		NVARCHAR(1) NOT NULL,
-[carg_Id]					INT NOT NULL,
-CONSTRAINT PK_Empre_tbExperiencia_expr_Id						PRIMARY KEY(expr_Id),
-CONSTRAINT CK_Empre_tbExperiencia_expr_OpcionRequerida			CHECK(expr_OpcionRequerida IN ('1', '0')),
-CONSTRAINT FK_Empre_tbExperiencia_tbCargo_carg_Id				FOREIGN KEY(carg_Id) REFERENCES [Empre].tbCargo(carg_Id),
-);
-GO
-
-/*Sección #37*/
-CREATE TABLE [Empre].tbVacante(
-[vact_Id]					INT IDENTITY(1,1),
-[arPu_Id]					INT NOT NULL,
-[enpr_Id]					INT NOT NULL,
-[carg_Id]					INT NOT NULL,
-[vact_PuestoVacante]		NVARCHAR(350),
-[tipCon_Id]					INT NOT NULL,
-[vact_Genero]				NVARCHAR(1),
-[vact_Edad]					INT NOT NULL,
-[vact_SalarioMax]			DECIMAL(18,2) NOT NULL,
-[vact_SalarioMim]			DECIMAL(18,2) NOT NULL,
-[mone_Id]					INT NOT NULL,
-[vact_Vehiculo]				NVARCHAR(1) NOT NULL,
-[vact_DescripcionDeOferta]	NVARCHAR(MAX) NOT NULL,
-[vact_OtrosConocimentos]	NVARCHAR(MAX),
-[expr_Id]					INT NOT NULL,
-[educ_Id]					INT NOT NULL,
-[idom_Id]					INT NOT NULL,
-CONSTRAINT PK_Empre_tbVacante_vact_Id						PRIMARY KEY(vact_Id),
-CONSTRAINT CK_Empre_tbVacante_vact_Genero					CHECK(vact_Genero IN ('M', 'F')),
-CONSTRAINT FK_Empre_tbVacante_tbAriaPuesto_arPu_Id			FOREIGN KEY(arPu_Id) REFERENCES [Empre].tbAriaPuesto(arPu_Id),
-CONSTRAINT FK_Empre_tbVacante_User_tbEnterprise_enpr_Id		FOREIGN KEY(enpr_Id) REFERENCES [User].tbEnterprise(enpr_Id),
-CONSTRAINT FK_Empre_tbVacante_tbCargo_carg_Id				FOREIGN KEY(carg_Id) REFERENCES [Empre].tbCargo(carg_Id),
-CONSTRAINT FK_Empre_tbVacante_tbTipoContrato_tipCon_Id		FOREIGN KEY(tipCon_Id) REFERENCES [Empre].tbTipoContrato(tipCon_Id),
-CONSTRAINT FK_Empre_tbVacante_tbExperiencia_expr_Id			FOREIGN KEY(expr_Id) REFERENCES [Empre].tbExperiencia(expr_Id),
-CONSTRAINT FK_Empre_tbVacante_tbEducacion_educ_Id			FOREIGN KEY(educ_Id) REFERENCES [Empre].tbEducacion(educ_Id),
-CONSTRAINT FK_Empre_tbVacante_tbIdiomas_idom_Id				FOREIGN KEY(idom_Id) REFERENCES [Empre].tbIdiomas(idom_Id),
-);
-GO
-
-/*Sección #38*/
-CREATE TABLE [Genl].tbConecNecesit(
-[coNe_Id]					INT IDENTITY(1,1),
-[use_Id]					INT NOT NULL,
-[vact_Id]					INT,
-[necs_Id]					INT,
-CONSTRAINT PK_Genl_tbConecNecesit_coNe_Id					PRIMARY KEY(coNe_Id),
-CONSTRAINT FK_Genl_tbConecNecesit_User_tbUser_use_Id		FOREIGN KEY(use_Id) REFERENCES [User].tbUser(use_Id),
-CONSTRAINT FK_Genl_tbConecNecesit_Empre_tbVacante_vact_Id	FOREIGN KEY(vact_Id) REFERENCES [Empre].tbVacante(vact_Id),
-CONSTRAINT FK_Genl_tbConecNecesit_tbNecesita_necs_Id		FOREIGN KEY(necs_Id) REFERENCES [UsPa].tbNecesita(necs_Id)
-);
+CREATE TABLE [Genl].tbNivelEducativo(
+	[nivEd_Id]						INT IDENTITY(1,1),
+	[nivEd_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbNivelEducativo_nivEd_Id	PRIMARY KEY(nivEd_Id)
+)  
 GO
 
 
-/*Sección #39*/
-CREATE TABLE [Ongd].tbOngEvenCatg(
-[onEvC_Id]					INT IDENTITY(1,1),
-[onEvC_Nombre]				NVARCHAR(250) NOT NULL,
-CONSTRAINT PK_Ongd_tbOngEvenCatg_onEvC_Id					PRIMARY KEY(onEvC_Id)
-);
+/*Sección #33*/
+CREATE TABLE [Genl].tbTitulo(
+	[titu_Id]						INT IDENTITY(1,1),
+	[titu_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[ariaP_Id]						INT, 
+	[nivEd_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbTitulo_titu_Id	PRIMARY KEY(titu_Id),
+	CONSTRAINT  FK_Genl_tbTitulo_tbAriaPuesto_nesCa_Id	FOREIGN KEY(ariaP_Id) REFERENCES Genl.tbAriaPuesto(ariaP_Id),
+	CONSTRAINT  FK_Genl_tbTitulo_tbNivelEducativo_nivEd_Id	FOREIGN KEY(nivEd_Id) REFERENCES Genl.tbNivelEducativo(nivEd_Id),
+)  
 GO
 
-/*Sección #40*/
-CREATE TABLE [Ongd].tbOngEven(
-[onEv_Id]					INT IDENTITY(1,1),
-[onEv_Nombre]				NVARCHAR(100) NOT NULL,
-[onEv_Descripcion]			NVARCHAR(1000) NOT NULL,
-[onEv_Reporte]				INT,
-[onEv_Imegen]				NVARCHAR(MAX) NOT NULL,
-[loc_Id]					INT NOT NULL,
-[onEv_Fecha]				DATE,
-[onEv_RecionBuena]			INT,
-[onEv_RecionMala]			INT,
-[onEvC_Id]					INT NOT NULL,
-[onEv_HoraInicio]			TIME,
-[onEv_HoraFin]				TIME,
-[onEv_Evento]				BIT,
-[use_Id]					INT NOT NULL,
-CONSTRAINT PK_Ongd_tbOngEven_onEvC_Id							PRIMARY KEY(onEvC_Id),
-CONSTRAINT FK_Ongd_tbOngEven_User_tbUser_use_Id					FOREIGN KEY(use_Id) REFERENCES [User].tbONGD(use_Id),
-CONSTRAINT FK_Ongd_tbOngEven_Genl_tbLocation_loc_Id				FOREIGN KEY(loc_Id) REFERENCES [Genl].tbLocation(loc_Id),
-CONSTRAINT FK_Genl_tbConecNecesit_Ongd_tbOngEvenCatg_onEvC_Id	FOREIGN KEY(onEvC_Id) REFERENCES [Ongd].tbOngEvenCatg(onEvC_Id)
-);
+/*Sección #34*/
+CREATE TABLE [Genl].tbProceso(
+	[proc_Id]						INT IDENTITY(1,1),
+	[proc_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbProceso_proc	PRIMARY KEY(proc_Id),
+)  
 GO
 
-/*Sección #41*/
-CREATE TABLE [Ongd].tbLisImagenesOng(
-[imgOng_Id]					INT IDENTITY(1,1),
-[onEv_Id]					INT NOT NULL,
-[imgOng_Ruta]				NVARCHAR(MAX) NOT NULL,
-CONSTRAINT PK_Ongd_tbLisImagenesOng_imgOng_Id					PRIMARY KEY(imgOng_Id),
-CONSTRAINT FK_Ongd_tbLisImagenesOng_tbOngEven_onEv_Id			FOREIGN KEY(onEv_Id) REFERENCES [Genl].tbOngEven(onEv_Id)
-);
+
+/*Sección #34*/
+CREATE TABLE [Genl].tbTituloProc(
+	[tiProc_Id]						INT IDENTITY(1,1),
+	[titu_Id]						INT	NOT NULL,
+	[proc_Id]						INT	NOT NULL,
+	CONSTRAINT  PK_Genl_tbTituloProc_tiProc_Id	PRIMARY KEY(tiProc_Id),
+	CONSTRAINT  FK_Genl_tbTituloProc_tbTitulo_titu_Id	FOREIGN KEY(titu_Id) REFERENCES Genl.tbTitulo(titu_Id),
+	CONSTRAINT  FK_Genl_tbTituloProc_tbProceso_proc_Id	FOREIGN KEY(proc_Id) REFERENCES Genl.tbProceso(proc_Id),
+)  
 GO
+
+/*Sección #33*/
+CREATE TABLE [Genl].tbEducacion(
+	[ed_Id]				INT IDENTITY(1,1),
+	[ed_Requerido]		BIT NOT NULL DEFAULT 0,
+	[titu_Id]			INT				NOT NULL, 
+	[vac_Id]			INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbEducacion_catEd_Id	PRIMARY KEY(Ed_Id),
+	CONSTRAINT  FK_Genl_tbEducacion_tbTitulo_titu_Id	FOREIGN KEY(titu_Id) REFERENCES Genl.tbTitulo(titu_Id),
+	CONSTRAINT  FK_Genl_tbEducacion_tbVacante_vac_Id		FOREIGN KEY(vac_Id) REFERENCES Genl.tbVacante(vac_Id),
+)  
+GO
+
+/*Sección #34*/
+CREATE TABLE [Genl].tbIdioma(
+	[idio_Id]						INT IDENTITY(1,1),
+	[idio_Descripcion]				NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbIdioma_idio_Id	PRIMARY KEY(idio_Id),
+)  
+GO
+
+/*Sección #34*/
+CREATE TABLE [Genl].tbIdiomaItem(
+	[idItm_Id]			INT IDENTITY(1,1),
+	[idio_Id]			INT	NOT NULL,
+	[vac_Id]			INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbIdiomaItem_idItm_Id	PRIMARY KEY(idItm_Id),
+	CONSTRAINT  FK_Genl_tbIdiomaItem_tbVacante_vac_Id			FOREIGN KEY(vac_Id) REFERENCES Genl.tbVacante(vac_Id),
+)  
+GO
+
+/*Sección #34*/
+CREATE TABLE [Genl].tbLogroEventoCategoria(
+	[logCa_Id]			INT IDENTITY(1,1),
+	[logCa_Descripcion]	NVARCHAR(300)	NOT NULL,
+	CONSTRAINT  PK_Genl_tbLogroEventoCategoria_logCa_Id	PRIMARY KEY(logCa_Id),
+)  
+GO
+
+
+/*Sección #34*/
+CREATE TABLE [Genl].tbOngEvento(
+	[ongEv_Id]				INT IDENTITY(1,1),
+	[ongEv_Nombre]			NVARCHAR(300)	NOT NULL,
+	[ongEv_Descripcion]		NVARCHAR(1000)	NOT NULL,
+	[ongEv_Ruta]			NVARCHAR(3000),
+	[ubc_Id]				INT		NOT NULL,
+	[ongEv_Fecha]			DATE	NOT NULL,
+	[ongEv_Reporte]			BIT NOT NULL DEFAULT 0,
+	[ongEv_JsonReaccion]	NVARCHAR(MAX),
+	[ongEv_JsonReporte]		NVARCHAR(MAX),
+	[ongEv_HoraInicio]		INT	NOT NULL,
+	[ongEv_HoraFin]			INT	NOT NULL DEFAULT 0,
+	[ongEv_Logro]			BIT	NOT NULL DEFAULT 0,
+	[logCa_Id]				INT NOT NULL,
+	CONSTRAINT  PK_Genl_tbOngEvento_ongEv_Id	PRIMARY KEY(ongEv_Id),
+	CONSTRAINT  FK_Genl_tbOngEvento_tbUbicacion_ubc_Id	FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id),
+	CONSTRAINT  FK_Genl_tbOngEvento_tbLogroEventoCategoria_logCa_Id	FOREIGN KEY(logCa_Id) REFERENCES Genl.tbLogroEventoCategoria(logCa_Id),
+)  
+GO
+
+/*Sección #34*/
+CREATE TABLE [Genl].tbOngEventoImagen(
+	[ongIm_Id]			INT IDENTITY(1,1),
+	[ongIm_Ruta]		NVARCHAR(3000)	NOT NULL,
+	[ongEv_Id]			INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbOngEventoImagen_logCa_Id	PRIMARY KEY(ongIm_Id),
+	CONSTRAINT  FK_Genl_tbOngEventoImagen_tbOngEvento_ongEv_Id	FOREIGN KEY(ongEv_Id) REFERENCES Genl.tbOngEvento(ongEv_Id),
+)  
+GO
+
+
