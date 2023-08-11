@@ -151,13 +151,15 @@ GO
 /*Sección #12*/
 CREATE TABLE [Genl].tbUsuarios(
 	[user_Id]						INT IDENTITY(1,1),
-	[ipInf_Id]					INT				NOT NULL,
+	[ipInf_Id]						INT				NOT NULL,
 	[user_Descripcion]				NVARCHAR(300)	NOT NULL,
 	[user_TelefonoPrincipal]		NVARCHAR(50)	NOT NULL,
 	[user_TelefonoSecundario]		NVARCHAR(50),
 	[ubc_Id]						INT				NOT NULL,
 	[user_RTNPersona]				NVARCHAR(100),
 	[user_RTNInstitucion]			NVARCHAR(100),
+	[user_Password]					NVARCHAR(1000),
+	[user_PasswordSal]				NVARCHAR(1000),
 	[user_FechaFundacion]			DATE,
 	[user_Correo]					NVARCHAR(100),
 	[user_Facebook]					NVARCHAR(100),
