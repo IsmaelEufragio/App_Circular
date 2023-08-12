@@ -400,3 +400,8 @@ FodyWeavers.xsd
 # Ruta
 /AppCircular/AppCircular/bin
 /AppCircular/AppCircular/obj
+/AppCircular/.vs/AppCircular/FileContentIndex
+/AppCircular/AppCircular.BusinessLogic/obj/Debug/net6.0
+/AppCircular/AppCircular.Common/obj/Debug/net6.0
+/AppCircular/AppCircular.DataAccess/obj/Debug/net6.0
+/AppCircular/AppCircular/obj/Debug/net6.0
