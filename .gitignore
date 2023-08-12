@@ -396,3 +396,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Ruta
+/AppCircular/AppCircular/bin
+/AppCircular/AppCircular/obj
