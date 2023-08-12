@@ -405,3 +405,7 @@ FodyWeavers.xsd
 /AppCircular/AppCircular.Common/obj/Debug/net6.0
 /AppCircular/AppCircular.DataAccess/obj/Debug/net6.0
 /AppCircular/AppCircular/obj/Debug/net6.0
+
+*.dll 
+*.pdb
+*.cache
