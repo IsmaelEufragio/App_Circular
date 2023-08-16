@@ -24,7 +24,7 @@ namespace AppCircular.Controllers
         }
         #region Tipo de Usuario
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [Route("TipoUsuarioLis")]
         public async Task<IActionResult> ListaTipoUsuario()
         {
@@ -33,6 +33,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("TipoUsuarioInsert")]
         public async Task<IActionResult> CrearTipoUsuario(TipoUsuarioModel model)
         {
@@ -45,6 +46,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("TipoUsuarioUpdate/{Id}")]
         public async Task<IActionResult> ActulizarTipoUsuario(int Id, TipoUsuarioModel model)
         {
@@ -60,7 +62,7 @@ namespace AppCircular.Controllers
         #region Informacion de usuario Unica
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [Route("InfoUsuarioLis")]
         public async Task<IActionResult> ListaInfoUsuario()
         {
@@ -69,6 +71,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("InfoUsuarioInsert")]
         public async Task<IActionResult> CrearInfoUsuario(InfoUnicaUsuarioViewModel model)
         {
@@ -81,6 +84,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("InfoUsuarioUpdate/{Id}")]
         public async Task<IActionResult> ActulizarInfoUsuario(int Id, InfoUnicaUsuarioViewModel model)
         {
@@ -97,37 +101,55 @@ namespace AppCircular.Controllers
         #region Login 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             var resul = new ServiceResult();
             if (model != null)
             {
                 if (model.Usuario == "Hola" && model.Passsword == "1234")
                 {
-                    var jwt = _iConfiguration.GetSection("Jwt").Get<JwtModel>();
-                    var claims = new[]
-                    {
-                        new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("usuario", model.Usuario)
-                    };
-
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
-                    var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                    var token = new JwtSecurityToken(
-                            jwt.Issuer,
-                            jwt.Audience,
-                            claims,
-                            expires: DateTime.Now.AddMinutes(15),
-                            signingCredentials: singIn);
-                    var resp = new JwtSecurityTokenHandler().WriteToken(token);
-                    resul.Data = resp;
-                    return Ok(resul);
+                    var resulT = await _usuarioServices.Token(5);
+                    return Ok(resulT);
                 }
                 resul.Message = "No chavalo la contraseña no perrin";
                 return Ok(resul);
+            }
+            resul.Message = "Nos se ingreso nada";
+            return Ok(resul);
+
+        }
+
+        [HttpPost]
+        [Route("Verificacion")]
+        public async Task<IActionResult> Verificacion(LoginModel model)
+        {
+            var resul = new ServiceResult();
+            if (model != null)
+            {
+                if (model.Usuario == "josueeufragio93@gmail.com" && model.Passsword == "1234")
+                {
+                    var resulT = await _usuarioServices.Varificar(model);
+                    return Ok(resulT);
+                }
+                resul.Message = "No chavalo la contraseña no perrin";
+                return Ok(resul);
+            }
+            resul.Message = "Nos se ingreso nada";
+            return Ok(resul);
+
+        }
+
+        [HttpPost]
+        [Route("ValidacionToken")]
+        public async Task<IActionResult> ValiToken(string toke)
+        {
+            var resul = new ServiceResult();
+            string valiEspc = toke.Replace(" ", "");
+            if (valiEspc != "")
+            {
+                var resulT =  _usuarioServices.TokeValido(toke);
+                
+                return Ok(resulT);
             }
             resul.Message = "Nos se ingreso nada";
             return Ok(resul);

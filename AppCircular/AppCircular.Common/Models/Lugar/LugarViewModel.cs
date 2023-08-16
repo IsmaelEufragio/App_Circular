@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AppCircular.Common.Models.Lugar
+{
+    public class LugarViewModel
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public int CatLug_Id { get; set; }
+        public string CategoriaLugar { get; set; }
+        public int Muni_Id { get; set; }
+        public string Municipio { get; set; }
+
+    }
+}

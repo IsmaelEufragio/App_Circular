@@ -3,6 +3,7 @@ using AppCircular.BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using AppCircular.Common.Models.Municipio;
 using AppCircular.Common.Models.Configuracion;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppCircular.Controllers
 {
@@ -16,7 +17,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [Route("LisMunicipio")]
         public async Task<IActionResult> ListaMunicipio()
         {
@@ -26,6 +27,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("InsertMunicipio")]
         public async Task<IActionResult> CrearMunicipio(MunicipioModel model)
         {
@@ -38,6 +40,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateMunicipio/{Id}")]
         public async Task<IActionResult> ActulizarMunicipio(int Id, MunicipioModel model)
         {

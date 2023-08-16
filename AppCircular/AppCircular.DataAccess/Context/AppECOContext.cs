@@ -24,6 +24,7 @@ namespace AppCircular.DataAccess.Context
         public virtual DbSet<tbCargo> tbCargo { get; set; }
         public virtual DbSet<tbCategoriaLugar> tbCategoriaLugar { get; set; }
         public virtual DbSet<tbCategoriaSubdivicion> tbCategoriaSubdivicion { get; set; }
+        public virtual DbSet<tbConfiguracion> tbConfiguracion { get; set; }
         public virtual DbSet<tbContribuyente> tbContribuyente { get; set; }
         public virtual DbSet<tbDepartamento> tbDepartamento { get; set; }
         public virtual DbSet<tbDesperdicio> tbDesperdicio { get; set; }
@@ -139,6 +140,27 @@ namespace AppCircular.DataAccess.Context
                 entity.Property(e => e.sub_Nombre)
                     .IsRequired()
                     .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<tbConfiguracion>(entity =>
+            {
+                entity.HasKey(e => e.conf_Id)
+                    .HasName("PK_Genl_tbConfiguracion_conf_Id");
+
+                entity.ToTable("tbConfiguracion", "Genl");
+
+                entity.HasIndex(e => e.conf_Nombre, "UQ_Genl_tbConfiguracion_conf_Nombre")
+                    .IsUnique();
+
+                entity.Property(e => e.conf_Descripcion).HasMaxLength(2000);
+
+                entity.Property(e => e.conf_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.conf_Valor)
+                    .IsRequired()
+                    .HasMaxLength(2000);
             });
 
             modelBuilder.Entity<tbContribuyente>(entity =>

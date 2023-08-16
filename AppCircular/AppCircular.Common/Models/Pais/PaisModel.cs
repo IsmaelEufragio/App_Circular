@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppCircular.Common.Models.Departamento;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -14,12 +14,12 @@ namespace AppCircular.DataAccess.Repositories
 {
     public class MunicipioRepository : IMunicipioRepository<tbMunicipio>
     {
-        public async Task<ServiceResult> InsertAsync(tbMunicipio item)
+        public async Task<ResultadoModel<DeparmentoMunicipioViewModel>> InsertAsync(tbMunicipio item)
         {
             try
             {
                 using var db = new AppCircularContext();
-                ServiceResult result = new ServiceResult();
+                var result = new ResultadoModel<DeparmentoMunicipioViewModel>();
                 var paisW = db.tbMunicipio.Any(a => (a.muni_Nombre.ToLower() == item.muni_Nombre.ToLower() && a.dept_Id== item.dept_Id) || (a.muni_NuIdentidad == item.muni_NuIdentidad && a.dept_Id == item.dept_Id));
                 if (!paisW)
                 {
@@ -42,46 +42,59 @@ namespace AppCircular.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Municipio, Error: {e.Message}", Success = true, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<DeparmentoMunicipioViewModel>() { Message = $"Lugar: Repositorio de Municipio, Error: {e.Message}", Success = true, Type = ServiceResultType.Error };
                 return error;
             }
         }
 
-        public async Task<ServiceResult> ListAsync()
+        public async Task<ResultadoModel<DeparmentoMunicipioViewModel>> ListAsync()
         {
             try
             {
                 using var db = new AppCircularContext();
-                ServiceResult relt = new ServiceResult();
+                ResultadoModel<DeparmentoMunicipioViewModel> relt = new ResultadoModel<DeparmentoMunicipioViewModel>();
                 //var depart = await db.tbMunicipio.Include(a => a.dept).Include(e => e.psid ).ToListAsync();
-                var depart = await db.tbMunicipio.Include(a => a.dept.pais).ToListAsync();
-                relt.Message = depart.Count > 0 ? "Operacion Exitosa, Listada De Departamento" : "No se encontro Ningun Departamento";
-                relt.Type = depart.Count > 0 ? ServiceResultType.Success : ServiceResultType.NoContent;
-                relt.Data = depart.Select(a => new MunicipioViewModel
+                var depart = await db.tbDepartamento.Include(a => a.tbMunicipio).ToListAsync();
+                if (depart != null)
                 {
-                    muni_Id = a.muni_Id,
-                    Nombre = a.muni_Nombre,
-                    NuIdentidad = a.muni_NuIdentidad,
-                    dept_Id = a.dept_Id,
-                    Departamento = a.dept != null ? a.dept.dept_Nombre : string.Empty,
-                    Pais_Id = a.dept != null ? a.dept.pais.pais_Id : 0,
-                    Pais = a.dept != null ? a.dept.pais.pais_Nombre: string.Empty,
-                }).ToList();
+                    var map = depart.Select(a => new DeparmentoMunicipioViewModel
+                    {
+                        Id = a.dept_Id,
+                        Departamento = a.dept_Nombre,
+                        NuIdentidad = a.dept_NuIdentidad,
+                        Municipio = a.tbMunicipio != null? a.tbMunicipio.Select(e => new MunicipioViewModel
+                        {
+                            Id = e.muni_Id,
+                            Nombre = e.muni_Nombre,
+                            NuIdentidad = e.muni_NuIdentidad,
+                            ValidaciosTelefono = e.muni_ValidaciosTelefono,
+                            ValidaciosTelefonoFijo = e.muni_ValidaciosTelefonoFijo
+                        }).ToList(): new List<MunicipioViewModel>(),
+                    }).ToList();
+                    relt.Success = true;
+                    relt.Message = "Operacion realizada con exito";
+                    relt.Type = ServiceResultType.Success;
+                    relt.Data = map;
+                    return relt;
+                }
+                relt.Success = true;
+                relt.Message = "No se encontro ningun resultado";
+                relt.Type = ServiceResultType.NoContent;
                 return relt;
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Departamento, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<DeparmentoMunicipioViewModel> { Message = $"Lugar: Repositorio de Departamento, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }
 
-        public async Task<ServiceResult> UpdateAsync(int Id, MunicipioModel item)
+        public async Task<ResultadoModel<DeparmentoMunicipioViewModel>> UpdateAsync(int Id, MunicipioModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
-                ServiceResult relt = new ServiceResult();
+                var relt = new ResultadoModel<DeparmentoMunicipioViewModel>();
                 var dep = await db.tbMunicipio.SingleOrDefaultAsync(a => a.muni_Id == Id);
                 if (Id > 0 && dep != null)
                 {
@@ -110,7 +123,7 @@ namespace AppCircular.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<DeparmentoMunicipioViewModel>{ Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }

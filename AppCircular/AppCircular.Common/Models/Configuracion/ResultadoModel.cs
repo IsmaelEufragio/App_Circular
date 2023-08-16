@@ -12,6 +12,7 @@ namespace AppCircular.Common.Models.Configuracion
         public bool Success { get; set; }
         public List<T> Data { get; set; }
         public ServiceResultType Type { get; set; }
+        public T Value { get; set; }
     }
 
 }

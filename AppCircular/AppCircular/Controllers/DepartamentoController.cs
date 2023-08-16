@@ -2,6 +2,7 @@
 using AppCircular.BusinessLogic.Services;
 using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Departamento;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppCircular.Controllers
@@ -17,7 +18,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [Route("LisDepartamento")]
         public async Task<IActionResult> ListaDepartamento()
         {
@@ -27,6 +28,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("InsertDepartamento")]
         public async Task<IActionResult> CrearDepartamento(DepartamentoModel model)
         {
@@ -39,6 +41,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateDepartamento/{Id}")]
         public async Task<IActionResult> ActulizarDepartamento(int Id, DepartamentoModel model)
         {

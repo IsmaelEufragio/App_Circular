@@ -3,6 +3,7 @@ using AppCircular.Common.Models.CategoriaLugar;
 using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Departamento;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppCircular.Controllers
 {
@@ -17,7 +18,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [Route("LisCategoriaLugar")]
         public async Task<IActionResult> ListaCategoriaLugar()
         {
@@ -27,6 +28,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("InsertCategoriaLugar")]
         public async Task<IActionResult> CrearCategoriaLugar(CategoriaLugarModel model)
         {
@@ -39,6 +41,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateCategoriaLugar/{Id}")]
         public async Task<IActionResult> ActulizarCategoriaLugar(int Id, CategoriaLugarModel model)
         {

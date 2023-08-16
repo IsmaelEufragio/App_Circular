@@ -1,6 +1,7 @@
 ﻿using AppCircular.Common.Models;
 using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Departamento;
+using AppCircular.Common.Models.Municipio;
 using AppCircular.DataAccess.Repositories.Interface;
 using AppCircular.Entities.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +16,12 @@ namespace AppCircular.DataAccess.Repositories
     public class DepartamentoRepository : IDepartamentoRepository<tbDepartamento>
     {
         private static string nombre = "Departamento";
-        public async Task<ServiceResult> InsertAsync(tbDepartamento item)
+        public async Task<ResultadoModel<PaisDepartamentoViewModel>> InsertAsync(tbDepartamento item)
         {
             try
             {
                 using var db = new AppCircularContext();
-                ServiceResult result = new ServiceResult();
+                var result = new ResultadoModel<PaisDepartamentoViewModel>();
                 var depW = db.tbDepartamento.Any(a => (a.dept_Nombre.ToLower() == item.dept_Nombre.ToLower() && a.pais_Id == item.pais_Id) || (a.dept_NuIdentidad == item.dept_NuIdentidad && a.pais_Id == item.pais_Id));
                 if (!depW)
                 {
@@ -30,57 +31,72 @@ namespace AppCircular.DataAccess.Repositories
                     {
                         result.Success = false;
                         result.Type = ServiceResultType.Error;
+                        result.Data = new List<PaisDepartamentoViewModel>();
                         result.Message = $"No se pudo guardar el {nombre} a la base";
                     }
                     result.Type = ServiceResultType.NoContent;
                     result.Message = "Creado Exitosamente";
+                    result.Data = new List<PaisDepartamentoViewModel>();
                     return result;
                 }
                 result.Success = false;
                 result.Type = ServiceResultType.Error;
                 result.Message = $"El nombre de ese {nombre} ya Existe, O la Identidad Del {nombre} Ya existe";
+                result.Data = new List<PaisDepartamentoViewModel>();
                 return result;
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = true, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<PaisDepartamentoViewModel>() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = true, Type = ServiceResultType.Error };
                 return error;
             }
         }
 
-        public async Task<ServiceResult> ListAsync()
+        public async Task<ResultadoModel<PaisDepartamentoViewModel>> ListAsync()
         {
             try
             {
                 using var db = new AppCircularContext();
-                ServiceResult relt = new ServiceResult();
-                var depart = await db.tbDepartamento.Include(a=> a.pais).ToListAsync();
-
-                relt.Message = depart.Count > 0 ? $"Operacion Exitosa, Listada De {nombre}" : $"No se encontro Ningun {nombre}";
-                relt.Type = depart.Count > 0 ? ServiceResultType.Success : ServiceResultType.NoContent;
-                relt.Data = depart.Select(a => new DepartamentoViewModel
+                var relt = new ResultadoModel<PaisDepartamentoViewModel>();
+                var depart = await db.tbPais.Include(a=> a.tbDepartamento).ToListAsync();
+                if (depart != null)
                 {
-                    Id = a.dept_Id,
-                    Nombre = a.dept_Nombre,
-                    NuIdentidad = a.dept_NuIdentidad,
-                    pais_Id = a.pais_Id,
-                    Pais = a.pais != null ? a.pais.pais_Nombre : string.Empty,
-                }).ToList();
+                    var paisDepart = depart.Select(a => new PaisDepartamentoViewModel
+                    {
+                        Id = a.pais_Id,
+                        Pais = a.pais_Nombre,
+                        Abrebiatura = a.pais_Abrebiatura,
+                        Departamento = a.tbDepartamento != null ? a.tbDepartamento.Select(e => new DepartamentoViewModel
+                        {
+                            Id = e.dept_Id,
+                            Nombre = e.dept_Nombre,
+                            NuIdentidad = e.dept_NuIdentidad
+                        }).ToList() : new List<DepartamentoViewModel>()
+                    }).ToList();
+                    relt.Success = true;
+                    relt.Message = "Operacion Exitosa";
+                    relt.Type = ServiceResultType.Success;
+                    relt.Data = paisDepart;
+                    return relt;
+                }
+                relt.Success = false;
+                relt.Message = "No existe ningun registro";
+                relt.Type = ServiceResultType.NoContent;
                 return relt;
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<PaisDepartamentoViewModel>() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }
 
-        public async Task<ServiceResult> UpdateAsync(int Id, DepartamentoModel item)
+        public async Task<ResultadoModel<PaisDepartamentoViewModel>> UpdateAsync(int Id, DepartamentoModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
-                ServiceResult relt = new ServiceResult();
+                var relt = new ResultadoModel<PaisDepartamentoViewModel>();
                 var dep = await db.tbDepartamento.SingleOrDefaultAsync(a => a.dept_Id == Id);
                 if (Id > 0 && dep != null)
                 {
@@ -107,7 +123,7 @@ namespace AppCircular.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<PaisDepartamentoViewModel>() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }

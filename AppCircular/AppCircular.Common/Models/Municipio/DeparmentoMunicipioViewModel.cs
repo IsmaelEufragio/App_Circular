@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace AppCircular.Common.Models.Municipio
 {
-    public class MunicipioViewModel
+    public class DeparmentoMunicipioViewModel
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
+        public string Departamento { get; set; }
         public int NuIdentidad { get; set; }
-        public string ValidaciosTelefono { get; set; }
-        public string ValidaciosTelefonoFijo { get; set; }
+        public List<MunicipioViewModel> Municipio { get; set; }
     }
 }

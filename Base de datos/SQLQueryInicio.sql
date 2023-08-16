@@ -624,4 +624,14 @@ CREATE TABLE [Genl].tbOngEventoImagen(
 )  
 GO
 
+/*Sección #35*/
+CREATE TABLE [Genl].tbConfiguracion(
+	[conf_Id]			INT IDENTITY(1,1),
+	[conf_Nombre]		NVARCHAR(500)	NOT NULL,
+	[conf_Valor]		NVARCHAR(500)	NOT NULL,
+	[conf_Descripcion]	NVARCHAR(500)	NOT NULL
+	CONSTRAINT  PK_Genl_tbConfiguracion_conf_Id	PRIMARY KEY(conf_Id),
+	CONSTRAINT [UQ_Genl_tbConfiguracion_conf_Nombre] UNIQUE(conf_Nombre)
+)  
+GO
 

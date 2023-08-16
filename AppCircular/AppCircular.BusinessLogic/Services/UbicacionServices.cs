@@ -3,6 +3,7 @@ using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Departamento;
 using AppCircular.Common.Models.Municipio;
 using AppCircular.Common.Models.Pais;
+using AppCircular.Common.Models.Usuario;
 using AppCircular.DataAccess.Repositories;
 using AppCircular.Entities.Entities;
 using System;
@@ -76,8 +77,10 @@ namespace AppCircular.BusinessLogic.Services
         {
             try
             {
-                var result = new ServiceResult();
-                return await _departamentoRepository.ListAsync();
+                var repositorio = await _departamentoRepository.ListAsync();
+                var resul = new Test<PaisDepartamentoViewModel>().mape(repositorio);
+                return resul;
+
             }
             catch (Exception e)
             {
@@ -88,17 +91,20 @@ namespace AppCircular.BusinessLogic.Services
 
         public async Task<ServiceResult> CrearDepartamento(DepartamentoModel model)
         {
-            _ = new ServiceResult();
             var tbdepartamento = new tbDepartamento();
             tbdepartamento.dept_Nombre = model.Nombre;
             tbdepartamento.dept_NuIdentidad = model.NuIdentidad;
             tbdepartamento.pais_Id = model.pais_Id;
-            return await _departamentoRepository.InsertAsync(tbdepartamento);
+            var repositorio = await _departamentoRepository.InsertAsync(tbdepartamento);
+            var resul = new Test<PaisDepartamentoViewModel>().mape(repositorio);
+            return resul;
         }
 
         public async Task<ServiceResult> ActualizarDepartamento(int id, DepartamentoModel model)
         {
-            return await _departamentoRepository.UpdateAsync(id, model);
+            var repositorio = await _departamentoRepository.UpdateAsync(id, model);
+            var resul = new Test<PaisDepartamentoViewModel>().mape(repositorio);
+            return resul;
         }
 
         #endregion
@@ -109,8 +115,9 @@ namespace AppCircular.BusinessLogic.Services
         {
             try
             {
-                var result = new ServiceResult();
-                return await _municipioRepository.ListAsync();
+                var repositorio = await _municipioRepository.ListAsync();
+                var resul = new Test<DeparmentoMunicipioViewModel>().mape(repositorio);
+                return resul;
             }
             catch (Exception e)
             {
@@ -128,12 +135,16 @@ namespace AppCircular.BusinessLogic.Services
             tbMuni.dept_Id = model.dept_Id;
             tbMuni.muni_ValidaciosTelefono = model.ValidaciosTelefono;
             tbMuni.muni_ValidaciosTelefonoFijo = model.ValidaciosTelefonoFijo;
-            return await _municipioRepository.InsertAsync(tbMuni);
+            var repositorio = await _municipioRepository.InsertAsync(tbMuni);
+            var resul = new Test<DeparmentoMunicipioViewModel>().mape(repositorio);
+            return resul;
         }
 
         public async Task<ServiceResult> ActualizarMunicipio(int id, MunicipioModel model)
         {
-            return await _municipioRepository.UpdateAsync(id, model);
+            var repositorio = await _municipioRepository.UpdateAsync(id, model);
+            var resul = new Test<DeparmentoMunicipioViewModel>().mape(repositorio);
+            return resul;
         }
 
         #endregion

@@ -2,6 +2,7 @@
 using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Pais;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppCircular.Controllers
 {
@@ -16,8 +17,8 @@ namespace AppCircular.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
         [Route("LisPais")]
+        [Authorize]
         public async Task<IActionResult> ListaPais()
         {
             var item = await _ubicacionServices.listaPais();

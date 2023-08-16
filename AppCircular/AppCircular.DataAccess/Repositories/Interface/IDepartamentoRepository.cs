@@ -1,5 +1,6 @@
 ﻿using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Departamento;
+using AppCircular.Common.Models.Municipio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace AppCircular.DataAccess.Repositories.Interface
 {
     public interface IDepartamentoRepository<T>
     {
-        public Task<ServiceResult> ListAsync();
-        public Task<ServiceResult> InsertAsync(T item);
-        public Task<ServiceResult> UpdateAsync(int Id, DepartamentoModel item);
+        public Task<ResultadoModel<PaisDepartamentoViewModel>> ListAsync();
+        public Task<ResultadoModel<PaisDepartamentoViewModel>> InsertAsync(T item);
+        public Task<ResultadoModel<PaisDepartamentoViewModel>> UpdateAsync(int Id, DepartamentoModel item);
     }
 }

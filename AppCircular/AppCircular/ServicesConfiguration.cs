@@ -1,4 +1,5 @@
 ﻿using AppCircular.BusinessLogic.Services;
+using AppCircular.Common.Models.Configuracion;
 using AppCircular.DataAccess;
 using AppCircular.DataAccess.Context;
 using AppCircular.DataAccess.Repositories;
@@ -15,6 +16,8 @@ namespace AppCircular
             services.AddScoped<DepartamentoRepository>();
             services.AddScoped<MunicipioRepository>();
             services.AddScoped<CategoriaLugarRepository>();
+            services.AddScoped<ConfiguracionRepository>();
+            services.AddScoped<JwtModel>();
             AppCircularContext.BuildConnectionString(connectionString);
         }
 
@@ -22,6 +25,7 @@ namespace AppCircular
         {
             services.AddScoped<UsuarioServices>();
             services.AddScoped<UbicacionServices>();
+            services.AddScoped<ConfiguracionServices>();
         }
     }
 }
