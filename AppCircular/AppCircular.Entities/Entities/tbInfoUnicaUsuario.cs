@@ -18,6 +18,7 @@ namespace AppCircular.Entities.Entities
         public string tInf_RutaPaginaWed { get; set; }
         public bool? tInf_IgualSubInfo { get; set; }
         public int tipUs_Id { get; set; }
+        public bool? tInf_Verificado { get; set; }
 
         public virtual tbTipoUsuario tipUs { get; set; }
         public virtual ICollection<tbUsuarios> tbUsuarios { get; set; }

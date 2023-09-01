@@ -2,22 +2,18 @@
 using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Usuario;
 using AppCircular.DataAccess.Repositories;
-using AppCircular.DataAccess.Repositories.Interface;
 using AppCircular.Entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using static System.Collections.Specialized.BitVector32;
-using System.Collections.Immutable;
 using Microsoft.Extensions.Options;
+using AppCircular.Common.Models.Categoria;
+using System.Data;
+using AppCircular.BusinessLogic.LibreriaClases;
 
 namespace AppCircular.BusinessLogic.Services
 {
@@ -28,17 +24,25 @@ namespace AppCircular.BusinessLogic.Services
         private readonly ConfiguracionRepository _configuracionRepository;
         private  IConfiguration _iConfiguration;
         private readonly JwtModel _jwtSettings;
-
+        private readonly CategoriaRepository _categoriaRepository;
+        private readonly UsuarioRepository _usuarioRepository;
+        private readonly SubdivicionLugarRepository _subdivicionLugarRepository;
         public UsuarioServices( TipoUsuarioRepository tipoUsuarioRepository,
                                 InfoUnicaUsuarioRepository infoUnicaUsuarioRepository,
                                 ConfiguracionRepository configuracionRepository,
-                                IConfiguration iConfiguration, IOptions<JwtModel> jwtSettings)
+                                IConfiguration iConfiguration, IOptions<JwtModel> jwtSettings,
+                                CategoriaRepository categoriaRepository,
+                                UsuarioRepository usuarioRepository,
+                                SubdivicionLugarRepository subdivicionLugarRepository)
         {
             _tipoUsuarioRepository = tipoUsuarioRepository;
             _infoUnicaUsuarioRepository = infoUnicaUsuarioRepository;
             _configuracionRepository = configuracionRepository;
             _iConfiguration = iConfiguration;
             _jwtSettings = jwtSettings.Value;
+            _categoriaRepository = categoriaRepository;
+            _usuarioRepository = usuarioRepository;
+            _subdivicionLugarRepository = subdivicionLugarRepository;
         }
 
         #region Tipo Usuario
@@ -48,7 +52,7 @@ namespace AppCircular.BusinessLogic.Services
             try
             {
                 var repositorio = await _tipoUsuarioRepository.ListAsync();
-                var resul = new Test<TipoUsuarioViewModel>().mape(repositorio);
+                var resul = new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
                 return resul;
             }
             catch (Exception e)
@@ -63,14 +67,14 @@ namespace AppCircular.BusinessLogic.Services
             var tbMuni = new tbTipoUsuario();
             tbMuni.tipUs_Descripcion = model.Descripcion;
             var repositorio = await _tipoUsuarioRepository.InsertAsync(tbMuni);
-            return new Test<TipoUsuarioViewModel>().mape(repositorio);
+            return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
          
         public async Task<ServiceResult> ActualizarTipoUser( int id,TipoUsuarioModel model)
         {
 
             var listado = await _tipoUsuarioRepository.UpdateAsync(id,model);
-            return new Test<TipoUsuarioViewModel>().mape(listado);
+            return new Convertidor<TipoUsuarioViewModel>().mape(listado);
         }
         
         #endregion
@@ -251,6 +255,133 @@ namespace AppCircular.BusinessLogic.Services
                 resul.Message = "Token Invalido";
                 resul.Type = ServiceResultType.Forbidden;
                 return resul;
+            }
+        }
+        #endregion
+
+        #region Categoria Del Ususario
+
+        public async Task<ServiceResult> listaCategoria()
+        {
+            try
+            {
+                var repositorio = await _categoriaRepository.ListAsync();
+                var resul = new Convertidor<CategoriaViewModel>().mape(repositorio);
+                return resul;
+            }
+            catch (Exception e)
+            {
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio Usaurio, Mesaje {e.Message}" };
+                return result;
+            }
+        }
+
+        public async Task<ServiceResult> CrearCategoria(CategoriaModel model)
+        {
+            var tbMuni = new tbCategoria();
+            tbMuni.catg_Nombre = model.Nombre;
+            var repositorio = await _categoriaRepository.InsertAsync(tbMuni);
+            return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
+        }
+
+        public async Task<ServiceResult> ActualizarCategoria(int id, CategoriaModel model)
+        {
+
+            var listado = await _categoriaRepository.UpdateAsync(id, model);
+            return new Convertidor<TipoUsuarioViewModel>().mape(listado);
+        }
+
+
+        #endregion
+
+        #region Usuario
+
+        public async Task<ServiceResult> CrearUsaurio(UsuarioCrearModel model)
+        {
+            try
+            {
+                ServiceResult result = new();
+                model.RutaLogo = "imagen/algo/nse/algo.png";
+                string confi = _iConfiguration.GetConnectionString("DefaultConnection");
+                var cong = await _configuracionRepository.WhereAsync("IdTipoUsuarioParticular");
+                if (cong.Success && (int.TryParse(cong.Value, out int idParticualar)))
+                {
+                    if (idParticualar != model.tipUs_Id)
+                    {
+                        if (model.Horario.Count > 0)
+                        {
+                            DataTable Horario = new DataTable();
+                            Horario.Columns.Add("hor_DiaNumero", typeof(int));
+                            Horario.Columns.Add("hor_HoraInicio", typeof(int));
+                            Horario.Columns.Add("hor_MinutoInicio", typeof(int));
+                            Horario.Columns.Add("hor_HoraFin", typeof(int));
+                            Horario.Columns.Add("hor_MinutoFin", typeof(int));
+
+                            foreach (var item in model.Horario)
+                            {
+                                Horario.Rows.Add(item.DiaNumero, item.HoraInicio, item.MinutoInicio, item.HoraFin, item.MinutoFin);
+                            }
+                            model.HorarioDate = Horario;
+                        }
+                        else return new ServiceResult() { Message = "tiene que tener alemnos un dia Abierto", Success = false, Type = ServiceResultType.Error };
+
+                        if (model.Categoria.Count > 0)
+                        {
+                            DataTable categoriaData = new DataTable();
+                            categoriaData.Columns.Add("aria_Id", typeof(int));
+
+                            var cateoriaRep = await _categoriaRepository.ListAsync();
+                            if (cateoriaRep.Success)
+                            {
+                                foreach (var item in model.Categoria)
+                                {
+                                    if (cateoriaRep.Data.Any(a => a.Id == item.catg_Id))
+                                    {
+                                        categoriaData.Rows.Add(item.catg_Id);
+                                    }
+                                    else return new ServiceResult() { Data = item, Message = "No existe esta Categoria", Success = false, Type = ServiceResultType.Error };
+                                }
+                                model.CategoriaDate = categoriaData;
+                            }
+                            else return new Convertidor<CategoriaViewModel>().mape(cateoriaRep);
+                        }
+                        else return new ServiceResult() { Message = "Tienee que tener al menos una categoria", Success = false, Type= ServiceResultType.Error};
+                    }
+                }
+                var tipoRe = await _tipoUsuarioRepository.WhereAsync(model.tipUs_Id);
+                if (!tipoRe.Success) return new Convertidor<bool>().mape(tipoRe);
+                var subLugar = await _subdivicionLugarRepository.WhereAsync(model.subLug_Id);
+                if (!subLugar.Success) return new Convertidor<bool>().mape(subLugar);
+                var valiUsu = await _usuarioRepository.WhereAsync(model.Correo, model.PrimerTelefono);
+                if (!valiUsu.Success) return new Convertidor<bool>().mape(valiUsu);
+                //Crear contraseñas incriptadas
+                model.PasswordSal = Guid.NewGuid().ToString();
+                model.Password = EncryptPass.GeneratePassword(model.Password, model.PasswordSal);
+
+                //
+                var repositorio = await _usuarioRepository.CrearUsuario(model, confi);
+                if (repositorio.Success) {
+
+                    ServiceResult token = await Token(2);
+                    if (token.Success)
+                    {
+                        var rutaApi = await _configuracionRepository.WhereAsync("ApiRutaToken");
+                        if (!rutaApi.Success) return new Convertidor<string>().mape(rutaApi);
+                        string ruta = rutaApi.Value;
+
+                        var email = new EmailModel()
+                        {
+                            DestinoCorreo = model.Correo,
+                            Asunto = "Verificacion Del token",
+                            Cuerpo = $"{ruta}{token.Data}"
+                        };
+                        var correo = Correo(email);
+                    }else return token;
+                } return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult() { Success = false , Message = $"Error en el Servicio Usuario Al Creaar un Usaurio: {ex.Message}",Type= ServiceResultType.Error};
             }
         }
         #endregion

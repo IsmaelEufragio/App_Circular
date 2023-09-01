@@ -1,4 +1,5 @@
-﻿using AppCircular.Common.Models.Configuracion;
+﻿using AppCircular.BusinessLogic.LibreriaClases;
+using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Usuario;
 using AppCircular.DataAccess.Repositories;
 using AppCircular.DataAccess.Repositories.Interface;
@@ -25,7 +26,7 @@ namespace AppCircular.BusinessLogic.Services
             try
             {
                 var repositorio = await _configuracionRepository.ListAsync();
-                var resul = new Test<TipoUsuarioViewModel>().mape(repositorio);
+                var resul = new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
                 return resul;
             }
             catch (Exception e)
@@ -42,13 +43,13 @@ namespace AppCircular.BusinessLogic.Services
             tb.conf_Valor = nombre;
             tb.conf_Descripcion = model.Descripcion;
             var repositorio = await _configuracionRepository.InsertAsync(tb);
-            return new Test<TipoUsuarioViewModel>().mape(repositorio);
+            return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
 
         public async Task<ServiceResult> ActualizarTipoUser(int id, ConfiguracionModel model)
         {
             var listado = await _configuracionRepository.UpdateAsync(id, model);
-            return new Test<TipoUsuarioViewModel>().mape(listado);
+            return new Convertidor<TipoUsuarioViewModel>().mape(listado);
         }
     }
 }

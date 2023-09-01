@@ -35,10 +35,11 @@ GO
 /*Sección #3*/
 CREATE TABLE [Genl].tbInfoUnicaUsuario(
 	[ipInf_Id]					INT IDENTITY(1,1),
-	[tInf_Nombre]				NVARCHAR(500)	NOT NULL,
+	[tInf_Nombre]				NVARCHAR(300)	NOT NULL,
 	[tInf_RutaLogo]				NVARCHAR(2000),
 	[tInf_RutaPaginaWed]		NVARCHAR(2000),
 	[tInf_IgualSubInfo]			BIT NOT NULL DEFAULT 1,
+	[tInf_Verificado]			BIT			DEFAULT 0,
 	[tipUs_Id]					INT NOT NULL,
 	CONSTRAINT  PK_Genl_tbInfoUnicaUsuario_tipInfUs_Id	PRIMARY KEY(ipInf_Id),
 	CONSTRAINT  FK_Genl_tbInfoUnicaUsuario_tbTipoUsuario_tipUs_Id	FOREIGN KEY(tipUs_Id) REFERENCES Genl.tbTipoUsuario(tipUs_Id)
@@ -129,54 +130,54 @@ CREATE TABLE [Genl].tbUbicacion(
 )  
 GO
 
-/*Sección #10*/
-CREATE TABLE [Genl].tbAria(
-	[aria_Id]						INT IDENTITY(1,1),
-	[aria_Nombre]					NVARCHAR(200)		NOT NULL,
-	CONSTRAINT  PK_Genl_tbAria_aria_Id			PRIMARY KEY(aria_Id)
-)  
-GO
-
-
-/*Sección #11*/
-CREATE TABLE [Genl].tbRugro(
-	[rug_Id]						INT IDENTITY(1,1),
-	[rug_Nombre]					NVARCHAR(200)	NOT NULL,
-	[aria_Id]						INT				NOT NULL,
-	CONSTRAINT  PK_Genl_tbRugro_rug_Id			PRIMARY KEY(rug_Id),
-	CONSTRAINT  FK_Genl_tbRugro_tbAria_aria_Id	FOREIGN KEY(aria_Id) REFERENCES Genl.tbAria(aria_Id),
-)  
-GO
-
 /*Sección #12*/
 CREATE TABLE [Genl].tbUsuarios(
 	[user_Id]						INT IDENTITY(1,1),
 	[ipInf_Id]						INT				NOT NULL,
-	[user_Descripcion]				NVARCHAR(300)	NOT NULL,
+	[user_Descripcion]				NVARCHAR(500)	NOT NULL,
 	[user_TelefonoPrincipal]		NVARCHAR(50)	NOT NULL,
 	[user_TelefonoSecundario]		NVARCHAR(50),
 	[ubc_Id]						INT				NOT NULL,
 	[user_RTNPersona]				NVARCHAR(100),
 	[user_RTNInstitucion]			NVARCHAR(100),
+	[user_NombreUsuario]			NVARCHAR(150)	NOT NULL DEFAULT 'N/A',
 	[user_Password]					NVARCHAR(1000),
 	[user_PasswordSal]				NVARCHAR(1000),
 	[user_FechaFundacion]			DATE,
-	[user_Correo]					NVARCHAR(100),
+	[user_Correo]					NVARCHAR(100)	NOT NULL,
 	[user_Facebook]					NVARCHAR(100),
 	[user_Intagram]					NVARCHAR(100),
 	[user_WhatsApp]					BIT NOT NULL DEFAULT 0,
 	[user_Envio]					BIT NOT NULL DEFAULT 0,
-	[rug_Id]						INT NOT NULL,
+
 	CONSTRAINT  PK_Genl_tbUsuarios_User_Id			PRIMARY KEY(User_Id),
 	CONSTRAINT  FK_Genl_tbUsuarios_tbInfoUnicaUsuario_ipInf_Id	FOREIGN KEY(ipInf_Id) REFERENCES Genl.tbInfoUnicaUsuario(ipInf_Id),
-	CONSTRAINT  FK_Genl_tbUsuarios_tbUbicacion_ubc_Id				FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id),
-	CONSTRAINT  FK_Genl_tbUsuarios_tbRugro_rug_Id					FOREIGN KEY(rug_Id) REFERENCES Genl.tbRugro(rug_Id)
+	CONSTRAINT  FK_Genl_tbUsuarios_tbUbicacion_ubc_Id				FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id)
 )  
 
 GO
 
+/*Sección #10     ===*/
+CREATE TABLE [Genl].tbCategoria(
+	[catg_Id]						INT IDENTITY(1,1),
+	[catg_Nombre]					NVARCHAR(200)		NOT NULL,
+	CONSTRAINT  PK_Genl_tbCategoria_catg_Id			PRIMARY KEY(catg_Id)
+)  
+GO
+
+/*Sección #11    ===*/
+CREATE TABLE [Genl].tbCategoriaItem(
+	[catgItem_Id]					INT IDENTITY(1,1),
+	[catg_Id]						INT				NOT NULL,
+	[user_Id]						INT				NOT NULL,
+	CONSTRAINT  PK_Genl_tbCategoriaItem_catgItem_Id			PRIMARY KEY(catgItem_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaItem_tbCategoria_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCategoria(catg_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaItem_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)  
+GO
+
 /*Sección #13*/
-CREATE TABLE [Genl].tbHorario(
+CREATE TABLE [Genl].tbHorario( 
 	[hor_Id]						INT IDENTITY(1,1),
 	[hor_DiaNumero]					INT				NOT NULL,
 	[user_Id]						INT				NOT NULL,
@@ -634,4 +635,199 @@ CREATE TABLE [Genl].tbConfiguracion(
 	CONSTRAINT [UQ_Genl_tbConfiguracion_conf_Nombre] UNIQUE(conf_Nombre)
 )  
 GO
+
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('smtpServer', 'smtp.gmail.com', 'El servidor SMTP para correo')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('smtpPort', '587', ' Puerto SMTP seguro (TLS)')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('senderEmail', 'appcircular2023@gmail.com', 'Correo para Validacion')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('senderPassword', 'lsbuahlrtdgpvdzv', 'Contraseña generada')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('ApiRutaToken', 'https://localhost:44306/Usuario/ValidacionToken?toke=', 'La ruta de api para correos')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioMicroempresa', '1', 'Validar que el tipo de usuario sea el correcto')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioConHablidades', '2', 'Validar usuario Con habilidades')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioONG', '3', 'CalidarONG')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioEmpresa', '4', 'Validar el usaurio Empresa')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioParticular', '5', 'Validar el usuario Particular')
+GO
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioConLocal', '6', 'Son los usarios que tiene un local ')
+GO
+/*Sección #36*/
+CREATE TYPE dbo.tbHorarioTableType AS TABLE
+(
+	hor_DiaNumero INT,
+    hor_HoraInicio TINYINT,
+    hor_MinutoInicio TINYINT,
+    hor_HoraFin TINYINT,
+    hor_MinutoFin TINYINT
+);
+GO
+
+/*Sección #37*/
+CREATE TYPE dbo.tbCategoriaItemType AS TABLE(
+	catg_Id INT
+);
+GO
+
+/*Sección #38*/
+CREATE PROC [dbo].[sp_CrearUsuario]
+	@tipUs_Id INT,
+	@Nombre NVARCHAR(300),
+	@RutaLogo NVARCHAR(2000),
+	@RutaPaginaWed NVARCHAR(2000),
+	@Descripcion NVARCHAR(500),
+	@FechaFundacion DATE,
+	@NombreUsuario NVARCHAR(150),
+	@Password NVARCHAR(1000),
+	@PasswordSal NVARCHAR(100),
+	@TelefonoPricipal NVARCHAR(50),
+	@TelefonoSecundario NVARCHAR(50),
+	@Facebook NVARCHAR(100),
+	@Intagram NVARCHAR(100),
+	@WhatsApp BIT,
+	@Envio BIT,
+	@Correo NVARCHAR(100),
+	@SubdicionLugar INT,
+	@Latitud NVARCHAR(200),
+	@Longitub NVARCHAR(200),
+	--Los Datos De tablas
+	@tbHorarios tbHorarioTableType READONLY,
+	@tbCategoriaItem tbCategoriaItemType READONLY,
+	    -- Parámetros de salida
+    @Success BIT OUTPUT,
+    @Message NVARCHAR(1000) OUTPUT,
+	@IdUsuario INT OUTPUT
+AS
+BEGIN
+    BEGIN TRANSACTION; -- Inicia la transacción
+	--Donde se guardara la informacion de la tabla.
+	SET @Success = 1;
+	DECLARE @hor_DiaNumero INT,
+            @hor_HoraInicio TINYINT,
+            @hor_MinutoInicio TINYINT,
+            @hor_HoraFin TINYINT,
+            @hor_MinutoFin TINYINT;
+
+    DECLARE @ErrorHorarioInsertar BIT = 0;
+
+	DECLARE @catg_Id INT;
+	DECLARE @ErrorCategoria BIT = 0;
+
+	DECLARE @ipInfo_Id INT;
+	DECLARE @ubc_Id INT;
+	DECLARE @user_Id INT;
+
+	DECLARE curHorarios CURSOR FOR
+			SELECT hor_DiaNumero, hor_HoraInicio, hor_MinutoInicio, hor_HoraFin, hor_MinutoFin
+			FROM @tbHorarios;
+
+	DECLARE curCategoriaItem CURSOR FOR
+		SELECT catg_Id 
+		FROM @tbCategoriaItem;
+    BEGIN TRY
+			
+			INSERT INTO [Genl].[tbInfoUnicaUsuario] ([tInf_Nombre],[tInf_RutaLogo],[tInf_RutaPaginaWed],[tipUs_Id]) VALUES (@Nombre, @RutaLogo,NULLIF(@RutaPaginaWed, ''),@tipUs_Id);
+			SET @ipInfo_Id = SCOPE_IDENTITY();
+			
+
+			INSERT INTO  [Genl].[tbUbicacion] VALUES(@Latitud,@Longitub,@SubdicionLugar);
+			SET @ubc_Id = SCOPE_IDENTITY();
+
+			INSERT INTO [Genl].[tbUsuarios] 
+			([ipInf_Id],[user_Descripcion],[user_TelefonoPrincipal],[user_TelefonoSecundario],[user_FechaFundacion],[user_Correo],[user_Facebook],[user_WhatsApp],[user_Password],[user_PasswordSal],[user_NombreUsuario],[ubc_Id],[user_Intagram],[user_Envio]) 
+				VALUES (@ipInfo_Id, @Descripcion,@TelefonoPricipal,@TelefonoSecundario,@FechaFundacion,@Correo,@Facebook,@WhatsApp,@Password,@PasswordSal,@NombreUsuario,@ubc_Id,@Intagram,@Envio);
+			SET @user_Id = SCOPE_IDENTITY();
+		
+		
+		---////Inicio Cursor
+		OPEN curHorarios;
+        FETCH NEXT FROM curHorarios INTO @hor_DiaNumero, @hor_HoraInicio, @hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin;
+
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            BEGIN TRY
+                INSERT INTO [Genl].[tbHorario] VALUES (@hor_DiaNumero, @user_Id, @hor_HoraInicio,@hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin);
+
+                FETCH NEXT FROM curHorarios INTO @hor_DiaNumero, @hor_HoraInicio, @hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin;
+            END TRY
+            BEGIN CATCH
+				SET @Success = 0;
+				SET @Message = 'Error Ocurrio Al Guardar El Horario: hor_DiaNumero => '+ @hor_DiaNumero+', user_Id => '+@user_Id+', hor_HoraInicio => '+@hor_HoraInicio+', hor_MinutoInicio => '+@hor_MinutoInicio+', hor_HoraFin => '+@hor_HoraFin+', hor_MinutoFin => '+@hor_MinutoFin+'. Error SQL: '+ ERROR_MESSAGE() + ' (Línea: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')';
+				SET @IdUsuario = 0;
+
+				BREAK;
+            END CATCH;
+        END;
+
+        CLOSE curHorarios;
+        DEALLOCATE curHorarios;
+		--//////Fin Cursor
+		--//INICIO//
+		OPEN curCategoriaItem;
+        FETCH NEXT FROM curCategoriaItem INTO @catg_Id;
+
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            BEGIN TRY
+                INSERT INTO [Genl].[tbCategoriaItem] VALUES (@catg_Id,@user_Id);
+
+                FETCH NEXT FROM curCategoriaItem INTO @catg_Id;
+            END TRY
+            BEGIN CATCH
+				SET @Success = 0;
+				SET @Message = 'Error Ocurrio Al Guardar La Categoria: user_Id => '+CONVERT(nvarchar(10),@user_Id)+', aria_Id => '+CONVERT(nvarchar(10),@catg_Id)+'. Error SQL: '+ERROR_MESSAGE() + ' (Línea: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')';
+				SET @IdUsuario = 0;
+
+				BREAK;
+				--ROLLBACK
+            END CATCH;
+        END;
+
+        CLOSE curCategoriaItem;
+        DEALLOCATE curCategoriaItem;
+		--//FIN//
+
+		IF @Success = 1
+		BEGIN
+			COMMIT;
+			SET @Success = 1;
+			SET @Message = 'Transacción completada exitosamente.';
+			SET @IdUsuario = @user_Id;
+			-- Otras operaciones de manejo de errores si es necesario
+		END
+		ELSE
+		BEGIN
+			ROLLBACK;
+		END
+
+    END TRY
+    BEGIN CATCH
+	ROLLBACK; -- Deshace la transacción si hay algún error
+        
+        -- Cerrar y desasignar el cursor de horarios
+        IF CURSOR_STATUS('global', 'curHorarios') >= 0
+        BEGIN
+            CLOSE curHorarios;
+            DEALLOCATE curHorarios;
+        END
+
+        -- Cerrar y desasignar el cursor de categorías
+        IF CURSOR_STATUS('global', 'curCategoriaItem') >= 0
+        BEGIN
+            CLOSE curCategoriaItem;
+            DEALLOCATE curCategoriaItem;
+        END
+        
+        SET @Success = 0;
+        SET @Message = 'Ocurrió un error durante la transacción: ' + ERROR_MESSAGE() + ' (Línea: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')';
+		SET @IdUsuario = 0;
+    END CATCH;
+END;
+GO;
 

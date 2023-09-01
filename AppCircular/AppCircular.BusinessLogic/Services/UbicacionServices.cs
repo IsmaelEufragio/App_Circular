@@ -1,16 +1,14 @@
-﻿using AppCircular.Common.Models.CategoriaLugar;
+﻿using AppCircular.BusinessLogic.LibreriaClases;
+using AppCircular.Common.Models.CategoriaLugar;
 using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Departamento;
+using AppCircular.Common.Models.Lugar;
 using AppCircular.Common.Models.Municipio;
 using AppCircular.Common.Models.Pais;
+using AppCircular.Common.Models.SubdivicionLugar;
 using AppCircular.Common.Models.Usuario;
 using AppCircular.DataAccess.Repositories;
 using AppCircular.Entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AppCircular.BusinessLogic.Services
 {
@@ -20,17 +18,24 @@ namespace AppCircular.BusinessLogic.Services
         private readonly DepartamentoRepository _departamentoRepository;
         private readonly MunicipioRepository _municipioRepository;
         private readonly CategoriaLugarRepository _categoriaLugarRepository;
+        private readonly LugarRepository _lugarRepository;
+        private readonly SubdivicionLugarRepository _subdivicionLugarRepository;
+
         public UbicacionServices(
             PaisRepository paisRepository, 
             DepartamentoRepository departamentoRepository, 
             MunicipioRepository municipioRepository,
-            CategoriaLugarRepository categoriaLugarRepository
+            CategoriaLugarRepository categoriaLugarRepository,
+            LugarRepository lugarRepository,
+            SubdivicionLugarRepository subdivicionLugarRepository
             )
         {
             _paisRepository = paisRepository;
             _departamentoRepository = departamentoRepository;
             _municipioRepository = municipioRepository;
             _categoriaLugarRepository = categoriaLugarRepository;
+            _lugarRepository = lugarRepository;
+            _subdivicionLugarRepository = subdivicionLugarRepository;
         }
 
         #region pais
@@ -78,7 +83,7 @@ namespace AppCircular.BusinessLogic.Services
             try
             {
                 var repositorio = await _departamentoRepository.ListAsync();
-                var resul = new Test<PaisDepartamentoViewModel>().mape(repositorio);
+                var resul = new Convertidor<PaisDepartamentoViewModel>().mape(repositorio);
                 return resul;
 
             }
@@ -96,14 +101,14 @@ namespace AppCircular.BusinessLogic.Services
             tbdepartamento.dept_NuIdentidad = model.NuIdentidad;
             tbdepartamento.pais_Id = model.pais_Id;
             var repositorio = await _departamentoRepository.InsertAsync(tbdepartamento);
-            var resul = new Test<PaisDepartamentoViewModel>().mape(repositorio);
+            var resul = new Convertidor<PaisDepartamentoViewModel>().mape(repositorio);
             return resul;
         }
 
         public async Task<ServiceResult> ActualizarDepartamento(int id, DepartamentoModel model)
         {
             var repositorio = await _departamentoRepository.UpdateAsync(id, model);
-            var resul = new Test<PaisDepartamentoViewModel>().mape(repositorio);
+            var resul = new Convertidor<PaisDepartamentoViewModel>().mape(repositorio);
             return resul;
         }
 
@@ -116,7 +121,7 @@ namespace AppCircular.BusinessLogic.Services
             try
             {
                 var repositorio = await _municipioRepository.ListAsync();
-                var resul = new Test<DeparmentoMunicipioViewModel>().mape(repositorio);
+                var resul = new Convertidor<DeparmentoMunicipioViewModel>().mape(repositorio);
                 return resul;
             }
             catch (Exception e)
@@ -136,14 +141,14 @@ namespace AppCircular.BusinessLogic.Services
             tbMuni.muni_ValidaciosTelefono = model.ValidaciosTelefono;
             tbMuni.muni_ValidaciosTelefonoFijo = model.ValidaciosTelefonoFijo;
             var repositorio = await _municipioRepository.InsertAsync(tbMuni);
-            var resul = new Test<DeparmentoMunicipioViewModel>().mape(repositorio);
+            var resul = new Convertidor<DeparmentoMunicipioViewModel>().mape(repositorio);
             return resul;
         }
 
         public async Task<ServiceResult> ActualizarMunicipio(int id, MunicipioModel model)
         {
             var repositorio = await _municipioRepository.UpdateAsync(id, model);
-            var resul = new Test<DeparmentoMunicipioViewModel>().mape(repositorio);
+            var resul = new Convertidor<DeparmentoMunicipioViewModel>().mape(repositorio);
             return resul;
         }
 
@@ -176,6 +181,83 @@ namespace AppCircular.BusinessLogic.Services
         public async Task<ServiceResult> ActualizarCategoriaLugar(int id, CategoriaLugarModel model)
         {
             return await _categoriaLugarRepository.UpdateAsync(id, model);
+        }
+
+        #endregion
+
+        #region Lugar
+
+        public async Task<ServiceResult> listaLugar()
+        {
+            try
+            {
+                var repositorio = await _lugarRepository.ListAsync();
+                var resul = new Convertidor<LugarViewModel>().mape(repositorio);
+                return resul;
+
+            }
+            catch (Exception e)
+            {
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio Ubicacion, Mesaje {e.Message}" };
+                return result;
+            }
+        }
+
+        public async Task<ServiceResult> CrearLugar(LugarModel model)
+        {
+            var tbLugar = new tbLugar();
+            tbLugar.lug_Nombre = model.Nombre;
+            tbLugar.catLug_Id = model.catLug_Id;
+            tbLugar.muni_Id = model.muni_Id;
+            var repositorio = await _lugarRepository.InsertAsync(tbLugar);
+            var resul = new Convertidor<LugarViewModel>().mape(repositorio);
+            return resul;
+        }
+
+        public async Task<ServiceResult> ActualizarLugar(int id, LugarModel model)
+        {
+            var repositorio = await _lugarRepository.UpdateAsync(id, model);
+            var resul = new Convertidor<LugarViewModel>().mape(repositorio);
+            return resul;
+        }
+
+
+        #endregion
+
+        #region Subdivicion de Lugar
+
+        public async Task<ServiceResult> listaSubdivicionLugar()
+        {
+            try
+            {
+                var repositorio = await _subdivicionLugarRepository.ListAsync();
+                var resul = new Convertidor<SubdivicionLugarViewModel>().mape(repositorio);
+                return resul;
+
+            }
+            catch (Exception e)
+            {
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio Ubicacion, Mesaje {e.Message}" };
+                return result;
+            }
+        }
+
+        public async Task<ServiceResult> CrearSubdivicionLugar(SubdivicionLugarModel model)
+        {
+            var tb = new tbSubdivicionLugar();
+            tb.subLug_Nombre = model.Nombre;
+            tb.sub_Id = model.sub_Id;
+            tb.lug_Id = model.lug_Id;
+            var repositorio = await _subdivicionLugarRepository.InsertAsync(tb);
+            var resul = new Convertidor<SubdivicionLugarViewModel>().mape(repositorio);
+            return resul;
+        }
+
+        public async Task<ServiceResult> ActualizarSubdivicionLugar(int id, SubdivicionLugarModel model)
+        {
+            var repositorio = await _subdivicionLugarRepository.UpdateAsync(id, model);
+            var resul = new Convertidor<SubdivicionLugarViewModel>().mape(repositorio);
+            return resul;
         }
 
         #endregion

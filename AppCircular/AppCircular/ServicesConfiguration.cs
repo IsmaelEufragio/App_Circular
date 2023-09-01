@@ -18,6 +18,10 @@ namespace AppCircular
             services.AddScoped<CategoriaLugarRepository>();
             services.AddScoped<ConfiguracionRepository>();
             services.AddScoped<JwtModel>();
+            services.AddScoped<LugarRepository>();
+            services.AddScoped<SubdivicionLugarRepository>();
+            services.AddScoped<CategoriaRepository>();
+            services.AddScoped<UsuarioRepository>();
             AppCircularContext.BuildConnectionString(connectionString);
         }
 

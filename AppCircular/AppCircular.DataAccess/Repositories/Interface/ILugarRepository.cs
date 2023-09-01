@@ -1,4 +1,5 @@
 ﻿using AppCircular.Common.Models.Configuracion;
+using AppCircular.Common.Models.Lugar;
 using AppCircular.Common.Models.Usuario;
 using AppCircular.Entities.Entities;
 using System;
@@ -11,8 +12,8 @@ namespace AppCircular.DataAccess.Repositories.Interface
 {
     public interface ILugarRepository<T>
     {
-        public Task<ResultadoModel<TipoUsuarioViewModel>> ListAsync();
-        public Task<ResultadoModel<TipoUsuarioViewModel>> InsertAsync(T item);
-        public Task<ResultadoModel<TipoUsuarioViewModel>> UpdateAsync(int Id, TipoUsuarioModel item);
+        public Task<ResultadoModel<LugarViewModel>> ListAsync();
+        public Task<ResultadoModel<LugarViewModel>> InsertAsync(T item);
+        public Task<ResultadoModel<LugarViewModel>> UpdateAsync(int id, LugarModel item);
     }
 }

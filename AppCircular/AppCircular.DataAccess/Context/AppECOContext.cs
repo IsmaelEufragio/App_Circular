@@ -19,9 +19,10 @@ namespace AppCircular.DataAccess.Context
         {
         }
 
-        public virtual DbSet<tbAria> tbAria { get; set; }
         public virtual DbSet<tbAriaPuesto> tbAriaPuesto { get; set; }
         public virtual DbSet<tbCargo> tbCargo { get; set; }
+        public virtual DbSet<tbCategoria> tbCategoria { get; set; }
+        public virtual DbSet<tbCategoriaItem> tbCategoriaItem { get; set; }
         public virtual DbSet<tbCategoriaLugar> tbCategoriaLugar { get; set; }
         public virtual DbSet<tbCategoriaSubdivicion> tbCategoriaSubdivicion { get; set; }
         public virtual DbSet<tbConfiguracion> tbConfiguracion { get; set; }
@@ -57,7 +58,6 @@ namespace AppCircular.DataAccess.Context
         public virtual DbSet<tbProducto> tbProducto { get; set; }
         public virtual DbSet<tbProductoImagen> tbProductoImagen { get; set; }
         public virtual DbSet<tbPuesto> tbPuesto { get; set; }
-        public virtual DbSet<tbRugro> tbRugro { get; set; }
         public virtual DbSet<tbServicio> tbServicio { get; set; }
         public virtual DbSet<tbServicioCategoria> tbServicioCategoria { get; set; }
         public virtual DbSet<tbServicioImagen> tbServicioImagen { get; set; }
@@ -75,18 +75,6 @@ namespace AppCircular.DataAccess.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-
-            modelBuilder.Entity<tbAria>(entity =>
-            {
-                entity.HasKey(e => e.aria_Id)
-                    .HasName("PK_Genl_tbAria_aria_Id");
-
-                entity.ToTable("tbAria", "Genl");
-
-                entity.Property(e => e.aria_Nombre)
-                    .IsRequired()
-                    .HasMaxLength(200);
-            });
 
             modelBuilder.Entity<tbAriaPuesto>(entity =>
             {
@@ -116,6 +104,38 @@ namespace AppCircular.DataAccess.Context
                     .HasForeignKey(d => d.vac_Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Genl_tbCargo_tbVacante_vac_Id");
+            });
+
+            modelBuilder.Entity<tbCategoria>(entity =>
+            {
+                entity.HasKey(e => e.catg_Id)
+                    .HasName("PK_Genl_tbCategoria_catg_Id");
+
+                entity.ToTable("tbCategoria", "Genl");
+
+                entity.Property(e => e.catg_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<tbCategoriaItem>(entity =>
+            {
+                entity.HasKey(e => e.catgItem_Id)
+                    .HasName("PK_Genl_tbCategoriaItem_catgItem_Id");
+
+                entity.ToTable("tbCategoriaItem", "Genl");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbCategoriaItem)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCategoriaItem_tbCategoria_catg_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbCategoriaItem)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCategoriaItem_tbUsuarios_user_Id");
             });
 
             modelBuilder.Entity<tbCategoriaLugar>(entity =>
@@ -419,6 +439,8 @@ namespace AppCircular.DataAccess.Context
                 entity.Property(e => e.tInf_RutaLogo).HasMaxLength(2000);
 
                 entity.Property(e => e.tInf_RutaPaginaWed).HasMaxLength(2000);
+
+                entity.Property(e => e.tInf_Verificado).HasDefaultValueSql("((0))");
 
                 entity.HasOne(d => d.tipUs)
                     .WithMany(p => p.tbInfoUnicaUsuario)
@@ -768,24 +790,6 @@ namespace AppCircular.DataAccess.Context
                     .HasConstraintName("FK_Genl_tbPuesto_tbAriaPuesto_ariaP_Id");
             });
 
-            modelBuilder.Entity<tbRugro>(entity =>
-            {
-                entity.HasKey(e => e.rug_Id)
-                    .HasName("PK_Genl_tbRugro_rug_Id");
-
-                entity.ToTable("tbRugro", "Genl");
-
-                entity.Property(e => e.rug_Nombre)
-                    .IsRequired()
-                    .HasMaxLength(200);
-
-                entity.HasOne(d => d.aria)
-                    .WithMany(p => p.tbRugro)
-                    .HasForeignKey(d => d.aria_Id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Genl_tbRugro_tbAria_aria_Id");
-            });
-
             modelBuilder.Entity<tbServicio>(entity =>
             {
                 entity.HasKey(e => e.serv_Id)
@@ -1016,6 +1020,11 @@ namespace AppCircular.DataAccess.Context
 
                 entity.Property(e => e.user_Intagram).HasMaxLength(100);
 
+                entity.Property(e => e.user_NombreUsuario)
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("('N/A')");
+
                 entity.Property(e => e.user_Password).HasMaxLength(1000);
 
                 entity.Property(e => e.user_PasswordSal).HasMaxLength(1000);
@@ -1035,12 +1044,6 @@ namespace AppCircular.DataAccess.Context
                     .HasForeignKey(d => d.ipInf_Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Genl_tbUsuarios_tbInfoUnicaUsuario_ipInf_Id");
-
-                entity.HasOne(d => d.rug)
-                    .WithMany(p => p.tbUsuarios)
-                    .HasForeignKey(d => d.rug_Id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Genl_tbUsuarios_tbRugro_rug_Id");
 
                 entity.HasOne(d => d.ubc)
                     .WithMany(p => p.tbUsuarios)

@@ -155,6 +155,14 @@ namespace AppCircular.Controllers
             return Ok(resul);
 
         }
+
+        [HttpPost]
+        [Route("CrearUsuario")]
+        public async Task<IActionResult> CrearUsuario(UsuarioCrearModel modelo)
+        {
+            var resul = await _usuarioServices.CrearUsaurio(modelo);
+            return Ok(resul);
+        }
         #endregion 
     }
 }

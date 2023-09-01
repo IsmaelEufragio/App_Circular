@@ -9,6 +9,7 @@ namespace AppCircular.Entities.Entities
     {
         public tbUsuarios()
         {
+            tbCategoriaItem = new HashSet<tbCategoriaItem>();
             tbContribuyente = new HashSet<tbContribuyente>();
             tbDesperdicio = new HashSet<tbDesperdicio>();
             tbGuardar = new HashSet<tbGuardar>();
@@ -33,13 +34,13 @@ namespace AppCircular.Entities.Entities
         public string user_Intagram { get; set; }
         public bool user_WhatsApp { get; set; }
         public bool user_Envio { get; set; }
-        public int rug_Id { get; set; }
         public string user_Password { get; set; }
         public string user_PasswordSal { get; set; }
+        public string user_NombreUsuario { get; set; }
 
         public virtual tbInfoUnicaUsuario ipInf { get; set; }
-        public virtual tbRugro rug { get; set; }
         public virtual tbUbicacion ubc { get; set; }
+        public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; }
         public virtual ICollection<tbContribuyente> tbContribuyente { get; set; }
         public virtual ICollection<tbDesperdicio> tbDesperdicio { get; set; }
         public virtual ICollection<tbGuardar> tbGuardar { get; set; }

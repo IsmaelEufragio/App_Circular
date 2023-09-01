@@ -108,5 +108,31 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
+        public async Task<ResultadoModel<bool>> WhereAsync(int idTipoUsuario)
+        {
+            var relt = new ResultadoModel<bool>();
+            try
+            {
+                
+                if (idTipoUsuario > 0)
+                {
+                    using var db = new AppCircularContext();
+                    bool tb = await db.tbTipoUsuario.AnyAsync(a => a.tipUs_Id== idTipoUsuario);
+                    relt.Success = tb;
+                    relt.Type = tb? ServiceResultType.Success: ServiceResultType.Error;
+                    relt.Message =tb?"Si se encontro el Tipo de Usuario": "No se encontro el Tipo de Usuario";
+                    return relt;
+                }
+                relt.Success = false;
+                relt.Type = ServiceResultType.Error;
+                relt.Message = "No se se envio nada";
+                return relt;
+            }
+            catch (Exception e)
+            {
+                var error = new ResultadoModel<bool>() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
+                return error;
+            }
+        }
     }
 }
