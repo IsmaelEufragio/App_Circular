@@ -17,12 +17,38 @@ namespace AppCircular.DataAccess.Repositories
     public class UsuarioRepository : IUsuarioRepository
     {
         private static string nombre = "Categoria";
-        public async Task<ResultadoModel<int>> CrearUsuario(UsuarioCrearModel usuario, string Coneccion)
+
+        public async Task<ResultadoModel<bool>> ActualizarLogo(int idUsuario, string RutaImagen)
+        {
+            try
+            {
+                string vali = RutaImagen.Replace(" ", "");
+                if (vali != "" && idUsuario > 0)
+                {
+                    using var db = new AppCircularContext();
+                    var usuaurio = await db.tbUsuarios
+                                .Include(u => u.ipInf)  // Cargar la propiedad de navegación ipInf desde Usuario
+                                .FirstOrDefaultAsync(a => a.user_Id == idUsuario);
+                    if (usuaurio == null) return new ResultadoModel<bool>() { Message = "No se encontro el usaurio al cual actualizar", Success = false, Type = ServiceResultType.BadRecuest};
+                    if(!usuaurio.ipInf.tInf_IgualSubInfo ?? false && !usuaurio.user_UsuarioPrincipal) return new ResultadoModel<bool>() { Message = "El usuario no tiene permisos para modificar la el logo", Success= false, Type = ServiceResultType.Unauthorize };
+                    usuaurio.ipInf.tInf_RutaLogo = RutaImagen;
+                    await db.SaveChangesAsync();
+                    return new ResultadoModel<bool>() { Message = "Se actualizo la imagen del logo", Success = true, Type = ServiceResultType.Success, Value= true };
+                }
+                else return new ResultadoModel<bool>() { Message = $"Error ocurrrio en el Repository {nombre} Error: No cumple con las condiciones", Success = false, Type = ServiceResultType.BadRecuest};
+            }
+            catch (Exception ex)
+            {
+                return  new ResultadoModel<bool>() { Message = $"Error ocurrrio en el Repository {nombre} Error: {ex.Message}", Success = false, Type= ServiceResultType.Error };
+            }
+        }
+
+        public async Task<ResultadoModel<int>> CrearUsuario(UsuarioCrearModel usuario)
         {
             ResultadoModel<int> resultado = new();
             try
             {
-                using (SqlConnection connection = new SqlConnection(Coneccion))
+                using (SqlConnection connection = new SqlConnection(AppCircularContext.ConnectionString))
                 {
                     await connection.OpenAsync();
 
@@ -107,7 +133,7 @@ namespace AppCircular.DataAccess.Repositories
                 if (!(correoV == ""  || telefonoV == ""))
                 {
                     using var db = new AppCircularContext();
-                    bool tb = await db.tbUsuarios.AnyAsync(a => a.user_Correo.ToLower() == correo.ToLower() || a.user_TelefonoPrincipal == telefonoP);
+                    bool tb = await db.tbUsuarios.AnyAsync(a => a.user_Correo.ToLower() == correo.ToLower());
                     relt.Success = !tb;
                     relt.Type = !tb ? ServiceResultType.Success : ServiceResultType.Error;
                     relt.Message = !tb ? $"El usuario con ese correo no existe" : $"Ya existe Es correo";

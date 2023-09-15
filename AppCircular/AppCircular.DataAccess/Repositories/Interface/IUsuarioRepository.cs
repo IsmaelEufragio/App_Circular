@@ -10,7 +10,8 @@ namespace AppCircular.DataAccess.Repositories.Interface
 {
     public interface IUsuarioRepository
     {
-        public Task<ResultadoModel<int>> CrearUsuario(UsuarioCrearModel usuario, string Coneccion);
+        public Task<ResultadoModel<int>> CrearUsuario(UsuarioCrearModel usuario);
         public Task<ResultadoModel<bool>> WhereAsync(string correo, string telefonoP);
+        public Task<ResultadoModel<bool>> ActualizarLogo(int idUsuario, string RutaImagen);
     }
 }

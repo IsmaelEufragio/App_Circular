@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbTipoContrato
 {
-    public partial class tbTipoContrato
-    {
-        public tbTipoContrato()
-        {
-            tbVacante = new HashSet<tbVacante>();
-        }
+    public int tipC_Id { get; set; }
 
-        public int tipC_Id { get; set; }
-        public string tipC_Descripcion { get; set; }
+    public string tipC_Descripcion { get; set; }
 
-        public virtual ICollection<tbVacante> tbVacante { get; set; }
-    }
+    public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
 }

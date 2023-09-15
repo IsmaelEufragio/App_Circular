@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbOtrosConocimientos
-    {
-        public int otrCo_Id { get; set; }
-        public string otrCo_Descripcion { get; set; }
-        public int vac_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbVacante vac { get; set; }
-    }
+public partial class tbOtrosConocimientos
+{
+    public int otrCo_Id { get; set; }
+
+    public string otrCo_Descripcion { get; set; }
+
+    public int vac_Id { get; set; }
+
+    public virtual tbVacante vac { get; set; }
 }

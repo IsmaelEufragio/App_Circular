@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Mime-Detective" Version="23.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AppCircular.DataAccess\AppCircular.DataAccess.csproj" />
   </ItemGroup>
 

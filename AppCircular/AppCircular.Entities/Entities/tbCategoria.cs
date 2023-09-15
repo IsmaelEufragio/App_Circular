@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbCategoria
 {
-    public partial class tbCategoria
-    {
-        public tbCategoria()
-        {
-            tbCategoriaItem = new HashSet<tbCategoriaItem>();
-        }
+    public int catg_Id { get; set; }
 
-        public int catg_Id { get; set; }
-        public string catg_Nombre { get; set; }
+    public string catg_Nombre { get; set; }
 
-        public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; }
-    }
+    public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; } = new List<tbCategoriaItem>();
 }

@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbGenero
 {
-    public partial class tbGenero
-    {
-        public tbGenero()
-        {
-            tbVacante = new HashSet<tbVacante>();
-        }
+    public int gene_Id { get; set; }
 
-        public int gene_Id { get; set; }
-        public string gene_Descripcion { get; set; }
+    public string gene_Descripcion { get; set; }
 
-        public virtual ICollection<tbVacante> tbVacante { get; set; }
-    }
+    public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
 }

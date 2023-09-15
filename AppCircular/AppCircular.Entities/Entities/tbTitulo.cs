@@ -3,24 +3,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbTitulo
 {
-    public partial class tbTitulo
-    {
-        public tbTitulo()
-        {
-            tbEducacion = new HashSet<tbEducacion>();
-            tbTituloProc = new HashSet<tbTituloProc>();
-        }
+    public int titu_Id { get; set; }
 
-        public int titu_Id { get; set; }
-        public string titu_Descripcion { get; set; }
-        public int? ariaP_Id { get; set; }
-        public int nivEd_Id { get; set; }
+    public string titu_Descripcion { get; set; }
 
-        public virtual tbAriaPuesto ariaP { get; set; }
-        public virtual tbNivelEducativo nivEd { get; set; }
-        public virtual ICollection<tbEducacion> tbEducacion { get; set; }
-        public virtual ICollection<tbTituloProc> tbTituloProc { get; set; }
-    }
+    public int? ariaP_Id { get; set; }
+
+    public int nivEd_Id { get; set; }
+
+    public virtual tbAriaPuesto ariaP { get; set; }
+
+    public virtual tbNivelEducativo nivEd { get; set; }
+
+    public virtual ICollection<tbEducacion> tbEducacion { get; set; } = new List<tbEducacion>();
+
+    public virtual ICollection<tbTituloProc> tbTituloProc { get; set; } = new List<tbTituloProc>();
 }

@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbIdiomaItem
-    {
-        public int idItm_Id { get; set; }
-        public int idio_Id { get; set; }
-        public int vac_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbVacante vac { get; set; }
-    }
+public partial class tbIdiomaItem
+{
+    public int idItm_Id { get; set; }
+
+    public int idio_Id { get; set; }
+
+    public int vac_Id { get; set; }
+
+    public virtual tbVacante vac { get; set; }
 }

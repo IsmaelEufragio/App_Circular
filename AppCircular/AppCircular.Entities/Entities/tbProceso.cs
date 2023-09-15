@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbProceso
 {
-    public partial class tbProceso
-    {
-        public tbProceso()
-        {
-            tbTituloProc = new HashSet<tbTituloProc>();
-        }
+    public int proc_Id { get; set; }
 
-        public int proc_Id { get; set; }
-        public string proc_Descripcion { get; set; }
+    public string proc_Descripcion { get; set; }
 
-        public virtual ICollection<tbTituloProc> tbTituloProc { get; set; }
-    }
+    public virtual ICollection<tbTituloProc> tbTituloProc { get; set; } = new List<tbTituloProc>();
 }

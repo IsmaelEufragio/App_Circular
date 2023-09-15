@@ -3,31 +3,39 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbOngEvento
 {
-    public partial class tbOngEvento
-    {
-        public tbOngEvento()
-        {
-            tbOngEventoImagen = new HashSet<tbOngEventoImagen>();
-        }
+    public int ongEv_Id { get; set; }
 
-        public int ongEv_Id { get; set; }
-        public string ongEv_Nombre { get; set; }
-        public string ongEv_Descripcion { get; set; }
-        public string ongEv_Ruta { get; set; }
-        public int ubc_Id { get; set; }
-        public DateTime ongEv_Fecha { get; set; }
-        public bool ongEv_Reporte { get; set; }
-        public string ongEv_JsonReaccion { get; set; }
-        public string ongEv_JsonReporte { get; set; }
-        public int ongEv_HoraInicio { get; set; }
-        public int ongEv_HoraFin { get; set; }
-        public bool ongEv_Logro { get; set; }
-        public int logCa_Id { get; set; }
+    public string ongEv_Nombre { get; set; }
 
-        public virtual tbLogroEventoCategoria logCa { get; set; }
-        public virtual tbUbicacion ubc { get; set; }
-        public virtual ICollection<tbOngEventoImagen> tbOngEventoImagen { get; set; }
-    }
+    public string ongEv_Descripcion { get; set; }
+
+    public string ongEv_Ruta { get; set; }
+
+    public int ubc_Id { get; set; }
+
+    public DateTime ongEv_Fecha { get; set; }
+
+    public bool ongEv_Reporte { get; set; }
+
+    public string ongEv_JsonReaccion { get; set; }
+
+    public string ongEv_JsonReporte { get; set; }
+
+    public int ongEv_HoraInicio { get; set; }
+
+    public int ongEv_HoraFin { get; set; }
+
+    public bool ongEv_Logro { get; set; }
+
+    public int logCa_Id { get; set; }
+
+    public virtual tbLogroEventoCategoria logCa { get; set; }
+
+    public virtual ICollection<tbOngEventoImagen> tbOngEventoImagen { get; set; } = new List<tbOngEventoImagen>();
+
+    public virtual tbUbicacion ubc { get; set; }
 }

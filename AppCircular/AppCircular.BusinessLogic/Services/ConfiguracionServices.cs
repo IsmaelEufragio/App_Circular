@@ -4,6 +4,8 @@ using AppCircular.Common.Models.Usuario;
 using AppCircular.DataAccess.Repositories;
 using AppCircular.DataAccess.Repositories.Interface;
 using AppCircular.Entities.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +14,17 @@ using System.Threading.Tasks;
 
 namespace AppCircular.BusinessLogic.Services
 {
-    public class ConfiguracionServices
+    public class ConfiguracionServices:BaseServices
     {
-        private readonly ConfiguracionRepository _configuracionRepository;
         private static string nombre = "Configuracion";
-        public ConfiguracionServices(ConfiguracionRepository configuracionRepository)
-        {
-            _configuracionRepository = configuracionRepository;
-        }
 
+        public ConfiguracionServices(   ConfiguracionRepository configuracionRepository,
+                                        IOptions<JwtModel> jwtSettings,
+                                        IConfiguration iConfiguration
+            ) : base(configuracionRepository,jwtSettings, iConfiguration)
+        {
+        }
+         
         public async Task<ServiceResult> listaConfiguarcion()
         {
             try
@@ -36,17 +40,17 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
-        public async Task<ServiceResult> CrearlistaConfiguarcion(ConfiguracionModel model)
+        public async Task<ServiceResult> CrearConfiguarcion(ConfiguracionModel model)
         {
             var tb = new tbConfiguracion();
-            tb.conf_Nombre = nombre;
-            tb.conf_Valor = nombre;
+            tb.conf_Nombre = model.Nombre;
+            tb.conf_Valor = model.Valor;
             tb.conf_Descripcion = model.Descripcion;
             var repositorio = await _configuracionRepository.InsertAsync(tb);
             return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoUser(int id, ConfiguracionModel model)
+        public async Task<ServiceResult> ActualizarConfiguracion(int id, ConfiguracionModel model)
         {
             var listado = await _configuracionRepository.UpdateAsync(id, model);
             return new Convertidor<TipoUsuarioViewModel>().mape(listado);

@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbLogroEventoCategoria
 {
-    public partial class tbLogroEventoCategoria
-    {
-        public tbLogroEventoCategoria()
-        {
-            tbOngEvento = new HashSet<tbOngEvento>();
-        }
+    public int logCa_Id { get; set; }
 
-        public int logCa_Id { get; set; }
-        public string logCa_Descripcion { get; set; }
+    public string logCa_Descripcion { get; set; }
 
-        public virtual ICollection<tbOngEvento> tbOngEvento { get; set; }
-    }
+    public virtual ICollection<tbOngEvento> tbOngEvento { get; set; } = new List<tbOngEvento>();
 }

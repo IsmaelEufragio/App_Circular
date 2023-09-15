@@ -3,24 +3,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbInfoUnicaUsuario
 {
-    public partial class tbInfoUnicaUsuario
-    {
-        public tbInfoUnicaUsuario()
-        {
-            tbUsuarios = new HashSet<tbUsuarios>();
-        }
+    public int ipInf_Id { get; set; }
 
-        public int ipInf_Id { get; set; }
-        public string tInf_Nombre { get; set; }
-        public string tInf_RutaLogo { get; set; }
-        public string tInf_RutaPaginaWed { get; set; }
-        public bool? tInf_IgualSubInfo { get; set; }
-        public int tipUs_Id { get; set; }
-        public bool? tInf_Verificado { get; set; }
+    public string tInf_Nombre { get; set; }
 
-        public virtual tbTipoUsuario tipUs { get; set; }
-        public virtual ICollection<tbUsuarios> tbUsuarios { get; set; }
-    }
+    public string tInf_RutaLogo { get; set; }
+
+    public string tInf_RutaPaginaWed { get; set; }
+
+    public bool? tInf_IgualSubInfo { get; set; }
+
+    public int tipUs_Id { get; set; }
+
+    public bool? tInf_Verificado { get; set; }
+
+    public virtual ICollection<tbUsuarios> tbUsuarios { get; set; } = new List<tbUsuarios>();
+
+    public virtual tbTipoUsuario tipUs { get; set; }
 }

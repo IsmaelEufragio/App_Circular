@@ -3,36 +3,49 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbDesperdicio
 {
-    public partial class tbDesperdicio
-    {
-        public tbDesperdicio()
-        {
-            tbDesperdicioImagen = new HashSet<tbDesperdicioImagen>();
-        }
+    public int desp_Id { get; set; }
 
-        public int desp_Id { get; set; }
-        public string desp_Nombre { get; set; }
-        public string desp_Descripcion { get; set; }
-        public decimal desp_Precio { get; set; }
-        public bool desp_Negociado { get; set; }
-        public bool desp_Gratis { get; set; }
-        public string desp_JsonReaccion { get; set; }
-        public bool desp_Reporte { get; set; }
-        public string desp_JsonReporte { get; set; }
-        public string desp_Imagen { get; set; }
-        public int desCa_Id { get; set; }
-        public int oriDe_Id { get; set; }
-        public int? prod_Id { get; set; }
-        public int? serv_Id { get; set; }
-        public int user_Id { get; set; }
+    public string desp_Nombre { get; set; }
 
-        public virtual tbDesperdicioCatedoria desCa { get; set; }
-        public virtual tbOrigeDesperdicio oriDe { get; set; }
-        public virtual tbProducto prod { get; set; }
-        public virtual tbServicio serv { get; set; }
-        public virtual tbUsuarios user { get; set; }
-        public virtual ICollection<tbDesperdicioImagen> tbDesperdicioImagen { get; set; }
-    }
+    public string desp_Descripcion { get; set; }
+
+    public decimal desp_Precio { get; set; }
+
+    public bool desp_Negociado { get; set; }
+
+    public bool desp_Gratis { get; set; }
+
+    public string desp_JsonReaccion { get; set; }
+
+    public bool desp_Reporte { get; set; }
+
+    public string desp_JsonReporte { get; set; }
+
+    public string desp_Imagen { get; set; }
+
+    public int desCa_Id { get; set; }
+
+    public int oriDe_Id { get; set; }
+
+    public int? prod_Id { get; set; }
+
+    public int? serv_Id { get; set; }
+
+    public int user_Id { get; set; }
+
+    public virtual tbDesperdicioCatedoria desCa { get; set; }
+
+    public virtual tbOrigeDesperdicio oriDe { get; set; }
+
+    public virtual tbProducto prod { get; set; }
+
+    public virtual tbServicio serv { get; set; }
+
+    public virtual ICollection<tbDesperdicioImagen> tbDesperdicioImagen { get; set; } = new List<tbDesperdicioImagen>();
+
+    public virtual tbUsuarios user { get; set; }
 }

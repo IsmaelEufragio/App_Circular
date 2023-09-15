@@ -3,51 +3,65 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbUsuarios
 {
-    public partial class tbUsuarios
-    {
-        public tbUsuarios()
-        {
-            tbCategoriaItem = new HashSet<tbCategoriaItem>();
-            tbContribuyente = new HashSet<tbContribuyente>();
-            tbDesperdicio = new HashSet<tbDesperdicio>();
-            tbGuardar = new HashSet<tbGuardar>();
-            tbHorario = new HashSet<tbHorario>();
-            tbNecesita = new HashSet<tbNecesita>();
-            tbProducto = new HashSet<tbProducto>();
-            tbServicio = new HashSet<tbServicio>();
-            tbVacante = new HashSet<tbVacante>();
-        }
+    public int user_Id { get; set; }
 
-        public int user_Id { get; set; }
-        public int ipInf_Id { get; set; }
-        public string user_Descripcion { get; set; }
-        public string user_TelefonoPrincipal { get; set; }
-        public string user_TelefonoSecundario { get; set; }
-        public int ubc_Id { get; set; }
-        public string user_RTNPersona { get; set; }
-        public string user_RTNInstitucion { get; set; }
-        public DateTime? user_FechaFundacion { get; set; }
-        public string user_Correo { get; set; }
-        public string user_Facebook { get; set; }
-        public string user_Intagram { get; set; }
-        public bool user_WhatsApp { get; set; }
-        public bool user_Envio { get; set; }
-        public string user_Password { get; set; }
-        public string user_PasswordSal { get; set; }
-        public string user_NombreUsuario { get; set; }
+    public int ipInf_Id { get; set; }
 
-        public virtual tbInfoUnicaUsuario ipInf { get; set; }
-        public virtual tbUbicacion ubc { get; set; }
-        public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; }
-        public virtual ICollection<tbContribuyente> tbContribuyente { get; set; }
-        public virtual ICollection<tbDesperdicio> tbDesperdicio { get; set; }
-        public virtual ICollection<tbGuardar> tbGuardar { get; set; }
-        public virtual ICollection<tbHorario> tbHorario { get; set; }
-        public virtual ICollection<tbNecesita> tbNecesita { get; set; }
-        public virtual ICollection<tbProducto> tbProducto { get; set; }
-        public virtual ICollection<tbServicio> tbServicio { get; set; }
-        public virtual ICollection<tbVacante> tbVacante { get; set; }
-    }
+    public string user_Descripcion { get; set; }
+
+    public string user_TelefonoPrincipal { get; set; }
+
+    public string user_TelefonoSecundario { get; set; }
+
+    public int ubc_Id { get; set; }
+
+    public string user_RTNPersona { get; set; }
+
+    public string user_RTNInstitucion { get; set; }
+
+    public DateTime? user_FechaFundacion { get; set; }
+
+    public string user_Correo { get; set; }
+
+    public string user_Facebook { get; set; }
+
+    public string user_Intagram { get; set; }
+
+    public bool user_WhatsApp { get; set; }
+
+    public bool user_Envio { get; set; }
+
+    public string user_Password { get; set; }
+
+    public string user_PasswordSal { get; set; }
+
+    public string user_NombreUsuario { get; set; }
+
+    public bool user_UsuarioPrincipal { get; set; }
+
+    public virtual tbInfoUnicaUsuario ipInf { get; set; }
+
+    public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; } = new List<tbCategoriaItem>();
+
+    public virtual ICollection<tbContribuyente> tbContribuyente { get; set; } = new List<tbContribuyente>();
+
+    public virtual ICollection<tbDesperdicio> tbDesperdicio { get; set; } = new List<tbDesperdicio>();
+
+    public virtual ICollection<tbGuardar> tbGuardar { get; set; } = new List<tbGuardar>();
+
+    public virtual ICollection<tbHorario> tbHorario { get; set; } = new List<tbHorario>();
+
+    public virtual ICollection<tbNecesita> tbNecesita { get; set; } = new List<tbNecesita>();
+
+    public virtual ICollection<tbProducto> tbProducto { get; set; } = new List<tbProducto>();
+
+    public virtual ICollection<tbServicio> tbServicio { get; set; } = new List<tbServicio>();
+
+    public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
+
+    public virtual tbUbicacion ubc { get; set; }
 }

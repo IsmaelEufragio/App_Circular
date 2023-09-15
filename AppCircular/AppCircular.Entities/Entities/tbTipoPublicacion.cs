@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbTipoPublicacion
 {
-    public partial class tbTipoPublicacion
-    {
-        public int tiPub_Id { get; set; }
-        public string tiPub_Descripcion { get; set; }
-    }
+    public int tiPub_Id { get; set; }
+
+    public string tiPub_Descripcion { get; set; }
 }

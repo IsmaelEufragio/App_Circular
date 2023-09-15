@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbIdioma
 {
-    public partial class tbIdioma
-    {
-        public int idio_Id { get; set; }
-        public string idio_Descripcion { get; set; }
-    }
+    public int idio_Id { get; set; }
+
+    public string idio_Descripcion { get; set; }
 }

@@ -14,37 +14,39 @@ using Microsoft.Extensions.Options;
 using AppCircular.Common.Models.Categoria;
 using System.Data;
 using AppCircular.BusinessLogic.LibreriaClases;
+using Microsoft.AspNetCore.Http;
+using MimeDetective;
+using System.IO.Compression;
 
 namespace AppCircular.BusinessLogic.Services
 {
-    public class UsuarioServices
+    public class UsuarioServices: BaseServices
     {
         private readonly TipoUsuarioRepository _tipoUsuarioRepository;
         private readonly InfoUnicaUsuarioRepository _infoUnicaUsuarioRepository;
-        private readonly ConfiguracionRepository _configuracionRepository;
-        private  IConfiguration _iConfiguration;
-        private readonly JwtModel _jwtSettings;
+        //private  IConfiguration _iConfiguration;
+        //private readonly JwtModel _jwtSettings;
         private readonly CategoriaRepository _categoriaRepository;
         private readonly UsuarioRepository _usuarioRepository;
         private readonly SubdivicionLugarRepository _subdivicionLugarRepository;
         public UsuarioServices( TipoUsuarioRepository tipoUsuarioRepository,
                                 InfoUnicaUsuarioRepository infoUnicaUsuarioRepository,
                                 ConfiguracionRepository configuracionRepository,
-                                IConfiguration iConfiguration, IOptions<JwtModel> jwtSettings,
+                                IConfiguration iConfiguration,
+                                IOptions<JwtModel> jwtSettings,
                                 CategoriaRepository categoriaRepository,
                                 UsuarioRepository usuarioRepository,
-                                SubdivicionLugarRepository subdivicionLugarRepository)
+                                SubdivicionLugarRepository subdivicionLugarRepository): base(configuracionRepository,jwtSettings,iConfiguration)
         {
             _tipoUsuarioRepository = tipoUsuarioRepository;
             _infoUnicaUsuarioRepository = infoUnicaUsuarioRepository;
-            _configuracionRepository = configuracionRepository;
-            _iConfiguration = iConfiguration;
-            _jwtSettings = jwtSettings.Value;
+            //_iConfiguration = iConfiguration;
+            //_jwtSettings = jwtSettings.Value;
             _categoriaRepository = categoriaRepository;
             _usuarioRepository = usuarioRepository;
             _subdivicionLugarRepository = subdivicionLugarRepository;
         }
-
+         
         #region Tipo Usuario
 
         public async Task<ServiceResult> listaTipoUser()
@@ -168,7 +170,7 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
-        public async Task<ServiceResult> Token(int tiempoExpiracion)
+        public async Task<ServiceResult> Token(int tiempoExpiracion, int idUsario)
         {
             var resul = new ServiceResult();
             try
@@ -179,7 +181,7 @@ namespace AppCircular.BusinessLogic.Services
                 new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("usuario", "Hola")
+                new Claim("UserId", idUsario.ToString())
                 };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
@@ -215,7 +217,7 @@ namespace AppCircular.BusinessLogic.Services
             if (!rutaApi.Success) return resul.Error("No se encontro la configuracion 'ApiRuta'");
             string ruta = rutaApi.Value;
 
-            var tokeM = Token(1);
+            var tokeM = Token(1, 14);
             string token = tokeM.Result.Success ? tokeM.Result.Data : "";
             var email = new EmailModel() {
                 DestinoCorreo = model.Usuario,
@@ -301,8 +303,7 @@ namespace AppCircular.BusinessLogic.Services
             try
             {
                 ServiceResult result = new();
-                model.RutaLogo = "imagen/algo/nse/algo.png";
-                string confi = _iConfiguration.GetConnectionString("DefaultConnection");
+                //string confi = _iConfiguration.GetConnectionString("DefaultConnection");
                 var cong = await _configuracionRepository.WhereAsync("IdTipoUsuarioParticular");
                 if (cong.Success && (int.TryParse(cong.Value, out int idParticualar)))
                 {
@@ -357,12 +358,12 @@ namespace AppCircular.BusinessLogic.Services
                 //Crear contraseñas incriptadas
                 model.PasswordSal = Guid.NewGuid().ToString();
                 model.Password = EncryptPass.GeneratePassword(model.Password, model.PasswordSal);
-
                 //
-                var repositorio = await _usuarioRepository.CrearUsuario(model, confi);
+                model.RutaLogo = "N/A";
+                var repositorio = await _usuarioRepository.CrearUsuario(model);
                 if (repositorio.Success) {
 
-                    ServiceResult token = await Token(2);
+                    ServiceResult token = await Token(2, repositorio.Value);
                     if (token.Success)
                     {
                         var rutaApi = await _configuracionRepository.WhereAsync("ApiRutaToken");
@@ -384,6 +385,33 @@ namespace AppCircular.BusinessLogic.Services
                 return new ServiceResult() { Success = false , Message = $"Error en el Servicio Usuario Al Creaar un Usaurio: {ex.Message}",Type= ServiceResultType.Error};
             }
         }
+
+        public async Task<ServiceResult> SubirArchivoAsync(IFormFile fichero,int idUsuario)
+        {
+            ServiceResult resul = new();
+            try
+            {
+                var rutaLogo = await _configuracionRepository.WhereAsync("SubRutaLogo");
+                if (!rutaLogo.Success) return new Convertidor<string>().mape(rutaLogo);
+                string subRutaDestino = rutaLogo.Value;
+                var GuardarImagen = GurdarArchivo(3, subRutaDestino, fichero);
+                if (!GuardarImagen.Success) return new Convertidor<string>().mape(GuardarImagen);
+                var rutaguardar = await _usuarioRepository.ActualizarLogo(idUsuario, GuardarImagen.Value);
+                if (!rutaguardar.Success) {
+                    var borrarImagen = BorrarArchivo(GuardarImagen.Value);
+                    if (!borrarImagen.Success) return new Convertidor<bool>().mape(borrarImagen);
+                }
+                return new Convertidor<bool>().mape(rutaguardar);
+            }
+            catch (Exception ex)
+            {
+                return resul = new() { Success = false, Message = $"Ocurrio un erro en UsuarioService el error es: {ex}.", Type = ServiceResultType.Error};
+            }
+        }
+
+
+
+
         #endregion
     }
 }

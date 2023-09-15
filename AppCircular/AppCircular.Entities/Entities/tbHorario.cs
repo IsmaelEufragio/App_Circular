@@ -3,18 +3,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbHorario
-    {
-        public int hor_Id { get; set; }
-        public int hor_DiaNumero { get; set; }
-        public int user_Id { get; set; }
-        public byte hor_HoraInicio { get; set; }
-        public byte hor_MinutoInicio { get; set; }
-        public byte hor_HoraFin { get; set; }
-        public byte hor_MinutoFin { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbUsuarios user { get; set; }
-    }
+public partial class tbHorario
+{
+    public int hor_Id { get; set; }
+
+    public int hor_DiaNumero { get; set; }
+
+    public int user_Id { get; set; }
+
+    public byte hor_HoraInicio { get; set; }
+
+    public byte hor_MinutoInicio { get; set; }
+
+    public byte hor_HoraFin { get; set; }
+
+    public byte hor_MinutoFin { get; set; }
+
+    public virtual tbUsuarios user { get; set; }
 }

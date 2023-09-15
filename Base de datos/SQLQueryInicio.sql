@@ -35,11 +35,11 @@ GO
 /*Sección #3*/
 CREATE TABLE [Genl].tbInfoUnicaUsuario(
 	[ipInf_Id]					INT IDENTITY(1,1),
-	[tInf_Nombre]				NVARCHAR(300)	NOT NULL,
-	[tInf_RutaLogo]				NVARCHAR(2000),
-	[tInf_RutaPaginaWed]		NVARCHAR(2000),
 	[tInf_IgualSubInfo]			BIT NOT NULL DEFAULT 1,
-	[tInf_Verificado]			BIT			DEFAULT 0,
+	[tInf_Nombre]				NVARCHAR(300)	NOT NULL,
+	[tInf_RutaLogo]				NVARCHAR(2000) NOT NULL DEFAULT '',
+	[tInf_RutaPaginaWed]		NVARCHAR(2000) NOT NULL DEFAULT '',
+	[tInf_Verificado]			BIT	NOT NULL DEFAULT 0,
 	[tipUs_Id]					INT NOT NULL,
 	CONSTRAINT  PK_Genl_tbInfoUnicaUsuario_tipInfUs_Id	PRIMARY KEY(ipInf_Id),
 	CONSTRAINT  FK_Genl_tbInfoUnicaUsuario_tbTipoUsuario_tipUs_Id	FOREIGN KEY(tipUs_Id) REFERENCES Genl.tbTipoUsuario(tipUs_Id)
@@ -50,7 +50,7 @@ GO
 CREATE TABLE [Genl].tbPais(
 	[pais_Id]						INT IDENTITY(1,1),
 	[pais_Nombre]					NVARCHAR(500)	NOT NULL,
-	[pais_Abrebiatura]				NVARCHAR(10),
+	[pais_Abrebiatura]				NVARCHAR(10)	NOT NULL DEFAULT '',
 	CONSTRAINT  PK_Genl_tbPais_pais_Id	PRIMARY KEY(pais_Id)
 )  
 GO
@@ -72,8 +72,8 @@ CREATE TABLE [Genl].tbMunicipio(
 	[muni_Nombre]					NVARCHAR(500)	NOT NULL,
 	[dept_Id]						INT	NOT NULL,
 	[muni_NuIdentidad]				INT NOT NULL,
-	[muni_ValidaciosTelefono]		NVARCHAR(1000),
-	[muni_ValidaciosTelefonoFijo]	NVARCHAR(1000),
+	[muni_ValidaciosTelefono]		NVARCHAR(1000) NOT NULL DEFAULT '',
+	[muni_ValidaciosTelefonoFijo]	NVARCHAR(1000) NOT NULL DEFAULT '',
 	CONSTRAINT  PK_Genl_tbMunicipio_muni_Id			PRIMARY KEY(muni_Id),
 	CONSTRAINT  FK_Genl_tbMunicipio_tbDepartamento_dept_Id	FOREIGN KEY(dept_Id) REFERENCES Genl.tbDepartamento(dept_Id)
 )  
@@ -136,20 +136,20 @@ CREATE TABLE [Genl].tbUsuarios(
 	[ipInf_Id]						INT				NOT NULL,
 	[user_Descripcion]				NVARCHAR(500)	NOT NULL,
 	[user_TelefonoPrincipal]		NVARCHAR(50)	NOT NULL,
-	[user_TelefonoSecundario]		NVARCHAR(50),
+	[user_TelefonoSecundario]		NVARCHAR(50)	NOT NULL DEFAULT '',
 	[ubc_Id]						INT				NOT NULL,
-	[user_RTNPersona]				NVARCHAR(100),
-	[user_RTNInstitucion]			NVARCHAR(100),
-	[user_NombreUsuario]			NVARCHAR(150)	NOT NULL DEFAULT 'N/A',
-	[user_Password]					NVARCHAR(1000),
-	[user_PasswordSal]				NVARCHAR(1000),
+	[user_RTNPersona]				NVARCHAR(100)	NOT NULL DEFAULT '',
+	[user_RTNInstitucion]			NVARCHAR(100)	NOT NULL DEFAULT '',
+	[user_NombreUsuario]			NVARCHAR(150)	NOT NULL DEFAULT '',
+	[user_Password]					NVARCHAR(1000)	NOT NULL,
+	[user_PasswordSal]				NVARCHAR(1000)	NOT NULL,
 	[user_FechaFundacion]			DATE,
 	[user_Correo]					NVARCHAR(100)	NOT NULL,
-	[user_Facebook]					NVARCHAR(100),
-	[user_Intagram]					NVARCHAR(100),
+	[user_Facebook]					NVARCHAR(100)	NOT NULL DEFAULT '',
+	[user_Intagram]					NVARCHAR(100)	NOT NULL DEFAULT '',
 	[user_WhatsApp]					BIT NOT NULL DEFAULT 0,
 	[user_Envio]					BIT NOT NULL DEFAULT 0,
-
+	[user_UsuarioPrincipal]			BIT NOT NULL DEFAULT 0
 	CONSTRAINT  PK_Genl_tbUsuarios_User_Id			PRIMARY KEY(User_Id),
 	CONSTRAINT  FK_Genl_tbUsuarios_tbInfoUnicaUsuario_ipInf_Id	FOREIGN KEY(ipInf_Id) REFERENCES Genl.tbInfoUnicaUsuario(ipInf_Id),
 	CONSTRAINT  FK_Genl_tbUsuarios_tbUbicacion_ubc_Id				FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id)
@@ -225,9 +225,9 @@ CREATE TABLE [Genl].tbProducto(
 	[prod_Descripcion]				NVARCHAR(300)	NOT NULL,
 	[prod_Precio]					DECIMAL(18,2)	NOT NULL,
 	[prod_Reporte]					BIT NOT NULL DEFAULT 0,
-	[prod_JsonReaccion]			NVARCHAR(MAX),
-	[prod_JsonReporte]				NVARCHAR(MAX),
-	[prod_Imagen]					NVARCHAR(3000),
+	[prod_JsonReaccion]				NVARCHAR(MAX)	NOT NULL DEFAULT '',
+	[prod_JsonReporte]				NVARCHAR(MAX)	NOT NULL DEFAULT '',
+	[prod_Imagen]					NVARCHAR(3000)	NOT NULL DEFAULT '',
 	[prod_Existencia]				BIT NOT NULL DEFAULT 0,
 	[prod_Negociado]				BIT NOT NULL DEFAULT 0,
 	[proCa_Id]						INT NOT NULL,

@@ -3,16 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbContribuyente
-    {
-        public int contr_Id { get; set; }
-        public string contr_Descripcion { get; set; }
-        public int prod_Id { get; set; }
-        public int user_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbProducto prod { get; set; }
-        public virtual tbUsuarios user { get; set; }
-    }
+public partial class tbContribuyente
+{
+    public int contr_Id { get; set; }
+
+    public string contr_Descripcion { get; set; }
+
+    public int prod_Id { get; set; }
+
+    public int user_Id { get; set; }
+
+    public virtual tbProducto prod { get; set; }
+
+    public virtual tbUsuarios user { get; set; }
 }

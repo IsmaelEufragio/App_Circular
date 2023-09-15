@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbProductoImagen
-    {
-        public int proIm_Id { get; set; }
-        public string proIm_Ruta { get; set; }
-        public int prod_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbProducto prod { get; set; }
-    }
+public partial class tbProductoImagen
+{
+    public int proIm_Id { get; set; }
+
+    public string proIm_Ruta { get; set; }
+
+    public int prod_Id { get; set; }
+
+    public virtual tbProducto prod { get; set; }
 }

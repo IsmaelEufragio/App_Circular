@@ -3,22 +3,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbLugar
 {
-    public partial class tbLugar
-    {
-        public tbLugar()
-        {
-            tbSubdivicionLugar = new HashSet<tbSubdivicionLugar>();
-        }
+    public int lug_Id { get; set; }
 
-        public int lug_Id { get; set; }
-        public string lug_Nombre { get; set; }
-        public int catLug_Id { get; set; }
-        public int muni_Id { get; set; }
+    public string lug_Nombre { get; set; }
 
-        public virtual tbCategoriaLugar catLug { get; set; }
-        public virtual tbMunicipio muni { get; set; }
-        public virtual ICollection<tbSubdivicionLugar> tbSubdivicionLugar { get; set; }
-    }
+    public int catLug_Id { get; set; }
+
+    public int muni_Id { get; set; }
+
+    public virtual tbCategoriaLugar catLug { get; set; }
+
+    public virtual tbMunicipio muni { get; set; }
+
+    public virtual ICollection<tbSubdivicionLugar> tbSubdivicionLugar { get; set; } = new List<tbSubdivicionLugar>();
 }

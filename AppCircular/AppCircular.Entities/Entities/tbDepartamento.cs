@@ -3,21 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbDepartamento
 {
-    public partial class tbDepartamento
-    {
-        public tbDepartamento()
-        {
-            tbMunicipio = new HashSet<tbMunicipio>();
-        }
+    public int dept_Id { get; set; }
 
-        public int dept_Id { get; set; }
-        public string dept_Nombre { get; set; }
-        public int pais_Id { get; set; }
-        public int dept_NuIdentidad { get; set; }
+    public string dept_Nombre { get; set; }
 
-        public virtual tbPais pais { get; set; }
-        public virtual ICollection<tbMunicipio> tbMunicipio { get; set; }
-    }
+    public int pais_Id { get; set; }
+
+    public int dept_NuIdentidad { get; set; }
+
+    public virtual tbPais pais { get; set; }
+
+    public virtual ICollection<tbMunicipio> tbMunicipio { get; set; } = new List<tbMunicipio>();
 }

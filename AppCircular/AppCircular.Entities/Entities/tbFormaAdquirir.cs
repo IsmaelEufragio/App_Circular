@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbFormaAdquirir
 {
-    public partial class tbFormaAdquirir
-    {
-        public tbFormaAdquirir()
-        {
-            tbNecesita = new HashSet<tbNecesita>();
-        }
+    public int forAd_Id { get; set; }
 
-        public int forAd_Id { get; set; }
-        public string forAd_Descripcion { get; set; }
+    public string forAd_Descripcion { get; set; }
 
-        public virtual ICollection<tbNecesita> tbNecesita { get; set; }
-    }
+    public virtual ICollection<tbNecesita> tbNecesita { get; set; } = new List<tbNecesita>();
 }

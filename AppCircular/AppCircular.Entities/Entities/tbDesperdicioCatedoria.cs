@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbDesperdicioCatedoria
 {
-    public partial class tbDesperdicioCatedoria
-    {
-        public tbDesperdicioCatedoria()
-        {
-            tbDesperdicio = new HashSet<tbDesperdicio>();
-        }
+    public int desCa_Id { get; set; }
 
-        public int desCa_Id { get; set; }
-        public string desCa_Descripcion { get; set; }
+    public string desCa_Descripcion { get; set; }
 
-        public virtual ICollection<tbDesperdicio> tbDesperdicio { get; set; }
-    }
+    public virtual ICollection<tbDesperdicio> tbDesperdicio { get; set; } = new List<tbDesperdicio>();
 }

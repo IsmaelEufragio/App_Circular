@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
+namespace AppCircular.Entities.Entities;
+
+public partial class tbNivelEducativo
 {
-    public partial class tbNivelEducativo
-    {
-        public tbNivelEducativo()
-        {
-            tbTitulo = new HashSet<tbTitulo>();
-        }
+    public int nivEd_Id { get; set; }
 
-        public int nivEd_Id { get; set; }
-        public string nivEd_Descripcion { get; set; }
+    public string nivEd_Descripcion { get; set; }
 
-        public virtual ICollection<tbTitulo> tbTitulo { get; set; }
-    }
+    public virtual ICollection<tbTitulo> tbTitulo { get; set; } = new List<tbTitulo>();
 }

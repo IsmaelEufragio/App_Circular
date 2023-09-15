@@ -3,15 +3,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbGuardar
-    {
-        public int guard_Id { get; set; }
-        public int user_Id { get; set; }
-        public int guard_RutaPublicacion { get; set; }
-        public int guard_Publicacion { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbUsuarios user { get; set; }
-    }
+public partial class tbGuardar
+{
+    public int guard_Id { get; set; }
+
+    public int user_Id { get; set; }
+
+    public int guard_RutaPublicacion { get; set; }
+
+    public int guard_Publicacion { get; set; }
+
+    public virtual tbUsuarios user { get; set; }
 }

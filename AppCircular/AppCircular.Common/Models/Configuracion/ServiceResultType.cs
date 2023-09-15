@@ -28,7 +28,7 @@ namespace AppCircular.Common.Models.Configuracion
 
 
         //Bad Request - La solicitud no se pudo entender o faltan parámetros requeridos.
-        BadRecuest = 400,
+        BadRecuest = 400,//====
         //Unauthorized - El cliente debe autenticarse para obtener la respuesta.
         Unauthorize = 401,
         //Forbidden - El servidor ha entendido la solicitud, pero se niega a autorizarla.

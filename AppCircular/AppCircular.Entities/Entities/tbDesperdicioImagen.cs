@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbDesperdicioImagen
-    {
-        public int despIm_Id { get; set; }
-        public string despIm_Ruta { get; set; }
-        public int desp_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbDesperdicio desp { get; set; }
-    }
+public partial class tbDesperdicioImagen
+{
+    public int despIm_Id { get; set; }
+
+    public string despIm_Ruta { get; set; }
+
+    public int desp_Id { get; set; }
+
+    public virtual tbDesperdicio desp { get; set; }
 }

@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbOngEventoImagen
-    {
-        public int ongIm_Id { get; set; }
-        public string ongIm_Ruta { get; set; }
-        public int ongEv_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbOngEvento ongEv { get; set; }
-    }
+public partial class tbOngEventoImagen
+{
+    public int ongIm_Id { get; set; }
+
+    public string ongIm_Ruta { get; set; }
+
+    public int ongEv_Id { get; set; }
+
+    public virtual tbOngEvento ongEv { get; set; }
 }

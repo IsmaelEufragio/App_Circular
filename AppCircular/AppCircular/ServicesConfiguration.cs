@@ -27,9 +27,11 @@ namespace AppCircular
 
         public static void BusinessLogic(this IServiceCollection services)
         {
+            services.AddScoped<BaseServices>();
             services.AddScoped<UsuarioServices>();
             services.AddScoped<UbicacionServices>();
             services.AddScoped<ConfiguracionServices>();
+            //services.AddScoped<BaseServices>();
         }
     }
 }

@@ -3,16 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbEducacion
-    {
-        public int ed_Id { get; set; }
-        public bool ed_Requerido { get; set; }
-        public int titu_Id { get; set; }
-        public int vac_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbTitulo titu { get; set; }
-        public virtual tbVacante vac { get; set; }
-    }
+public partial class tbEducacion
+{
+    public int ed_Id { get; set; }
+
+    public bool ed_Requerido { get; set; }
+
+    public int titu_Id { get; set; }
+
+    public int vac_Id { get; set; }
+
+    public virtual tbTitulo titu { get; set; }
+
+    public virtual tbVacante vac { get; set; }
 }

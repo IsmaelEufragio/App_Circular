@@ -3,15 +3,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbOrigen
-    {
-        public int orig_Id { get; set; }
-        public string orig_Descripcion { get; set; }
-        public string orig_Imagen { get; set; }
-        public int prod_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbProducto prod { get; set; }
-    }
+public partial class tbOrigen
+{
+    public int orig_Id { get; set; }
+
+    public string orig_Descripcion { get; set; }
+
+    public string orig_Imagen { get; set; }
+
+    public int prod_Id { get; set; }
+
+    public virtual tbProducto prod { get; set; }
 }

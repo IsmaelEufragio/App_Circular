@@ -3,26 +3,39 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities
-{
-    public partial class tbNecesita
-    {
-        public int nece_Id { get; set; }
-        public string nece_Nombre { get; set; }
-        public string nece_Descripcion { get; set; }
-        public bool nece_Reporte { get; set; }
-        public bool nece_Estado { get; set; }
-        public string nece_JsonReporte { get; set; }
-        public string nece_Imagen { get; set; }
-        public int? nece_Cantidad { get; set; }
-        public decimal nece_RandoInicial { get; set; }
-        public decimal nece_RangoFinal { get; set; }
-        public int? nesCa_Id { get; set; }
-        public int forAd_Id { get; set; }
-        public int user_Id { get; set; }
+namespace AppCircular.Entities.Entities;
 
-        public virtual tbFormaAdquirir forAd { get; set; }
-        public virtual tbNeceitaCatedoria nesCa { get; set; }
-        public virtual tbUsuarios user { get; set; }
-    }
+public partial class tbNecesita
+{
+    public int nece_Id { get; set; }
+
+    public string nece_Nombre { get; set; }
+
+    public string nece_Descripcion { get; set; }
+
+    public bool nece_Reporte { get; set; }
+
+    public bool nece_Estado { get; set; }
+
+    public string nece_JsonReporte { get; set; }
+
+    public string nece_Imagen { get; set; }
+
+    public int? nece_Cantidad { get; set; }
+
+    public decimal nece_RandoInicial { get; set; }
+
+    public decimal nece_RangoFinal { get; set; }
+
+    public int? nesCa_Id { get; set; }
+
+    public int forAd_Id { get; set; }
+
+    public int user_Id { get; set; }
+
+    public virtual tbFormaAdquirir forAd { get; set; }
+
+    public virtual tbNeceitaCatedoria nesCa { get; set; }
+
+    public virtual tbUsuarios user { get; set; }
 }
