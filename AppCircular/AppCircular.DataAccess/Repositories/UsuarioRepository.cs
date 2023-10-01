@@ -27,11 +27,11 @@ namespace AppCircular.DataAccess.Repositories
                 {
                     using var db = new AppCircularContext();
                     var usuaurio = await db.tbUsuarios
-                                .Include(u => u.ipInf)  // Cargar la propiedad de navegación ipInf desde Usuario
+                                .Include(u => u.usInf)  // Cargar la propiedad de navegación ipInf desde Usuario
                                 .FirstOrDefaultAsync(a => a.user_Id == idUsuario);
                     if (usuaurio == null) return new ResultadoModel<bool>() { Message = "No se encontro el usaurio al cual actualizar", Success = false, Type = ServiceResultType.BadRecuest};
-                    if(!usuaurio.ipInf.tInf_IgualSubInfo ?? false && !usuaurio.user_UsuarioPrincipal) return new ResultadoModel<bool>() { Message = "El usuario no tiene permisos para modificar la el logo", Success= false, Type = ServiceResultType.Unauthorize };
-                    usuaurio.ipInf.tInf_RutaLogo = RutaImagen;
+                    if(!usuaurio.usInf.usInf_IgualSubInfo ?? false && !usuaurio.user_UsuarioPrincipal) return new ResultadoModel<bool>() { Message = "El usuario no tiene permisos para modificar la el logo", Success= false, Type = ServiceResultType.Unauthorize };
+                    usuaurio.usInf.usInf_RutaLogo = RutaImagen;
                     await db.SaveChangesAsync();
                     return new ResultadoModel<bool>() { Message = "Se actualizo la imagen del logo", Success = true, Type = ServiceResultType.Success, Value= true };
                 }
@@ -59,15 +59,13 @@ namespace AppCircular.DataAccess.Repositories
                         // Agrega parámetros si es necesario
                         command.Parameters.AddWithValue("@tipUs_Id", usuario.tipUs_Id);
                         command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
-                        command.Parameters.AddWithValue("@RutaLogo", usuario.RutaLogo);
                         command.Parameters.AddWithValue("@RutaPaginaWed", usuario.PaginaWed);
                         command.Parameters.AddWithValue("@Descripcion", usuario.Descripcion);
-                        command.Parameters.AddWithValue("@FechaFundacion", usuario.FechaFundacion);
                         command.Parameters.AddWithValue("@NombreUsuario", usuario.NombreUsuario);
+                        command.Parameters.AddWithValue("@tipIde_Id", usuario.tipIde_Id);
+                        command.Parameters.AddWithValue("@Identificacion", usuario.Identidad);
                         command.Parameters.AddWithValue("@Password", usuario.Password);
                         command.Parameters.AddWithValue("@PasswordSal", usuario.PasswordSal);
-                        command.Parameters.AddWithValue("@TelefonoPricipal", usuario.PrimerTelefono);
-                        command.Parameters.AddWithValue("@TelefonoSecundario", usuario.SegundoTelefono);
                         command.Parameters.AddWithValue("@Facebook", usuario.Facebook);
                         command.Parameters.AddWithValue("@Intagram", usuario.Intagram);
                         command.Parameters.AddWithValue("@WhatsApp", usuario.WhatsApp);
@@ -79,6 +77,7 @@ namespace AppCircular.DataAccess.Repositories
                         //Tabla Horario y de Categoria
                         command.Parameters.AddWithValue("@tbHorarios", usuario.HorarioDate);
                         command.Parameters.AddWithValue("@tbCategoriaItem", usuario.CategoriaDate);
+                        command.Parameters.AddWithValue("@tbUsuarioTelefono", usuario.TelefonoDate);
                         //Parametros de salida
                         SqlParameter successParameter = new SqlParameter("@Success", SqlDbType.Bit);
                         successParameter.Direction = ParameterDirection.Output;
@@ -123,25 +122,123 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<bool>> WhereAsync(string correo, string telefonoP)
+        public async Task<ResultadoModel<tbUsuarios>> Login(string correo)
+        {
+            ResultadoModel<tbUsuarios> resultado = new();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(AppCircularContext.ConnectionString))
+                {
+                    await connection.OpenAsync();
+                    using (SqlCommand command = new SqlCommand("dbo.sp_Login", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandTimeout = 0;
+                        // Agrega parámetros si es necesario
+                        command.Parameters.AddWithValue("@Correo", correo);
+
+                        SqlParameter successParameter = new SqlParameter("@Success", SqlDbType.Bit);
+                        successParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(successParameter);
+
+                        SqlParameter messageParameter = new SqlParameter("@Message", SqlDbType.NVarChar, 1000);
+                        messageParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(messageParameter);
+
+                        SqlParameter idUsuarioParameter = new SqlParameter("@IdUsuario", SqlDbType.Int);
+                        idUsuarioParameter.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(idUsuarioParameter);
+
+                        SqlParameter passwordSal = new SqlParameter("@PasswordSal", SqlDbType.NVarChar, 1000);
+                        passwordSal.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(passwordSal);
+
+                        SqlParameter password = new SqlParameter("@Password", SqlDbType.NVarChar, 1000);
+                        password.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(password);
+
+                        // Ejecuta el procedimiento almacenado
+                        SqlDataReader reader = await command.ExecuteReaderAsync();
+                        tbUsuarios us = new tbUsuarios();
+                        // Procesa los resultados si los hay
+                        if (command.Parameters.Contains("@Success") && command.Parameters["@Success"].Value != DBNull.Value)
+                        {
+                            resultado.Success = (bool)command.Parameters["@Success"].Value;
+                        }
+                        if (command.Parameters.Contains("@Message") && command.Parameters["@Message"].Value != DBNull.Value)
+                        {
+                            resultado.Message = (string)command.Parameters["@Message"].Value;
+                        }
+                        if (command.Parameters.Contains("@IdUsuario") && command.Parameters["@IdUsuario"].Value != DBNull.Value)
+                        {
+                            us.user_Id = (int)command.Parameters["@IdUsuario"].Value;
+                        }else return new ResultadoModel<tbUsuarios>() { Message = "El Id del usuario no pudo ser octenido", Success = false };
+                        if (command.Parameters.Contains("@PasswordSal") && command.Parameters["@PasswordSal"].Value != DBNull.Value)
+                        {
+                            us.user_PasswordSal = (string)command.Parameters["@PasswordSal"].Value;
+                        }else return new ResultadoModel<tbUsuarios>() { Message = "Unas de las contraseñas no pudo ser optenidaS", Success = false };
+                        if (command.Parameters.Contains("@Password") && command.Parameters["@Password"].Value != DBNull.Value)
+                        {
+                            us.user_Password = (string)command.Parameters["@Password"].Value;
+                        }else return new ResultadoModel<tbUsuarios>() { Message = "Unas de las contraseñas no pudo ser optenida", Success = false };
+                        resultado.Value = us;
+                        return resultado;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                return new ResultadoModel<tbUsuarios>() { Success = false , Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Type = ServiceResultType.Error};
+            }
+        }
+
+        public async Task<ResultadoModel<bool>> WhereAsync(string correo, List<TelefonoViewModel> telefono)
         {
             var relt = new ResultadoModel<bool>();
             try
             {
-                string correoV = correo.Replace(" ", "");
-                string telefonoV = telefonoP.Replace(" ", "");
-                if (!(correoV == ""  || telefonoV == ""))
+                using (AppCircularContext db =  new AppCircularContext())
                 {
-                    using var db = new AppCircularContext();
-                    bool tb = await db.tbUsuarios.AnyAsync(a => a.user_Correo.ToLower() == correo.ToLower());
-                    relt.Success = !tb;
-                    relt.Type = !tb ? ServiceResultType.Success : ServiceResultType.Error;
-                    relt.Message = !tb ? $"El usuario con ese correo no existe" : $"Ya existe Es correo";
-                    return relt;
+                    if (telefono.Count > 0)
+                    {
+                        foreach (var item in telefono)
+                        {
+                            var vali = db.tbUsuarioTelefono.Include(e=> e.user).ToList().Where(a=> a.user.user_Verificado).Any(i=> i.usTel_Numero == item.Telefono);
+                            if (vali)
+                            {
+                                relt.Success = false;
+                                relt.Message = $"El numero de telefono {item.Telefono} ya existe.";
+                                relt.Type = ServiceResultType.Error;
+
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        relt.Success = false;
+                        relt.Message = "Necesita almenos un numero de telefono.";
+                        relt.Type = ServiceResultType.Error;
+                    }
+
+                    string correoV = correo.Replace(" ", "");
+                    if (correoV != "")
+                    {
+                        bool tb = await db.tbUsuarios.AnyAsync(a => a.user_Correo.ToLower() == correo.ToLower() && a.user_Verificado);
+                        relt.Success = !tb;
+                        relt.Type = !tb ? ServiceResultType.Success : ServiceResultType.Error;
+                        relt.Message += !tb ? $"El usuario con este correo no existe" : $" El correo {correo} Ya existe.";
+                    }
+                    else
+                    {
+                        relt.Success = false;
+                        relt.Type = ServiceResultType.Error;
+                        relt.Message += " Es necesario un correo.";
+                    }
+
                 }
-                relt.Success = false;
-                relt.Type = ServiceResultType.Error;
-                relt.Message = "No se se envio nada";
+
                 return relt;
             }
             catch (Exception e)
@@ -150,5 +247,6 @@ namespace AppCircular.DataAccess.Repositories
                 return error;
             }
         }
+
     }
 }

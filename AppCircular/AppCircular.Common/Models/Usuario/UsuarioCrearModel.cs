@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -11,15 +13,18 @@ namespace AppCircular.Common.Models.Usuario
 {
     public class UsuarioCrearModel
     {
+        public IFormFile Logo { get; set; }
         [Required(ErrorMessage = "El tipo de Usuario es requerido.")]
         public int tipUs_Id { get; set; }
+
+        [Required(ErrorMessage = "El tipo de Identidad es requerido.")]
+        public int tipIde_Id { get; set; }
+        [Required(ErrorMessage = "La Identidad es requerido.")]
+        public string Identidad { get; set; }
 
         [Required(ErrorMessage = "El Nombre es requerido.")]
         [StringLength(300, MinimumLength = 2, ErrorMessage = "El Nombre debe tener entre 2 y 300 caracteres.")]
         public string Nombre { get; set; }
-
-        [JsonIgnore]
-        public string? RutaLogo { get; set; }
 
         public string PaginaWed { get; set; }
 
@@ -32,28 +37,21 @@ namespace AppCircular.Common.Models.Usuario
         ErrorMessage = "La contraseña debe tener al menos 8 caracteres y contener letras, números y caracteres especiales.")]
         public string Password { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, BindNever]
         public string? PasswordSal { get; set; }
 
         [Required(ErrorMessage = "El Descripcion es requerido.")]
         [StringLength(500, MinimumLength = 2, ErrorMessage = "La Descripcion debe tener entre 2 y 500 caracteres.")]
         public string Descripcion { get; set; }
 
-        [Required(ErrorMessage = "Por lo menos un telefeno es requerido.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "El Primer telefono debe tener entre 2 y 50 caracteres.")]
-        public string PrimerTelefono { get; set; }
-
-        [StringLength(50,ErrorMessage = "No puede exeder los 50 caracteres.")]
-        public string SegundoTelefono { get; set; }
-
         [StringLength(100, ErrorMessage = "No puede exeder los 100 caracteres.")]
         public string Facebook { get; set; }
 
         [StringLength(100, ErrorMessage = "No puede exeder los 100 caracteres.")]
         public string Intagram { get; set; }
-        public bool WhatsApp { get; set; }
-        public bool Envio { get; set; }
-        public DateTime FechaFundacion { get; set; }
+        public bool? WhatsApp { get; set; }
+        public bool? Envio { get; set; }
+
         [Required(ErrorMessage = "El Correo es requerido.")]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "El Correo debe tener entre 2 y 100 caracteres.")]
         [EmailAddress(ErrorMessage = "Ingrese una dirección de correo electrónico válida.")]
@@ -77,9 +75,15 @@ namespace AppCircular.Common.Models.Usuario
         [MinLength(1, ErrorMessage = "Debe haber al menos un elemento en la lista de Categorías.")]
         public List<CategoriaItemModel> Categoria { get; set; }
 
-        [JsonIgnore]
+        [Required(ErrorMessage = "La lista de Telefono es requerida.")]
+        [MinLength(1, ErrorMessage = "Debe haber al menos un elemento en la lista de Telefono.")]
+        public List<TelefonoViewModel> Telefono{ get; set; }
+
+        [JsonIgnore, BindNever]
         public DataTable? HorarioDate { get; set; }
-        [JsonIgnore]
+        [JsonIgnore, BindNever]
         public DataTable? CategoriaDate { get; set; }
+        [JsonIgnore, BindNever]
+        public DataTable? TelefonoDate { get; set; }
     }
 }

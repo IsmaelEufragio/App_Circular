@@ -20,7 +20,7 @@ namespace AppCircular.DataAccess.Repositories
             {
                 using var db = new AppCircularContext();
                 ResultadoModel<CategoriaSubdivicionViewModel> result = new();
-                var W = db.tbCategoriaSubdivicion.Any(a => a.sub_Nombre.ToLower() == item.sub_Nombre.ToLower());
+                var W = db.tbCategoriaSubdivicion.Any(a => a.catSub_Nombre.ToLower() == item.catSub_Nombre.ToLower());
                 if (!W)
                 {
                     db.tbCategoriaSubdivicion.Add(item);

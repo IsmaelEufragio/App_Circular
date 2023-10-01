@@ -17,53 +17,45 @@ namespace AppCircular.BusinessLogic.Services
     {
         protected readonly ConfiguracionRepository _configuracionRepository;
         protected readonly JwtModel _jwtSettings;
-        protected IConfiguration _iConfiguration;
-        public BaseServices(ConfiguracionRepository configuracionRepository,
-                            IOptions<JwtModel> jwtSettings,
-                             IConfiguration iConfiguration)
+        public BaseServices(IOptions<JwtModel> jwtSettingsOptions)
         {
-            _configuracionRepository = configuracionRepository;
-            _jwtSettings = jwtSettings.Value;
-            _iConfiguration = iConfiguration;
+            _configuracionRepository = new ConfiguracionRepository();
+            _jwtSettings = jwtSettingsOptions.Value;
         }
 
-        public ResultadoModel<string> GurdarArchivo(int ValiTamano, string subrutaDestino, IFormFile fichero)
+        public ResultadoModel<string> ValidarArchivo(int ValiTamano, string pathDestino, IFormFile fichero)
         {
             ResultadoModel<string> resul = new();
             try
             {
                 if (fichero == null || fichero.Length == 0) return resul = new() { Success = false, Message = "Tiene que existir algun Archivo", Type = ServiceResultType.BadRecuest };
+                if (ValiTamano <= 0 || pathDestino == "") return resul = new() { Success = false, Message = "Es necesario que se envie los parametro", Type = ServiceResultType.BadRecuest };
                 if (fichero.Length > ValiTamano * 1024 * 1024) return resul = new() { Success = false, Message = $"El Archivo es demaciado grande que {ValiTamano} mega byte", Type = ServiceResultType.BadRecuest };
-
                 var Inspector = new ContentInspectorBuilder()
                 {
                     Definitions = MimeDetective.Definitions.Default.All()
                 }.Build();
 
                 var Results = Inspector.Inspect(fichero.OpenReadStream());
-
                 var ResultsByFileExtension = Results.ByFileExtension();
                 var ResultsByMimeType = Results.ByMimeType();
-
                 if (ResultsByFileExtension.Length > 0)
                 {
                     string nombreExtencion = ResultsByFileExtension[0].Extension;
-                    string mameArchivo = ValiArchivo(nombreExtencion);
-
+                    string mameArchivo = ValiArchivoExtencio(nombreExtencion);
                     if (mameArchivo != "")
                     {
                         string nombreImagenUnico = Guid.NewGuid().ToString() + "." + nombreExtencion;
 
-                        string rutaDestino = Path.Combine(Directory.GetCurrentDirectory(), subrutaDestino);
+                        string rutaDestino = Path.Combine(Directory.GetCurrentDirectory(), pathDestino);
                         if (!Directory.Exists(rutaDestino)) Directory.CreateDirectory(rutaDestino);
                         string rutaDestinoCompleta = Path.Combine(rutaDestino, nombreImagenUnico);
-                        using (var stream = new FileStream(rutaDestinoCompleta, FileMode.Create))
-                        {
-                            fichero.CopyTo(stream);
-                        }
-                        return resul = new() { Value = rutaDestinoCompleta, Success = true, Message = "Archivo Creado Exitosamente", Type = ServiceResultType.Success };
-                    }else return resul = new() { Success = false, Message = "Es tipo de archivo no encontrado", Type = ServiceResultType.BadRecuest };
-                }else return resul = new() { Success = false, Message = "Es tipo de archivo no encontrado", Type = ServiceResultType.BadRecuest };
+                        return resul = new() { Success = true, Message = "El archivo cumplio con todo lo requerido se debuelve la ruta", Value = rutaDestinoCompleta, Type = ServiceResultType.Success };
+                    }
+                    else return resul = new() { Success = false, Message = "Es tipo de archivo no encontrado", Type = ServiceResultType.BadRecuest };
+                }
+                else return resul = new() { Success = false, Message = "Es tipo de archivo no encontrado", Type = ServiceResultType.BadRecuest };
+
             }
             catch (Exception ex)
             {
@@ -71,7 +63,24 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
-        public string ValiArchivo(string extencion)
+        public ResultadoModel<bool> GurdarArchivo(string pathCompleto, IFormFile fichero)
+        {
+            ResultadoModel<bool> resul = new();
+            try
+            {
+                using (var stream = new FileStream(pathCompleto, FileMode.Create))
+                {
+                    fichero.CopyTo(stream);
+                }
+                return resul = new() { Value = true, Success = true, Message = "Archivo Creado Exitosamente", Type = ServiceResultType.Success };
+            }
+            catch (Exception ex)
+            {
+                return resul = new() { Success = false, Message = $"Ocurrio un erro en BaseService, Error es: {ex}.", Type = ServiceResultType.Error };
+            }
+        }
+
+        public string ValiArchivoExtencio(string extencion)
         {
             Dictionary<string, string> tiposArchivoImagen = new Dictionary<string, string>
             {

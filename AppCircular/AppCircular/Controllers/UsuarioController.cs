@@ -1,15 +1,19 @@
 ﻿using AppCircular.BusinessLogic;
 using AppCircular.BusinessLogic.Services;
 using AppCircular.Common.Models.Configuracion;
+using AppCircular.Common.Models.Genericos;
 using AppCircular.Common.Models.Usuario;
+using AppCircular.Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic.FileIO;
+using MimeDetective.Storage;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Timers;
+//using static System.Net.Mime.MediaTypeNames;
 
 namespace AppCircular.Controllers
 {
@@ -25,18 +29,14 @@ namespace AppCircular.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
         #region Tipo de Usuario
-        [HttpGet]
-        [Authorize]
-        [Route("TipoUsuarioLis")]
+        [HttpGet, Authorize, Route("TipoUsuarioLis")]
         public async Task<IActionResult> ListaTipoUsuario()
         {
             var item = await _usuarioServices.listaTipoUser();
             return Ok(item);
         }
 
-        [HttpPost]
-        [Authorize]
-        [Route("TipoUsuarioInsert")]
+        [HttpPost, Authorize, Route("TipoUsuarioInsert")]
         public async Task<IActionResult> CrearTipoUsuario(TipoUsuarioModel model)
         {
             var resul = new ServiceResult();
@@ -47,9 +47,7 @@ namespace AppCircular.Controllers
             return Ok(resul);
         }
 
-        [HttpPut]
-        [Authorize]
-        [Route("TipoUsuarioUpdate/{Id}")]
+        [HttpPut, Authorize, Route("TipoUsuarioUpdate/{Id}")]
         public async Task<IActionResult> ActulizarTipoUsuario(int Id, TipoUsuarioModel model)
         {
             var resul = new ServiceResult();
@@ -63,18 +61,14 @@ namespace AppCircular.Controllers
 
         #region Informacion de usuario Unica
 
-        [HttpGet]
-        [Authorize]
-        [Route("InfoUsuarioLis")]
+        [HttpGet, Authorize, Route("InfoUsuarioLis")]
         public async Task<IActionResult> ListaInfoUsuario()
         {
             var item = await _usuarioServices.listaInfoUsaurio();
             return Ok(item);
         }
 
-        [HttpPost]
-        [Authorize]
-        [Route("InfoUsuarioInsert")]
+        [HttpPost, Authorize, Route("InfoUsuarioInsert")]
         public async Task<IActionResult> CrearInfoUsuario(InfoUnicaUsuarioViewModel model)
         {
             var resul = new ServiceResult();
@@ -102,18 +96,7 @@ namespace AppCircular.Controllers
         [HttpPost, Route("Login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var resul = new ServiceResult();
-            if (model != null)
-            {
-                if (model.Usuario == "Hola" && model.Passsword == "1234")
-                {
-                    var resulT = await _usuarioServices.Token(5, 14);
-                    return Ok(resulT);
-                }
-                resul.Message = "No chavalo la contraseña no perrin";
-                return Ok(resul);
-            }
-            resul.Message = "Nos se ingreso nada";
+            var resul = await _usuarioServices.Varificar(model);
             return Ok(resul);
 
         }
@@ -124,7 +107,7 @@ namespace AppCircular.Controllers
             var resul = new ServiceResult();
             if (model != null)
             {
-                if (model.Usuario == "josueeufragio93@gmail.com" && model.Passsword == "1234")
+                if (model.Correo == "josueeufragio93@gmail.com" && model.Passsword == "1234")
                 {
                     var resulT = await _usuarioServices.Varificar(model);
                     return Ok(resulT);
@@ -154,13 +137,36 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost, Route("CrearUsuario")]
-        public async Task<IActionResult> CrearUsuario(UsuarioCrearModel modelo)
+        public async Task<IActionResult> CrearUsuario([FromForm] ModelTestCrearUsuario modelo)
         {
-            //var resul = await _usuarioServices.CrearUsaurio(modelo, logo);
-            //return Ok(resul);
-            return Ok("Nada");
+            UsuarioCrearModel model = new()
+            {
+                Logo = modelo.Logo,
+                tipUs_Id = modelo.tipUs_Id,
+                tipIde_Id = modelo.tipIde_Id,
+                Identidad = modelo.Identidad,
+                Nombre = modelo.Nombre,
+                PaginaWed = modelo.PaginaWed,
+                NombreUsuario = modelo.NombreUsuario,
+                Password = modelo.Password,
+                Descripcion = modelo.Descripcion,
+                Facebook = modelo.Facebook,
+                Intagram = modelo.Intagram,
+                WhatsApp = modelo.WhatsApp,
+                Envio = modelo.Envio,
+                Correo = modelo.Correo,
+                subLug_Id = modelo.subLug_Id,
+                Latitud = modelo.Latitud,
+                Longitub = modelo.Longitub,
+                Horario = modelo.Horario,
+                Categoria = modelo.Categoria,
+                Telefono = modelo.Telefono,
+            };
+            var resul = await _usuarioServices.CrearUsaurio(model);
+            return Ok(resul);
+            //return Ok("Todo tuanis");    
         }
-
+           
         [HttpPost, Route("LogoUsuario")]
         [Authorize]
         public async Task<ActionResult> subirDocumentos(IFormFile fichero)
@@ -183,27 +189,38 @@ namespace AppCircular.Controllers
             }
         }
 
-        [HttpPost, Route("subirDocumentoBase64")]
-        public ActionResult subirDocumentosBase64([FromForm] string base64, [FromForm] string nombreFichero)
+        #endregion
+
+        #region Telefono de Usuario
+        [HttpGet,Authorize, Route("TelefonoUsuarioLis")]
+        public async Task<IActionResult> ListaUsuarioTelefono()
         {
-            try
-            {
-                //Obtener ruta de destino
-                string rutaDestino = _webHostEnvironment.ContentRootPath + "\\FicherosSubidos";
-                if (!Directory.Exists(rutaDestino)) Directory.CreateDirectory(rutaDestino);
-                string rutaDestinoCompleta = Path.Combine(rutaDestino, nombreFichero);
-
-                //Grabar base24 como fichero
-                byte[] documento = Convert.FromBase64String(base64);
-                System.IO.File.WriteAllBytes(rutaDestinoCompleta, documento);
-
-                return Ok("El documento sa a Subido Correctamente");
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+            var item = await _usuarioServices.listaTelefonoUsuario();
+            return Ok(item);
         }
-        #endregion 
+       
+        [HttpPost, Authorize, Route("TelefonoUsuarioInsert")]
+        public async Task<IActionResult> CrearUsuarioTelefono(TelefonoModel model)
+        {
+            var resul = new ServiceResult();
+            if (model != null)
+            {
+                resul = await _usuarioServices.CrearTelefonoUsuario(model);
+            }
+            return Ok(resul);
+        }
+
+        [HttpPut, Authorize, Route("TelefonoUsuarioUpdate/{Id}")]
+        public async Task<IActionResult> ActulizarUsuarioTelefono(int Id, TelefonoModel model)
+        {
+            var resul = new ServiceResult();
+            if (model != null)
+            {
+                resul = await _usuarioServices.ActualizarTelefonoUsuario(Id, model);
+            }
+            return Ok(resul);
+        }
+        
+        #endregion
     }
 }

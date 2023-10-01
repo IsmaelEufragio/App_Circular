@@ -10,6 +10,4 @@ public partial class tbLogroEventoCategoria
     public int logCa_Id { get; set; }
 
     public string logCa_Descripcion { get; set; }
-
-    public virtual ICollection<tbOngEvento> tbOngEvento { get; set; } = new List<tbOngEvento>();
 }

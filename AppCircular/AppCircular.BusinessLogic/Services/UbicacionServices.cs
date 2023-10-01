@@ -246,7 +246,7 @@ namespace AppCircular.BusinessLogic.Services
         {
             var tb = new tbSubdivicionLugar();
             tb.subLug_Nombre = model.Nombre;
-            tb.sub_Id = model.sub_Id;
+            tb.catSub_Id = model.catSub_Id;
             tb.lug_Id = model.lug_Id;
             var repositorio = await _subdivicionLugarRepository.InsertAsync(tb);
             var resul = new Convertidor<SubdivicionLugarViewModel>().mape(repositorio);

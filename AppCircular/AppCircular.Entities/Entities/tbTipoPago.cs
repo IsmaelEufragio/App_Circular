@@ -5,13 +5,11 @@ using System.Collections.Generic;
 
 namespace AppCircular.Entities.Entities;
 
-public partial class tbOngEventoImagen
+public partial class tbTipoPago
 {
-    public int ongIm_Id { get; set; }
+    public int tipPag_Id { get; set; }
 
-    public string ongIm_Ruta { get; set; }
+    public string tipPag_Descripcion { get; set; }
 
-    public int ongEv_Id { get; set; }
-
-    public virtual tbOngEvento ongEv { get; set; }
+    public virtual ICollection<tbPrecio> tbPrecio { get; set; } = new List<tbPrecio>();
 }

@@ -5,13 +5,9 @@ using System.Collections.Generic;
 
 namespace AppCircular.Entities.Entities;
 
-public partial class tbProductoImagen
+public partial class tbTipoReaccion
 {
-    public int proIm_Id { get; set; }
+    public int tipRea_Id { get; set; }
 
-    public string proIm_Ruta { get; set; }
-
-    public int prod_Id { get; set; }
-
-    public virtual tbProducto prod { get; set; }
+    public string tipRea_Descripcion { get; set; }
 }

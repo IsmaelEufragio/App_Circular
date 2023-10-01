@@ -9,7 +9,7 @@ namespace AppCircular.Common.Models.SubdivicionLugar
     public class SubdivicionLugarModel
     {
         public string Nombre { get; set; }
-        public int sub_Id { get; set; }
+        public int catSub_Id { get; set; }
         public int lug_Id { get; set; }
 
     }

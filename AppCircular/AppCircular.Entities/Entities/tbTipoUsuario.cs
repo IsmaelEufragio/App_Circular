@@ -11,5 +11,7 @@ public partial class tbTipoUsuario
 
     public string tipUs_Descripcion { get; set; }
 
+    public virtual ICollection<tbCatalogoPorUsuario> tbCatalogoPorUsuario { get; set; } = new List<tbCatalogoPorUsuario>();
+
     public virtual ICollection<tbInfoUnicaUsuario> tbInfoUnicaUsuario { get; set; } = new List<tbInfoUnicaUsuario>();
 }

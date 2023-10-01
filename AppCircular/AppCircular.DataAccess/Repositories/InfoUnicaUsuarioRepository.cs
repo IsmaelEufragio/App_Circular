@@ -36,14 +36,14 @@ namespace AppCircular.DataAccess.Repositories
         public async Task<int> UpdateAsync(int Id, InfoUnicaUsuarioViewModel item)
         {
             using var db = new AppCircularContext();
-            var userinfo = await db.tbInfoUnicaUsuario.SingleOrDefaultAsync(a => a.ipInf_Id == Id);
+            var userinfo = await db.tbInfoUnicaUsuario.SingleOrDefaultAsync(a => a.usInf_Id == Id);
 
             if (userinfo != null)
             {
-                userinfo.tInf_Nombre = item.Nombre;
-                userinfo.tInf_RutaLogo = item.RutaLogo;
-                userinfo.tInf_RutaPaginaWed = item.RutaPaginaWed;
-                userinfo.tInf_RutaLogo = item.RutaLogo;
+                userinfo.usInf_Nombre = item.Nombre;
+                userinfo.usInf_RutaLogo = item.RutaLogo;
+                userinfo.usInf_RutaPaginaWed = item.RutaPaginaWed;
+                userinfo.usInf_RutaLogo = item.RutaLogo;
                 userinfo.tipUs_Id = item.tipUs_Id;
                 await db.SaveChangesAsync();
                 return 1;

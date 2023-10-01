@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace AppCircular.Entities.Entities;
 
-public partial class tbTipoPublicacion
+public partial class tbTipoIdentificacion
 {
-    public int tiPub_Id { get; set; }
+    public int tipIde_Id { get; set; }
 
-    public string tiPub_Descripcion { get; set; }
+    public string tipIde_Descripcion { get; set; }
 }

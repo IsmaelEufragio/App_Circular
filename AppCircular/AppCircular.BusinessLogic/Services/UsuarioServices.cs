@@ -17,34 +17,32 @@ using AppCircular.BusinessLogic.LibreriaClases;
 using Microsoft.AspNetCore.Http;
 using MimeDetective;
 using System.IO.Compression;
+using AppCircular.Common.Models.Genericos;
 
 namespace AppCircular.BusinessLogic.Services
 {
-    public class UsuarioServices: BaseServices
+    public class UsuarioServices: BaseServices 
     {
         private readonly TipoUsuarioRepository _tipoUsuarioRepository;
         private readonly InfoUnicaUsuarioRepository _infoUnicaUsuarioRepository;
-        //private  IConfiguration _iConfiguration;
-        //private readonly JwtModel _jwtSettings;
         private readonly CategoriaRepository _categoriaRepository;
         private readonly UsuarioRepository _usuarioRepository;
         private readonly SubdivicionLugarRepository _subdivicionLugarRepository;
+        private readonly TelefonoRepository _telefonoRepository;
         public UsuarioServices( TipoUsuarioRepository tipoUsuarioRepository,
                                 InfoUnicaUsuarioRepository infoUnicaUsuarioRepository,
-                                ConfiguracionRepository configuracionRepository,
-                                IConfiguration iConfiguration,
                                 IOptions<JwtModel> jwtSettings,
                                 CategoriaRepository categoriaRepository,
                                 UsuarioRepository usuarioRepository,
-                                SubdivicionLugarRepository subdivicionLugarRepository): base(configuracionRepository,jwtSettings,iConfiguration)
+                                SubdivicionLugarRepository subdivicionLugarRepository,
+                                TelefonoRepository telefonoRepository) : base(jwtSettings)
         {
             _tipoUsuarioRepository = tipoUsuarioRepository;
             _infoUnicaUsuarioRepository = infoUnicaUsuarioRepository;
-            //_iConfiguration = iConfiguration;
-            //_jwtSettings = jwtSettings.Value;
             _categoriaRepository = categoriaRepository;
             _usuarioRepository = usuarioRepository;
             _subdivicionLugarRepository = subdivicionLugarRepository;
+            _telefonoRepository = telefonoRepository;
         }
          
         #region Tipo Usuario
@@ -89,11 +87,11 @@ namespace AppCircular.BusinessLogic.Services
             var listado = await _infoUnicaUsuarioRepository.ListAsync();
             var userInfo = listado.Select(item => new InfoUnicaUsuarioViewModel
             {
-                Id = item.ipInf_Id,
-                Nombre = item.tInf_Nombre,
-                RutaLogo = item.tInf_RutaLogo,
-                RutaPaginaWed = item.tInf_RutaPaginaWed,
-                IgualSubInfo = item.tInf_IgualSubInfo,
+                Id = item.usInf_Id,
+                Nombre = item.usInf_Nombre,
+                RutaLogo = item.usInf_RutaLogo,
+                RutaPaginaWed = item.usInf_RutaPaginaWed,
+                IgualSubInfo = item.usInf_IgualSubInfo,
                 tipUs_Id = item.tipUs_Id,
             }).ToList();
 
@@ -104,10 +102,10 @@ namespace AppCircular.BusinessLogic.Services
         {
             var result = new ServiceResult();
             var tbUserUnico = new tbInfoUnicaUsuario();
-            tbUserUnico.tInf_Nombre = model.Nombre;
-            tbUserUnico.tInf_RutaLogo = model.RutaLogo;
-            tbUserUnico.tInf_RutaPaginaWed = model.RutaPaginaWed;
-            tbUserUnico.tInf_RutaLogo = model.RutaLogo;
+            tbUserUnico.usInf_Nombre = model.Nombre;
+            tbUserUnico.usInf_RutaLogo = model.RutaLogo;
+            tbUserUnico.usInf_RutaPaginaWed = model.RutaPaginaWed;
+            tbUserUnico.usInf_RutaLogo = model.RutaLogo;
             tbUserUnico.tipUs_Id = model.tipUs_Id;
 
             var listado = await _infoUnicaUsuarioRepository.InsertAsync(tbUserUnico);
@@ -124,7 +122,7 @@ namespace AppCircular.BusinessLogic.Services
         #endregion
 
         #region Auntenticacion
-
+        //Pasar al Base Service
         public async Task<ServiceResult> Correo(EmailModel emailModel)
         {
             var result = new ServiceResult();
@@ -169,7 +167,7 @@ namespace AppCircular.BusinessLogic.Services
                 }
             }
         }
-
+        //Pasar al Base Service
         public async Task<ServiceResult> Token(int tiempoExpiracion, int idUsario)
         {
             var resul = new ServiceResult();
@@ -211,23 +209,22 @@ namespace AppCircular.BusinessLogic.Services
         
         public async Task<ServiceResult> Varificar(LoginModel model)
         {
-            var resul = new ServiceResult();
-            //Aqui iria la validacion del usuario envez de controlador
-            var rutaApi = await _configuracionRepository.WhereAsync("ApiRutaToken");
-            if (!rutaApi.Success) return resul.Error("No se encontro la configuracion 'ApiRuta'");
-            string ruta = rutaApi.Value;
+            var resul = new ResultadoModel<bool>();
+            var usuario = await _usuarioRepository.Login(model.Correo);
+            if (!usuario.Success) return new Convertidor<tbUsuarios>().mape(usuario);
 
-            var tokeM = Token(1, 14);
-            string token = tokeM.Result.Success ? tokeM.Result.Data : "";
-            var email = new EmailModel() {
-                DestinoCorreo = model.Usuario,
-                Asunto = "Verificacion Del token",
-                Cuerpo = $"{ruta}{token}"
-            };
-            var correo = Correo(email);
-            return correo.Result;
+            if(!EncryptPass.VerifyPassword(model.Passsword,usuario.Value.user_Password, usuario.Value.user_PasswordSal))
+            {
+                resul.Success=false;
+                resul.Type = ServiceResultType.Forbidden;
+                resul.Message = "Contraseña o correo incorrecto";
+                return new Convertidor<bool>().mape(resul);
+            }
+            var tokeM = await Token(10, usuario.Value.user_Id);
+
+            return tokeM;
         }
-
+        //Pasar al base Service
         public ServiceResult TokeValido(string token)
         {
             ServiceResult resul = new ServiceResult();
@@ -347,19 +344,30 @@ namespace AppCircular.BusinessLogic.Services
                             else return new Convertidor<CategoriaViewModel>().mape(cateoriaRep);
                         }
                         else return new ServiceResult() { Message = "Tienee que tener al menos una categoria", Success = false, Type= ServiceResultType.Error};
+                        
+                        if(model.Telefono.Count > 0)
+                        {
+                            DataTable telefonoData = new DataTable();
+                            telefonoData.Columns.Add("tipTel_Id", typeof(int));
+                            telefonoData.Columns.Add("tipTel_Descripcion", typeof(string));
+                            foreach (var item in model.Telefono)
+                            {
+                                telefonoData.Rows.Add(item.idTipoTelefono, item.Telefono);
+                            }
+                            model.TelefonoDate = telefonoData;
+                        }
                     }
                 }
                 var tipoRe = await _tipoUsuarioRepository.WhereAsync(model.tipUs_Id);
                 if (!tipoRe.Success) return new Convertidor<bool>().mape(tipoRe);
                 var subLugar = await _subdivicionLugarRepository.WhereAsync(model.subLug_Id);
                 if (!subLugar.Success) return new Convertidor<bool>().mape(subLugar);
-                var valiUsu = await _usuarioRepository.WhereAsync(model.Correo, model.PrimerTelefono);
+                var valiUsu = await _usuarioRepository.WhereAsync(model.Correo, model.Telefono);
                 if (!valiUsu.Success) return new Convertidor<bool>().mape(valiUsu);
                 //Crear contraseñas incriptadas
                 model.PasswordSal = Guid.NewGuid().ToString();
                 model.Password = EncryptPass.GeneratePassword(model.Password, model.PasswordSal);
                 //
-                model.RutaLogo = "N/A";
                 var repositorio = await _usuarioRepository.CrearUsuario(model);
                 if (repositorio.Success) {
 
@@ -394,12 +402,13 @@ namespace AppCircular.BusinessLogic.Services
                 var rutaLogo = await _configuracionRepository.WhereAsync("SubRutaLogo");
                 if (!rutaLogo.Success) return new Convertidor<string>().mape(rutaLogo);
                 string subRutaDestino = rutaLogo.Value;
-                var GuardarImagen = GurdarArchivo(3, subRutaDestino, fichero);
+                var GuardarImagen = ValidarArchivo(3, subRutaDestino, fichero);
                 if (!GuardarImagen.Success) return new Convertidor<string>().mape(GuardarImagen);
                 var rutaguardar = await _usuarioRepository.ActualizarLogo(idUsuario, GuardarImagen.Value);
-                if (!rutaguardar.Success) {
-                    var borrarImagen = BorrarArchivo(GuardarImagen.Value);
-                    if (!borrarImagen.Success) return new Convertidor<bool>().mape(borrarImagen);
+                if (rutaguardar.Success) {
+
+                    var guarImagen = GurdarArchivo(GuardarImagen.Value, fichero);
+                    if (!guarImagen.Success) return new Convertidor<bool>().mape(guarImagen);
                 }
                 return new Convertidor<bool>().mape(rutaguardar);
             }
@@ -409,8 +418,74 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
+        public UsuarioCrearModel convertirUsuario(IFormCollection form)
+        {
+            try
+            {
+                UsuarioCrearModel modelo = new UsuarioCrearModel();
+                if (form.TryGetValue("Logo", out var logo))
+                {
+                    IFormFile formFile = form.Files["Logo"];
+                    if (formFile != null)
+                    {
+                        modelo.Logo = formFile;
+                    }
+                }
+                modelo.tipUs_Id = form.TryGetValue("tipUs_Id", out var tipUs_Id) ? int.TryParse(tipUs_Id, out int idTipoUs) ? idTipoUs : 0 : 0;
+                modelo.tipIde_Id = form.TryGetValue("tipIde_Id", out var tipIde_Id) ? int.TryParse(tipIde_Id, out int idTipoIde) ? idTipoIde : 0 : 0;
+                modelo.Identidad = form.TryGetValue("Identidad", out var Identidad) ? Identidad.ToString(): string.Empty;
+                modelo.Nombre = form.TryGetValue("Nombre", out var nombreValue) ? nombreValue.ToString(): string.Empty;
+                modelo.PaginaWed = form.TryGetValue("PaginaWed",out var PaginaWed)? PaginaWed.ToString(): string.Empty;
+                modelo.NombreUsuario = form.TryGetValue("NombreUsuario", out var NombreUsuario)? NombreUsuario.ToString(): string.Empty;
+                modelo.Password = form.TryGetValue("Password", out var Password)? Password.ToString(): string.Empty;
+                modelo.Descripcion = form.TryGetValue("Descripcion", out var Descripcion)? Descripcion.ToString(): string.Empty;
+                modelo.Facebook = form.TryGetValue("Facebook", out var Facebook)? Facebook.ToString(): string.Empty;
+                modelo.Intagram = form.TryGetValue("Intagram",, out var Intagram)? Intagram.ToString(): string.Empty;
+                modelo.WhatsApp = form.TryGetValue("WhatsApp", out var WhatsApp) ? bool.TryParse(WhatsApp, out bool whats) ? whats : null : null;
+                return modelo; 
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
 
+        }
+
+        #endregion
+
+        #region Telefono de Usuario
+        public async Task<ServiceResult> listaTelefonoUsuario()
+        {
+            try
+            {
+                var repositorio = await _telefonoRepository.ListAsync();
+                var resul = new Convertidor<TelefonoModel>().mape(repositorio);
+                return resul;
+            }
+            catch (Exception e)
+            {
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio Usaurio, Mesaje {e.Message}" };
+                return result;
+            }
+        }
+
+        public async Task<ServiceResult> CrearTelefonoUsuario(TelefonoModel model)
+        {
+            var tb = new tbUsuarioTelefono();
+            tb.tipTel_Id = model.idTipoTelefono;
+            tb.usTel_Id = model.IdUsuario;
+            tb.usTel_Numero = model.Telefono;
+            var repositorio = await _telefonoRepository.InsertAsync(tb);
+            return new Convertidor<TelefonoViewModel>().mape(repositorio);
+        }
+
+        public async Task<ServiceResult> ActualizarTelefonoUsuario(int id, TelefonoModel model)
+        {
+
+            var listado = await _telefonoRepository.UpdateAsync(id, model);
+            return new Convertidor<TelefonoViewModel>().mape(listado);
+        }
 
         #endregion
     }

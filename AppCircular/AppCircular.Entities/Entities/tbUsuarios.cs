@@ -9,21 +9,23 @@ public partial class tbUsuarios
 {
     public int user_Id { get; set; }
 
-    public int ipInf_Id { get; set; }
+    public int usInf_Id { get; set; }
 
     public string user_Descripcion { get; set; }
 
-    public string user_TelefonoPrincipal { get; set; }
-
-    public string user_TelefonoSecundario { get; set; }
-
     public int ubc_Id { get; set; }
 
-    public string user_RTNPersona { get; set; }
+    public string user_Identificacion { get; set; }
 
-    public string user_RTNInstitucion { get; set; }
+    public int tipIde_Id { get; set; }
 
-    public DateTime? user_FechaFundacion { get; set; }
+    public string user_NombreUsuario { get; set; }
+
+    public string user_Password { get; set; }
+
+    public string user_PasswordSal { get; set; }
+
+    public DateTime? user_FechaCreacion { get; set; }
 
     public string user_Correo { get; set; }
 
@@ -35,33 +37,27 @@ public partial class tbUsuarios
 
     public bool user_Envio { get; set; }
 
-    public string user_Password { get; set; }
-
-    public string user_PasswordSal { get; set; }
-
-    public string user_NombreUsuario { get; set; }
-
     public bool user_UsuarioPrincipal { get; set; }
 
-    public virtual tbInfoUnicaUsuario ipInf { get; set; }
+    public bool user_Verificado { get; set; }
+
+    public virtual ICollection<tbCatalogo> tbCatalogo { get; set; } = new List<tbCatalogo>();
+
+    public virtual ICollection<tbCatalogoReaccion> tbCatalogoReaccion { get; set; } = new List<tbCatalogoReaccion>();
 
     public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; } = new List<tbCategoriaItem>();
 
     public virtual ICollection<tbContribuyente> tbContribuyente { get; set; } = new List<tbContribuyente>();
 
-    public virtual ICollection<tbDesperdicio> tbDesperdicio { get; set; } = new List<tbDesperdicio>();
-
     public virtual ICollection<tbGuardar> tbGuardar { get; set; } = new List<tbGuardar>();
 
     public virtual ICollection<tbHorario> tbHorario { get; set; } = new List<tbHorario>();
 
-    public virtual ICollection<tbNecesita> tbNecesita { get; set; } = new List<tbNecesita>();
-
-    public virtual ICollection<tbProducto> tbProducto { get; set; } = new List<tbProducto>();
-
-    public virtual ICollection<tbServicio> tbServicio { get; set; } = new List<tbServicio>();
+    public virtual ICollection<tbUsuarioTelefono> tbUsuarioTelefono { get; set; } = new List<tbUsuarioTelefono>();
 
     public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
 
     public virtual tbUbicacion ubc { get; set; }
+
+    public virtual tbInfoUnicaUsuario usInf { get; set; }
 }

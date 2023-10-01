@@ -11,9 +11,11 @@ public partial class tbGuardar
 
     public int user_Id { get; set; }
 
-    public int guard_RutaPublicacion { get; set; }
+    public string guard_RutaPublicacion { get; set; }
 
-    public int guard_Publicacion { get; set; }
+    public int catg_Id { get; set; }
+
+    public virtual tbCatalogo catg { get; set; }
 
     public virtual tbUsuarios user { get; set; }
 }

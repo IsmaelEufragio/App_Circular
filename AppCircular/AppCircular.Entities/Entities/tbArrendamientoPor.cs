@@ -5,13 +5,11 @@ using System.Collections.Generic;
 
 namespace AppCircular.Entities.Entities;
 
-public partial class tbServicioImagen
+public partial class tbArrendamientoPor
 {
-    public int serIm_Id { get; set; }
+    public int arr_Id { get; set; }
 
-    public string serIm_Ruta { get; set; }
+    public string arr_Descripcion { get; set; }
 
-    public int serv_Id { get; set; }
-
-    public virtual tbServicio serv { get; set; }
+    public virtual ICollection<tbPrecio> tbPrecio { get; set; } = new List<tbPrecio>();
 }

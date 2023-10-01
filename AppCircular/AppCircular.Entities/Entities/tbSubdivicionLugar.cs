@@ -11,13 +11,13 @@ public partial class tbSubdivicionLugar
 
     public string subLug_Nombre { get; set; }
 
-    public int sub_Id { get; set; }
+    public int catSub_Id { get; set; }
 
     public int lug_Id { get; set; }
 
-    public virtual tbLugar lug { get; set; }
+    public virtual tbCategoriaSubdivicion catSub { get; set; }
 
-    public virtual tbCategoriaSubdivicion sub { get; set; }
+    public virtual tbLugar lug { get; set; }
 
     public virtual ICollection<tbUbicacion> tbUbicacion { get; set; } = new List<tbUbicacion>();
 }

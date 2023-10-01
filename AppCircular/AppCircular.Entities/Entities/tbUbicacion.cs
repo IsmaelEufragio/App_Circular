@@ -17,7 +17,7 @@ public partial class tbUbicacion
 
     public virtual tbSubdivicionLugar subLug { get; set; }
 
-    public virtual ICollection<tbOngEvento> tbOngEvento { get; set; } = new List<tbOngEvento>();
+    public virtual ICollection<tbCatalogoOng> tbCatalogoOng { get; set; } = new List<tbCatalogoOng>();
 
     public virtual ICollection<tbUsuarios> tbUsuarios { get; set; } = new List<tbUsuarios>();
 }

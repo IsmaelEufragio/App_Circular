@@ -11,11 +11,13 @@ public partial class tbContribuyente
 
     public string contr_Descripcion { get; set; }
 
-    public int prod_Id { get; set; }
+    public bool contr_Varificado { get; set; }
 
     public int user_Id { get; set; }
 
-    public virtual tbProducto prod { get; set; }
+    public int catg_Id { get; set; }
+
+    public virtual tbCatalogo catg { get; set; }
 
     public virtual tbUsuarios user { get; set; }
 }

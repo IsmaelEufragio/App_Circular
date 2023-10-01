@@ -7,9 +7,9 @@ namespace AppCircular.Entities.Entities;
 
 public partial class tbCategoriaSubdivicion
 {
-    public int sub_Id { get; set; }
+    public int catSub_Id { get; set; }
 
-    public string sub_Nombre { get; set; }
+    public string catSub_Nombre { get; set; }
 
     public virtual ICollection<tbSubdivicionLugar> tbSubdivicionLugar { get; set; } = new List<tbSubdivicionLugar>();
 }

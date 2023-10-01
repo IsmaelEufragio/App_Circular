@@ -11,5 +11,9 @@ public partial class tbCategoria
 
     public string catg_Nombre { get; set; }
 
+    public virtual ICollection<tbCatalogo> tbCatalogo { get; set; } = new List<tbCatalogo>();
+
     public virtual ICollection<tbCategoriaItem> tbCategoriaItem { get; set; } = new List<tbCategoriaItem>();
+
+    public virtual ICollection<tbFiltroCategoriaTipo> tbFiltroCategoriaTipo { get; set; } = new List<tbFiltroCategoriaTipo>();
 }

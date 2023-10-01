@@ -3,6 +3,7 @@ using AppCircular.Common.Models.Configuracion;
 using AppCircular.DataAccess;
 using AppCircular.DataAccess.Context;
 using AppCircular.DataAccess.Repositories;
+using AppCircular.DataAccess.Repositories.Interface;
 
 namespace AppCircular
 {
@@ -22,6 +23,10 @@ namespace AppCircular
             services.AddScoped<SubdivicionLugarRepository>();
             services.AddScoped<CategoriaRepository>();
             services.AddScoped<UsuarioRepository>();
+            services.AddScoped<TelefonoRepository>();
+            services.AddScoped<TipoTelefonoRepository>();
+            services.AddScoped<TipoCatalogoRepository>();
+            services.AddScoped<TipoImagenRepository>();
             AppCircularContext.BuildConnectionString(connectionString);
         }
 
@@ -31,7 +36,7 @@ namespace AppCircular
             services.AddScoped<UsuarioServices>();
             services.AddScoped<UbicacionServices>();
             services.AddScoped<ConfiguracionServices>();
-            //services.AddScoped<BaseServices>();
+            services.AddScoped<BaseServices>();
         }
     }
 }

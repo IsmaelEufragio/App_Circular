@@ -7,19 +7,19 @@ namespace AppCircular.Entities.Entities;
 
 public partial class tbInfoUnicaUsuario
 {
-    public int ipInf_Id { get; set; }
+    public int usInf_Id { get; set; }
 
-    public string tInf_Nombre { get; set; }
+    public bool? usInf_IgualSubInfo { get; set; }
 
-    public string tInf_RutaLogo { get; set; }
+    public string usInf_Nombre { get; set; }
 
-    public string tInf_RutaPaginaWed { get; set; }
+    public string usInf_RutaLogo { get; set; }
 
-    public bool? tInf_IgualSubInfo { get; set; }
+    public string usInf_RutaPaginaWed { get; set; }
+
+    public bool usInf_Verificado { get; set; }
 
     public int tipUs_Id { get; set; }
-
-    public bool? tInf_Verificado { get; set; }
 
     public virtual ICollection<tbUsuarios> tbUsuarios { get; set; } = new List<tbUsuarios>();
 

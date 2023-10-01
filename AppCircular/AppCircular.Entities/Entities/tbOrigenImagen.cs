@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace AppCircular.Entities.Entities;
 
-public partial class tbDesperdicioImagen
+public partial class tbOrigenImagen
 {
-    public int despIm_Id { get; set; }
+    public int catImg_Id { get; set; }
 
-    public string despIm_Ruta { get; set; }
+    public int catg_Id { get; set; }
 
-    public int desp_Id { get; set; }
+    public string catImg_RutaImagen { get; set; }
 
-    public virtual tbDesperdicio desp { get; set; }
+    public virtual tbCatalogo catg { get; set; }
 }

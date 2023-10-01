@@ -17,7 +17,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         [Route("LisConfiguracion")]
         public async Task<IActionResult> ListaConfig()
         {

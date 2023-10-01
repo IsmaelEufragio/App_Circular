@@ -21,7 +21,7 @@ namespace AppCircular.DataAccess.Repositories
             {
                 using var db = new AppCircularContext();
                 ResultadoModel<SubdivicionLugarViewModel> result = new();
-                var subLugW = db.tbSubdivicionLugar.Any(a => a.subLug_Nombre.ToLower() == item.subLug_Nombre.ToLower() && a.sub_Id == item.sub_Id && a.lug_Id == item.lug_Id);
+                var subLugW = db.tbSubdivicionLugar.Any(a => a.subLug_Nombre.ToLower() == item.subLug_Nombre.ToLower() && a.catSub_Id == item.catSub_Id && a.lug_Id == item.lug_Id);
                 if (!subLugW)
                 {
                     db.tbSubdivicionLugar.Add(item);
@@ -62,7 +62,7 @@ namespace AppCircular.DataAccess.Repositories
                 {
                     Id = a.subLug_Id,
                     Nombre = a.subLug_Nombre,
-                    sub_Id = a.sub_Id,
+                    sub_Id = a.catSub_Id,
                     lug_Id = a.lug_Id,
                 }).ToList();
                 return relt;
@@ -83,11 +83,11 @@ namespace AppCircular.DataAccess.Repositories
                 var tbsubLug = await db.tbSubdivicionLugar.SingleOrDefaultAsync(a => a.subLug_Id == id);
                 if (id > 0 && tbsubLug != null)
                 {
-                    var subLuW = db.tbSubdivicionLugar.Where(e => e.subLug_Id != id).Any(a => a.subLug_Nombre.ToLower() == item.Nombre.ToLower() && a.sub_Id == item.sub_Id && a.lug_Id == item.lug_Id);
+                    var subLuW = db.tbSubdivicionLugar.Where(e => e.subLug_Id != id).Any(a => a.subLug_Nombre.ToLower() == item.Nombre.ToLower() && a.catSub_Id == item.catSub_Id && a.lug_Id == item.lug_Id);
                     if (!subLuW)
                     {
                         tbsubLug.subLug_Nombre = item.Nombre;
-                        tbsubLug.sub_Id = item.sub_Id;
+                        tbsubLug.catSub_Id = item.catSub_Id;
                         tbsubLug.lug_Id = item.lug_Id;
                         await db.SaveChangesAsync();
                         relt.Message = $"{nombre} Actualizado Correctamente";
