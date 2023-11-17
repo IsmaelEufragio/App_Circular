@@ -80,7 +80,7 @@ namespace AppCircular.DataAccess.Repositories
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<CategoriaViewModel>();
                 var tb = await db.tbCategoria.SingleOrDefaultAsync(a => a.catg_Id == id);
-                if (id > 0 && tb!= null)
+                if (id > 0 && tb != null)
                 {
                     var W = db.tbCategoria.Where(e => e.catg_Id != id).Any(a => a.catg_Nombre.ToLower() == item.Nombre.ToLower());
                     if (!W)

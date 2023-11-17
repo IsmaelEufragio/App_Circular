@@ -78,7 +78,7 @@ namespace AppCircular.DataAccess.Repositories
             {
                 using var db = new AppCircularContext();
                 ServiceResult relt = new ServiceResult();
-                var catLug = await db.tbCategoriaLugar.SingleOrDefaultAsync(a => a.catLug_Id== id);
+                var catLug = await db.tbCategoriaLugar.SingleOrDefaultAsync(a => a.catLug_Id == id);
                 if (id > 0 && catLug != null)
                 {
                     var depW = db.tbCategoriaLugar.Where(e => e.catLug_Id != id).Any(a => a.catLug_Nombre.ToLower() == item.Nombre.ToLower());

@@ -54,7 +54,7 @@ namespace AppCircular.DataAccess.Repositories
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<TelefonoModel>();
                 var tb = await db.tbUsuarioTelefono.ToListAsync();
-   
+
                 if (tb.Count == 0)
                 {
                     relt.Type = ServiceResultType.NoContent;

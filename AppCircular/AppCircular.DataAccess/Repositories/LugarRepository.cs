@@ -65,7 +65,7 @@ namespace AppCircular.DataAccess.Repositories
                     Muni_Id = a.muni_Id,
                 }).ToList();
                 return relt;
-            } 
+            }
             catch (Exception e)
             {
                 ResultadoModel<LugarViewModel> error = new ResultadoModel<LugarViewModel>() { Message = $"Lugar: Repositorio de {nombre}, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
@@ -77,7 +77,7 @@ namespace AppCircular.DataAccess.Repositories
         {
             try
             {
-                using var db = new AppCircularContext(); 
+                using var db = new AppCircularContext();
                 var relt = new ResultadoModel<LugarViewModel>();
                 var tblugar = await db.tbLugar.SingleOrDefaultAsync(a => a.lug_Id == id);
                 if (id > 0 && tblugar != null)

@@ -12,7 +12,8 @@ namespace AppCircular.Controllers
     public class MunicipioController : ControllerBase
     {
         private readonly UbicacionServices _ubicacionServices;
-        public MunicipioController(UbicacionServices ubicacionServices) {
+        public MunicipioController(UbicacionServices ubicacionServices)
+        {
             _ubicacionServices = ubicacionServices;
         }
 

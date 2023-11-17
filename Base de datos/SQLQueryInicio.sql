@@ -270,15 +270,27 @@ CREATE TABLE [Genl].tbTipoCatalogo(
 	CONSTRAINT  PK_Genl_tbTipoCatalogo_tipCatg_Id	PRIMARY KEY(tipCatg_Id)
 ) 
 GO
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Producto')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Servicio')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Necesita')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Desperdicio')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Habilidades')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Logros')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Eventos')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Vacantes')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Vende')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Venta Relámpago')
+INSERT INTO [Genl].[tbTipoCatalogo] ([tipCatg_Descripcion]) VALUES ('Alquila')
+GO
 
 /*Sección #20*/
 CREATE TABLE [Genl].tbCatalogoPorUsuario(
 	[catUsua_Id]						INT IDENTITY(1,1),
 	[tipCatg_Id]						INT	NOT NULL,
 	[tipUs_Id]							INT NOT NULL,
-	CONSTRAINT  PK_Genl_tbCatalogoUsuario_catUsua_Id	PRIMARY KEY(catUsua_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoUsuario_tbTipoCatalogo_tipCatg_Id	FOREIGN KEY(tipCatg_Id) REFERENCES Genl.tbTipoCatalogo(tipCatg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoUsuario_tbTipoUsuario_tipUs_Id	FOREIGN KEY(tipUs_Id) REFERENCES Genl.tbTipoUsuario(tipUs_Id)
+	CONSTRAINT  PK_Genl_tbCatalogoPorUsuario_catUsua_Id	PRIMARY KEY(catUsua_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoPorUsuario_tbTipoCatalogo_tipCatg_Id	FOREIGN KEY(tipCatg_Id) REFERENCES Genl.tbTipoCatalogo(tipCatg_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoPorUsuario_tbTipoUsuario_tipUs_Id	FOREIGN KEY(tipUs_Id) REFERENCES Genl.tbTipoUsuario(tipUs_Id)
 ) 
 GO
 
@@ -304,6 +316,7 @@ CREATE TABLE [Genl].tbCatalogo(
 	[user_Id]						INT		NOT NULL,
 	[catg_EdadActaParaVer]			TINYINT		NOT NULL DEFAULT 0,
 	[catg_FechaCreacion]			DATETIME 	NOT NULL ,
+	[catag_EsGratis]				BIT 	NOT NULL DEFAULT 0,
 	CONSTRAINT  PK_Genl_tbCatalogo_catg_Id				PRIMARY KEY(catg_Id),
 	CONSTRAINT  FK_Genl_tbCatalogo_tbCatalogo_catg_IdDesperdicio	FOREIGN KEY(catg_IdDesperdicio) REFERENCES Genl.tbCatalogo(catg_Id),
 	CONSTRAINT  FK_Genl_tbCatalogo_tbCategoria_catg_Id	FOREIGN KEY(categ_Id) REFERENCES Genl.tbCategoria(catg_Id),
@@ -318,15 +331,18 @@ CREATE TABLE [Genl].tbTipoImagen(
 	CONSTRAINT  PK_Genl_tbTipoImagen_tipImg_Id	PRIMARY KEY(tipImg_Id)
 )
 GO
+INSERT INTO [Genl].[tbTipoImagen] ([tipImg_Descripcion]) VALUES ('Portada')
 
 
 /*Sección #24*/
-CREATE TABLE [Genl].tbOrigenImagen(
+CREATE TABLE [Genl].tbCatalogoImagen(
 	[catImg_Id]						INT IDENTITY(1,1),
 	[catg_Id]						INT	NOT NULL,
+	[tipImg_Id]						INT	NOT NULL,
 	[catImg_RutaImagen]				NVARCHAR(2000)	NOT NULL,
-	CONSTRAINT  PK_Genl_tbCatalogoImagen_catImg_Id				PRIMARY KEY(catImg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbCatalogo_catg_Id		FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id)
+	CONSTRAINT  PK_Genl_tbCatalogoImagen_catImg_Id					PRIMARY KEY(catImg_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbCatalogo_catg_Id			FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTipoImagen_tipImg_Id		FOREIGN KEY(tipImg_Id) REFERENCES Genl.tbTipoImagen(tipImg_Id)
 )  
 GO
 /*Sección #25*/
@@ -335,6 +351,9 @@ CREATE TABLE [Genl].tbTipoReaccion(
 	[tipRea_Descripcion]			NVARCHAR(200)	NOT NULL,
 	CONSTRAINT  PK_Genl_tbTipoReaccion_tipRea_Id	PRIMARY KEY(tipRea_Id)
 )
+GO
+INSERT INTO [Genl].[tbTipoReaccion] ([tipRea_Descripcion]) VALUES ('Me Encanta')
+INSERT INTO [Genl].[tbTipoReaccion] ([tipRea_Descripcion]) VALUES ('No me gusta')
 GO
 
 /*Sección #26*/
@@ -355,14 +374,12 @@ CREATE TABLE [Genl].tbTipoPago(
 	CONSTRAINT  PK_Genl_tbTipoPago_tipPag_Id	PRIMARY KEY(tipPag_Id)
 )
 GO
-
-
-/*Sección #28*/
-CREATE TABLE [Genl].tbArrendamientoPor(
-	[arr_Id]						INT IDENTITY(1,1),
-	[arr_Descripcion]				NVARCHAR(200)	NOT NULL,
-	CONSTRAINT  PK_Genl_tbArrendamientoPor_arr_Id	PRIMARY KEY(arr_Id)
-)
+INSERT INTO [Genl].[tbTipoPago] ([tipPag_Descripcion]) VALUES ('Precio Fijo')
+INSERT INTO [Genl].[tbTipoPago] ([tipPag_Descripcion]) VALUES ('Negociable')
+INSERT INTO [Genl].[tbTipoPago] ([tipPag_Descripcion]) VALUES ('Por Mes')
+INSERT INTO [Genl].[tbTipoPago] ([tipPag_Descripcion]) VALUES (' por Dia')
+INSERT INTO [Genl].[tbTipoPago] ([tipPag_Descripcion]) VALUES (' por Quincena')
+INSERT INTO [Genl].[tbTipoPago] ([tipPag_Descripcion]) VALUES ('Por Año')
 GO
 
 /*Sección #29*/
@@ -372,11 +389,9 @@ CREATE TABLE [Genl].tbPrecio(
 	[prec_Final]					DECIMAL(18,2)	NOT NULL DEFAULT 0,
 	[prec_Cantidad]					INT	NOT NULL DEFAULT 0,
 	[tipPag_Id]						INT	NOT NULL,
-	[arr_Id]						INT,
 	[catg_Id]						INT	NOT NULL,
 	CONSTRAINT  PK_Genl_tbPrecio_prec_Id			PRIMARY KEY(prec_Id),
 	CONSTRAINT  FK_Genl_tbPrecio_tbTipoPago_user_Id	FOREIGN KEY(tipPag_Id) REFERENCES Genl.tbTipoPago(tipPag_Id),
-	CONSTRAINT  FK_Genl_tbPrecio_tbArrendamientoPor_arr_Id	FOREIGN KEY(arr_Id) REFERENCES Genl.tbArrendamientoPor(arr_Id),
 	CONSTRAINT  FK_Genl_tbPrecio_tbCatalogo_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
 )  
 GO
@@ -613,7 +628,7 @@ INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descrip
 INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioParticular', '5', 'Validar el usuario Particular')
 INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('IdTipoUsuarioConLocal', '6', 'Son los usarios que tiene un local ')
 INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('SubRutaLogo', 'Img\Logos', 'Es la ruta de la carperta donde se guradaran los logos se le concatenara ala raiz del proyecto')
-
+INSERT INTO [Genl].[tbConfiguracion] ([conf_Nombre], [conf_Valor], [conf_Descripcion]) VALUES ('TamañoLogo', '1', 'Es para validar el tamaño del logo tiene que sere en para pulpilicarlo 1024 * 1024')
 GO
 
 /*Sección #50*/
@@ -639,11 +654,17 @@ CREATE TYPE dbo.tbUsuarioTelefonoType AS TABLE(
 	tipTel_Descripcion NVARCHAR(100)
 );
 GO
+/*Sección #38*/
+CREATE TYPE dbo.tbCatalogoImagen AS TABLE(
+	catg_Id INT,
+	catImg_Ruta NVARCHAR(2000)
+);
+GO
 
-ALTER PROCEDURE [dbo].[sp_CrearUsuario]
+CREATE PROCEDURE [dbo].[sp_CrearUsuario]
 	@tipUs_Id INT,
 	@Nombre NVARCHAR(300),
-	--@RutaLogo NVARCHAR(2000),
+	@RutaLogo NVARCHAR(2000),
 	@RutaPaginaWed NVARCHAR(2000),
 	@Descripcion NVARCHAR(500),
 	--@FechaFundacion DATE,
@@ -715,7 +736,7 @@ BEGIN
 								ELSE @tipIde_Id
 							END
 			
-			INSERT INTO [Genl].[tbInfoUnicaUsuario] ([usInf_Nombre],[usInf_RutaPaginaWed],[tipUs_Id],[usInf_RutaLogo]) VALUES (@Nombre,NULLIF(@RutaPaginaWed, 'N/A'),@tipUs_Id,'N/A');
+			INSERT INTO [Genl].[tbInfoUnicaUsuario] ([usInf_Nombre],[usInf_RutaPaginaWed],[tipUs_Id],[usInf_RutaLogo]) VALUES (@Nombre,NULLIF(@RutaPaginaWed, 'N/A'),@tipUs_Id,NULLIF(@RutaLogo, 'N/A'));
 			SET @usInf_Id = SCOPE_IDENTITY();
 			
 
@@ -835,4 +856,111 @@ BEGIN
         SET @Message = 'Ocurrió un error durante la transacción: ' + ERROR_MESSAGE() + ' (Línea: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')';
 		SET @IdUsuario = 0;
     END CATCH;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[sp_Login]
+	@Correo NVARCHAR(100),
+	--Paramatros de salida
+	@Success BIT OUTPUT,
+    @Message NVARCHAR(1000) OUTPUT,
+	@PasswordSal NVARCHAR(1000) OUTPUT,
+	@Password NVARCHAR(1000) OUTPUT,
+	@IdUsuario INT OUTPUT
+
+AS
+BEGIN
+	BEGIN TRY
+		SET @Password = '';
+		SET @PasswordSal = '';
+		SET @IdUsuario = 0;
+		SET @Correo = UPPER(@Correo);
+		DECLARE @TotalInfUsuariosUnico int
+		DECLARE @IgualInfo BIT
+
+		DECLARE @Tabla TABLE(
+			infUsu_Id int
+		)
+
+		INSERT INTO @Tabla (infUsu_Id)
+		 SELECT DISTINCT
+				InfUS.usInf_Id
+		FROM Genl.tbInfoUnicaUsuario AS InfUS
+		INNER JOIN Genl.tbUsuarios AS US 
+		ON InfUS.usInf_Id = US.usInf_Id AND InfUS.usInf_Verificado = 1 AND US.user_Verificado = 1 AND UPPER(US.user_Correo) = @Correo
+	
+		SET @TotalInfUsuariosUnico = (select COUNT(*) from @Tabla);
+		IF @TotalInfUsuariosUnico > 1
+		BEGIN
+		--Falta validar que si el usuario creo otra cuanta con el mismo correo.  
+			SET @Success = 0;
+			SET @Message = 'Parece que existen dos usuarios unicos con el mismi correo';
+			RETURN;
+		END
+		IF @TotalInfUsuariosUnico = 0
+		BEGIN
+			SET @Success = 0;
+			SET @Message = 'No Existe Un usuario con ese correo';
+			RETURN;
+		END
+
+		SET @IgualInfo = (SELECT	InfUS.usInf_IgualSubInfo
+		FROM Genl.tbInfoUnicaUsuario AS InfUS
+		where InfUS.usInf_Id = (select top 1 * from @Tabla))
+
+		DECLARE @UsuarioTable TABLE(
+				user_Id int,
+				user_Password NVARCHAR(1000),
+				user_PasswordSal NVARCHAR(1000),
+				user_UsuarioPrincipal BIT
+			)
+			INSERT INTO @UsuarioTable(user_Id, user_Password, user_PasswordSal, user_UsuarioPrincipal)
+		SELECT us.user_Id, us.user_Password, us.user_PasswordSal, us.user_UsuarioPrincipal FROM Genl.tbUsuarios AS us where us.usInf_Id = (select top 1 * from @Tabla)
+
+		IF @IgualInfo = 1
+		BEGIN
+			SET @IdUsuario = (select top 1 us.user_Id from @UsuarioTable as us)
+			SET @Password = (select top 1 us.user_Password from @UsuarioTable as us)
+			SET @PasswordSal = (select top 1 us.user_PasswordSal from @UsuarioTable as us)
+			SET @Success = 1;
+			SET @Message = 'El usuario Fue encontrado';
+		END
+		ELSE 
+		BEGIN
+			SET @IdUsuario = (select top 1 us.user_Id from @UsuarioTable as us where us.user_UsuarioPrincipal = 1)
+			SET @Password = (select top 1 us.user_Password from @UsuarioTable as us where us.user_UsuarioPrincipal = 1)
+			SET @PasswordSal = (select top 1 us.user_PasswordSal from @UsuarioTable as us where us.user_UsuarioPrincipal = 1)
+			SET @Success = 1;
+			SET @Message = 'El usuario Fue encontrado';
+		END
+	END TRY
+	BEGIN CATCH
+			SET @Success = 0;
+			SET @Message = 'Ocurrio un error inesperado Error=>'+ERROR_MESSAGE() + ' (Linia: '+ CAST(ERROR_LINE() AS NVARCHAR(10))+')';
+	END CATCH
+END;
+
+GO
+CREATE TRIGGER Trigger_VerificarUsuario
+ON [Genl].tbUsuarios
+AFTER UPDATE
+AS
+BEGIN
+    IF UPDATE(user_Verificado)  -- Comprueba si user_Verificado se actualizó
+    BEGIN
+      DECLARE @ExistingUserVerificado INT;
+
+		-- Verifica si todavía existen registros con user_Verificado igual a 1 para el mismo usInf_Id
+		SELECT @ExistingUserVerificado = COUNT(*)
+		FROM [Genl].tbUsuarios AS u
+		INNER JOIN inserted AS i ON u.usInf_Id = i.usInf_Id
+		WHERE u.user_Verificado = 1;
+
+        -- Actualiza usInf_Verificado solo si user_Verificado se establece en 0 y no hay otros registros con 1
+
+        UPDATE u
+        SET u.usInf_Verificado = CASE WHEN @ExistingUserVerificado = 0 THEN 0 ELSE 1 END
+        FROM [Genl].tbInfoUnicaUsuario AS u
+        INNER JOIN inserted AS i ON u.usInf_Id = i.usInf_Id
+    END
 END;

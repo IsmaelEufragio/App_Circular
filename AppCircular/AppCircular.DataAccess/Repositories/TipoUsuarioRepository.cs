@@ -22,7 +22,7 @@ namespace AppCircular.DataAccess.Repositories
             {
                 using var db = new AppCircularContext();
                 ResultadoModel<TipoUsuarioViewModel> result = new ResultadoModel<TipoUsuarioViewModel>();
-                var tipoUsaurioW = db.tbTipoUsuario.Any(a => a.tipUs_Descripcion.ToLower() == item.tipUs_Descripcion.ToLower()) ;
+                var tipoUsaurioW = db.tbTipoUsuario.Any(a => a.tipUs_Descripcion.ToLower() == item.tipUs_Descripcion.ToLower());
                 if (!tipoUsaurioW)
                 {
                     db.tbTipoUsuario.Add(item);
@@ -113,14 +113,14 @@ namespace AppCircular.DataAccess.Repositories
             var relt = new ResultadoModel<bool>();
             try
             {
-                
+
                 if (idTipoUsuario > 0)
                 {
                     using var db = new AppCircularContext();
-                    bool tb = await db.tbTipoUsuario.AnyAsync(a => a.tipUs_Id== idTipoUsuario);
+                    bool tb = await db.tbTipoUsuario.AnyAsync(a => a.tipUs_Id == idTipoUsuario);
                     relt.Success = tb;
-                    relt.Type = tb? ServiceResultType.Success: ServiceResultType.Error;
-                    relt.Message =tb?"Si se encontro el Tipo de Usuario": "No se encontro el Tipo de Usuario";
+                    relt.Type = tb ? ServiceResultType.Success : ServiceResultType.Error;
+                    relt.Message = tb ? "Si se encontro el Tipo de Usuario" : "No se encontro el Tipo de Usuario";
                     return relt;
                 }
                 relt.Success = false;

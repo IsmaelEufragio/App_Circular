@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic.FileIO;
 using MimeDetective.Storage;
+using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -53,7 +55,7 @@ namespace AppCircular.Controllers
             var resul = new ServiceResult();
             if (model != null)
             {
-                resul =await _usuarioServices.ActualizarTipoUser(Id, model);
+                resul = await _usuarioServices.ActualizarTipoUser(Id, model);
             }
             return Ok(resul);
         }
@@ -101,23 +103,27 @@ namespace AppCircular.Controllers
 
         }
 
+        [HttpPost, Route("LoginValidarToken")]
+        public async Task<IActionResult> LoginValiToken(LoginModel model)
+        {
+            var resul = await _usuarioServices.Varificar(model);
+            return Ok(resul);
+        }
         [HttpPost, Route("Verificacion")]
-        public async Task<IActionResult> Verificacion(LoginModel model)
+        public async Task<IActionResult> Verificacion(string Token)
         {
             var resul = new ServiceResult();
-            if (model != null)
+            string valiEspacio = Token.Replace(" ", "");
+            if (valiEspacio == "" || valiEspacio.Length < 10) return BadRequest("No cumplo con las validaciones minimas");
+            var userIdClaim = _usuarioServices.GetClaimsFromToken(Token);
+            if (userIdClaim != null)
             {
-                if (model.Correo == "josueeufragio93@gmail.com" && model.Passsword == "1234")
-                {
-                    var resulT = await _usuarioServices.Varificar(model);
-                    return Ok(resulT);
-                }
-                resul.Message = "No chavalo la contraseña no perrin";
-                return Ok(resul);
+                int userId = int.Parse(userIdClaim.FirstOrDefault(a => a.Type == "UserId").Value);
+                // Ahora tienes el ID del usuario para usar en tu lógica
+                var vali = await _usuarioServices.UsuarioVarificado(userId);
+                return Ok(vali);
             }
-            resul.Message = "Nos se ingreso nada";
-            return Ok(resul);
-
+            else return BadRequest();
         }
 
         [HttpPost, Route("ValidacionToken")]
@@ -127,8 +133,8 @@ namespace AppCircular.Controllers
             string valiEspc = toke.Replace(" ", "");
             if (valiEspc != "")
             {
-                var resulT =  _usuarioServices.TokeValido(toke);
-                
+                var resulT = _usuarioServices.TokeValido(toke);
+
                 return Ok(resulT);
             }
             resul.Message = "Nos se ingreso nada";
@@ -137,36 +143,25 @@ namespace AppCircular.Controllers
         }
 
         [HttpPost, Route("CrearUsuario")]
-        public async Task<IActionResult> CrearUsuario([FromForm] ModelTestCrearUsuario modelo)
+        public async Task<IActionResult> CrearUsuario(IFormCollection form)
         {
-            UsuarioCrearModel model = new()
+            var modelo = _usuarioServices.convertirUsuario(form);
+            if (!modelo.Success) return Ok(modelo);
+            var validationContext = new ValidationContext(modelo.Value, null, null);
+            var validationResults = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(modelo.Value, validationContext, validationResults, true);
+            if (isValid)
             {
-                Logo = modelo.Logo,
-                tipUs_Id = modelo.tipUs_Id,
-                tipIde_Id = modelo.tipIde_Id,
-                Identidad = modelo.Identidad,
-                Nombre = modelo.Nombre,
-                PaginaWed = modelo.PaginaWed,
-                NombreUsuario = modelo.NombreUsuario,
-                Password = modelo.Password,
-                Descripcion = modelo.Descripcion,
-                Facebook = modelo.Facebook,
-                Intagram = modelo.Intagram,
-                WhatsApp = modelo.WhatsApp,
-                Envio = modelo.Envio,
-                Correo = modelo.Correo,
-                subLug_Id = modelo.subLug_Id,
-                Latitud = modelo.Latitud,
-                Longitub = modelo.Longitub,
-                Horario = modelo.Horario,
-                Categoria = modelo.Categoria,
-                Telefono = modelo.Telefono,
-            };
-            var resul = await _usuarioServices.CrearUsaurio(model);
-            return Ok(resul);
-            //return Ok("Todo tuanis");    
+                var resul = await _usuarioServices.CrearUsaurio(modelo.Value);
+                return Ok(resul);
+            }
+            else
+            {
+                var errores = validationResults.Select(result => result.ErrorMessage).ToList();
+                return BadRequest(errores);
+            }
         }
-           
+
         [HttpPost, Route("LogoUsuario")]
         [Authorize]
         public async Task<ActionResult> subirDocumentos(IFormFile fichero)
@@ -180,8 +175,9 @@ namespace AppCircular.Controllers
                     int userId = int.Parse(userIdClaim.Value);
                     // Ahora tienes el ID del usuario para usar en tu lógica
                     var vali = await _usuarioServices.SubirArchivoAsync(fichero, userId);
-                        return Ok(vali);
-                } else return BadRequest();
+                    return Ok(vali);
+                }
+                else return BadRequest();
             }
             catch (Exception)
             {
@@ -192,13 +188,13 @@ namespace AppCircular.Controllers
         #endregion
 
         #region Telefono de Usuario
-        [HttpGet,Authorize, Route("TelefonoUsuarioLis")]
+        [HttpGet, Authorize, Route("TelefonoUsuarioLis")]
         public async Task<IActionResult> ListaUsuarioTelefono()
         {
             var item = await _usuarioServices.listaTelefonoUsuario();
             return Ok(item);
         }
-       
+
         [HttpPost, Authorize, Route("TelefonoUsuarioInsert")]
         public async Task<IActionResult> CrearUsuarioTelefono(TelefonoModel model)
         {
@@ -220,7 +216,7 @@ namespace AppCircular.Controllers
             }
             return Ok(resul);
         }
-        
+
         #endregion
     }
 }

@@ -18,10 +18,11 @@ using Microsoft.AspNetCore.Http;
 using MimeDetective;
 using System.IO.Compression;
 using AppCircular.Common.Models.Genericos;
+using System.Collections.Generic;
 
 namespace AppCircular.BusinessLogic.Services
 {
-    public class UsuarioServices: BaseServices 
+    public class UsuarioServices : BaseServices
     {
         private readonly TipoUsuarioRepository _tipoUsuarioRepository;
         private readonly InfoUnicaUsuarioRepository _infoUnicaUsuarioRepository;
@@ -29,7 +30,7 @@ namespace AppCircular.BusinessLogic.Services
         private readonly UsuarioRepository _usuarioRepository;
         private readonly SubdivicionLugarRepository _subdivicionLugarRepository;
         private readonly TelefonoRepository _telefonoRepository;
-        public UsuarioServices( TipoUsuarioRepository tipoUsuarioRepository,
+        public UsuarioServices(TipoUsuarioRepository tipoUsuarioRepository,
                                 InfoUnicaUsuarioRepository infoUnicaUsuarioRepository,
                                 IOptions<JwtModel> jwtSettings,
                                 CategoriaRepository categoriaRepository,
@@ -44,7 +45,7 @@ namespace AppCircular.BusinessLogic.Services
             _subdivicionLugarRepository = subdivicionLugarRepository;
             _telefonoRepository = telefonoRepository;
         }
-         
+
         #region Tipo Usuario
 
         public async Task<ServiceResult> listaTipoUser()
@@ -69,14 +70,14 @@ namespace AppCircular.BusinessLogic.Services
             var repositorio = await _tipoUsuarioRepository.InsertAsync(tbMuni);
             return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
-         
-        public async Task<ServiceResult> ActualizarTipoUser( int id,TipoUsuarioModel model)
+
+        public async Task<ServiceResult> ActualizarTipoUser(int id, TipoUsuarioModel model)
         {
 
-            var listado = await _tipoUsuarioRepository.UpdateAsync(id,model);
+            var listado = await _tipoUsuarioRepository.UpdateAsync(id, model);
             return new Convertidor<TipoUsuarioViewModel>().mape(listado);
         }
-        
+
         #endregion
 
         #region Informacion De Usuario Unica
@@ -122,100 +123,16 @@ namespace AppCircular.BusinessLogic.Services
         #endregion
 
         #region Auntenticacion
-        //Pasar al Base Service
-        public async Task<ServiceResult> Correo(EmailModel emailModel)
-        {
-            var result = new ServiceResult();
-            var smtpServCon = await _configuracionRepository.WhereAsync("smtpServer");
-            if (!smtpServCon.Success) return result.Error("No se encontro la configuracion 'smtpServer'");
-            string smtpServer = smtpServCon.Value; // Cambia esto al servidor SMTP que utilices
 
-            var smtpPortCon = await _configuracionRepository.WhereAsync("smtpPort");
-            if (!smtpPortCon.Success) return result.Error("No se encontro la configuracion 'smtpPort'");
-            if (!(int.TryParse(smtpPortCon.Value, out int smtpPort))) return result.Error("La configuracion 'smtpPort' devolvio un string que no se puede convertir a numero");
-
-            var senderEmailCon = await _configuracionRepository.WhereAsync("senderEmail");
-            if (!senderEmailCon.Success) return result.Error("No se encontro la configuracion 'senderEmail'");
-            string senderEmail = senderEmailCon.Value; // Tu dirección de correo electrónico
-
-            var senderPasswordCon = await _configuracionRepository.WhereAsync("senderPassword");
-            if (!senderPasswordCon.Success) return result.Error("No se encontro la configuracion 'senderPassword'");
-            string senderPassword = senderPasswordCon.Value; // Tu contraseña de correo electrónico
-
-            using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
-            {
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
-                smtpClient.EnableSsl = true;
-
-                MailMessage mailMessage = new MailMessage(senderEmail, emailModel.DestinoCorreo, emailModel.Asunto, emailModel.Cuerpo);
-                mailMessage.IsBodyHtml = true; // Si deseas enviar un correo HTML
-                try
-                {
-                    await smtpClient.SendMailAsync(mailMessage);
-                    result.Type = ServiceResultType.NoContent;
-                    result.Success = true;
-                    result.Message = "Correo enviado exitosamente.";
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    result.Type = ServiceResultType.Error;
-                    result.Success = false;
-                    result.Message = $"Error al enviar el correo: {ex.Message}";
-                    return result;
-                }
-            }
-        }
-        //Pasar al Base Service
-        public async Task<ServiceResult> Token(int tiempoExpiracion, int idUsario)
-        {
-            var resul = new ServiceResult();
-            try
-            {
-                var jwt = _jwtSettings;
-                var claims = new[]
-                {
-                new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("UserId", idUsario.ToString())
-                };
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
-                var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                var token = new JwtSecurityToken(
-                        jwt.Issuer,
-                        jwt.Audience,
-                        claims,
-                        expires: DateTime.Now.AddMinutes(tiempoExpiracion),
-                        signingCredentials: singIn);
-                var resp = new JwtSecurityTokenHandler().WriteToken(token);
-                resul.Success = true;
-                resul.Type = ServiceResultType.NoContent;
-                resul.Data = resp;
-                resul.Message = $"Token Generado tiempo de Expiracion {tiempoExpiracion} minuto";
-                return resul;
-            }
-            catch (Exception ex)
-            {
-                resul.Success = false;
-                resul.Type = ServiceResultType.Error;
-                resul.Message = $"TokenGenerado {ex.Message}";
-                return resul;
-            }
-        }
-        
         public async Task<ServiceResult> Varificar(LoginModel model)
         {
             var resul = new ResultadoModel<bool>();
             var usuario = await _usuarioRepository.Login(model.Correo);
             if (!usuario.Success) return new Convertidor<tbUsuarios>().mape(usuario);
 
-            if(!EncryptPass.VerifyPassword(model.Passsword,usuario.Value.user_Password, usuario.Value.user_PasswordSal))
+            if (!EncryptPass.VerifyPassword(model.Passsword, usuario.Value.user_Password, usuario.Value.user_PasswordSal))
             {
-                resul.Success=false;
+                resul.Success = false;
                 resul.Type = ServiceResultType.Forbidden;
                 resul.Message = "Contraseña o correo incorrecto";
                 return new Convertidor<bool>().mape(resul);
@@ -224,6 +141,19 @@ namespace AppCircular.BusinessLogic.Services
 
             return tokeM;
         }
+        public List<Claim> GetClaimsFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var tokenS = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (tokenS != null)
+            {
+                return tokenS.Claims.ToList();
+            }
+
+            return null;
+        }
+
         //Pasar al base Service
         public ServiceResult TokeValido(string token)
         {
@@ -343,9 +273,9 @@ namespace AppCircular.BusinessLogic.Services
                             }
                             else return new Convertidor<CategoriaViewModel>().mape(cateoriaRep);
                         }
-                        else return new ServiceResult() { Message = "Tienee que tener al menos una categoria", Success = false, Type= ServiceResultType.Error};
-                        
-                        if(model.Telefono.Count > 0)
+                        else return new ServiceResult() { Message = "Tienee que tener al menos una categoria", Success = false, Type = ServiceResultType.Error };
+
+                        if (model.Telefono.Count > 0)
                         {
                             DataTable telefonoData = new DataTable();
                             telefonoData.Columns.Add("tipTel_Id", typeof(int));
@@ -367,11 +297,32 @@ namespace AppCircular.BusinessLogic.Services
                 //Crear contraseñas incriptadas
                 model.PasswordSal = Guid.NewGuid().ToString();
                 model.Password = EncryptPass.GeneratePassword(model.Password, model.PasswordSal);
-                //
-                var repositorio = await _usuarioRepository.CrearUsuario(model);
-                if (repositorio.Success) {
+                //Ruta imagen
+                var congTamLog = await _configuracionRepository.WhereAsync("TamañoLogo");
+                if (!congTamLog.Success) return new Convertidor<string>().mape(congTamLog);
+                int idTamaLogo = int.TryParse(congTamLog.Value, out int tamLogoV) ? tamLogoV : 1;
 
-                    ServiceResult token = await Token(2, repositorio.Value);
+                var congRutLog = await _configuracionRepository.WhereAsync("SubRutaLogo");
+                if (!congRutLog.Success) return new Convertidor<string>().mape(congRutLog);
+
+                if (model.Logo != null)
+                {
+                    var rutaLogo = ValidarArchivo(idTamaLogo, congRutLog.Value, model.Logo);
+                    if (!rutaLogo.Success) return new Convertidor<string>().mape(rutaLogo);
+                    model.RutaLogo = rutaLogo.Value;
+                }
+                var repositorio = await _usuarioRepository.CrearUsuario(model);
+                if (repositorio.Success)
+                {
+                    if (model.Logo != null && model.RutaLogo != "")
+                    {
+                        var guardarImagenLogo = GurdarArchivo(model.RutaLogo, model.Logo);
+                        if (!guardarImagenLogo.Success)
+                        {
+                            var actualizarRutaLogo = await _usuarioRepository.ActualizarLogo(repositorio.Value, "N/A");
+                        }
+                    }
+                    ServiceResult token = await Token(2, repositorio.Value, true);
                     if (token.Success)
                     {
                         var rutaApi = await _configuracionRepository.WhereAsync("ApiRutaToken");
@@ -385,16 +336,18 @@ namespace AppCircular.BusinessLogic.Services
                             Cuerpo = $"{ruta}{token.Data}"
                         };
                         var correo = Correo(email);
-                    }else return token;
-                } return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
+                    }
+                    else return token;
+                }
+                return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
             }
             catch (Exception ex)
             {
-                return new ServiceResult() { Success = false , Message = $"Error en el Servicio Usuario Al Creaar un Usaurio: {ex.Message}",Type= ServiceResultType.Error};
+                return new ServiceResult() { Success = false, Message = $"Error en el Servicio Usuario Al Creaar un Usaurio: {ex.Message}", Type = ServiceResultType.Error };
             }
         }
 
-        public async Task<ServiceResult> SubirArchivoAsync(IFormFile fichero,int idUsuario)
+        public async Task<ServiceResult> SubirArchivoAsync(IFormFile fichero, int idUsuario)
         {
             ServiceResult resul = new();
             try
@@ -405,7 +358,8 @@ namespace AppCircular.BusinessLogic.Services
                 var GuardarImagen = ValidarArchivo(3, subRutaDestino, fichero);
                 if (!GuardarImagen.Success) return new Convertidor<string>().mape(GuardarImagen);
                 var rutaguardar = await _usuarioRepository.ActualizarLogo(idUsuario, GuardarImagen.Value);
-                if (rutaguardar.Success) {
+                if (rutaguardar.Success)
+                {
 
                     var guarImagen = GurdarArchivo(GuardarImagen.Value, fichero);
                     if (!guarImagen.Success) return new Convertidor<bool>().mape(guarImagen);
@@ -414,40 +368,100 @@ namespace AppCircular.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                return resul = new() { Success = false, Message = $"Ocurrio un erro en UsuarioService el error es: {ex}.", Type = ServiceResultType.Error};
+                return resul = new() { Success = false, Message = $"Ocurrio un erro en UsuarioService el error es: {ex}.", Type = ServiceResultType.Error };
             }
         }
 
-        public UsuarioCrearModel convertirUsuario(IFormCollection form)
+        public ResultadoModel<UsuarioCrearModel> convertirUsuario(IFormCollection form)
         {
+            ResultadoModel<UsuarioCrearModel> resul = new();
             try
             {
                 UsuarioCrearModel modelo = new UsuarioCrearModel();
-                if (form.TryGetValue("Logo", out var logo))
+                List<HorarioModel> horario = new List<HorarioModel>();
+                List<CategoriaItemModel> categorias = new List<CategoriaItemModel>();
+                List<TelefonoViewModel> telefono = new List<TelefonoViewModel>();
+                IFormFile formFile = form.Files["Logo"];
+                if (formFile != null)
                 {
-                    IFormFile formFile = form.Files["Logo"];
-                    if (formFile != null)
-                    {
-                        modelo.Logo = formFile;
-                    }
+                    modelo.Logo = formFile;
                 }
+                else modelo.RutaLogo = string.Empty;
+
                 modelo.tipUs_Id = form.TryGetValue("tipUs_Id", out var tipUs_Id) ? int.TryParse(tipUs_Id, out int idTipoUs) ? idTipoUs : 0 : 0;
                 modelo.tipIde_Id = form.TryGetValue("tipIde_Id", out var tipIde_Id) ? int.TryParse(tipIde_Id, out int idTipoIde) ? idTipoIde : 0 : 0;
-                modelo.Identidad = form.TryGetValue("Identidad", out var Identidad) ? Identidad.ToString(): string.Empty;
-                modelo.Nombre = form.TryGetValue("Nombre", out var nombreValue) ? nombreValue.ToString(): string.Empty;
-                modelo.PaginaWed = form.TryGetValue("PaginaWed",out var PaginaWed)? PaginaWed.ToString(): string.Empty;
-                modelo.NombreUsuario = form.TryGetValue("NombreUsuario", out var NombreUsuario)? NombreUsuario.ToString(): string.Empty;
-                modelo.Password = form.TryGetValue("Password", out var Password)? Password.ToString(): string.Empty;
-                modelo.Descripcion = form.TryGetValue("Descripcion", out var Descripcion)? Descripcion.ToString(): string.Empty;
-                modelo.Facebook = form.TryGetValue("Facebook", out var Facebook)? Facebook.ToString(): string.Empty;
-                modelo.Intagram = form.TryGetValue("Intagram",, out var Intagram)? Intagram.ToString(): string.Empty;
+                modelo.Identidad = form.TryGetValue("Identidad", out var Identidad) ? Identidad.ToString() : string.Empty;
+                modelo.Nombre = form.TryGetValue("Nombre", out var nombreValue) ? nombreValue.ToString() : string.Empty;
+                modelo.PaginaWed = form.TryGetValue("PaginaWed", out var PaginaWed) ? PaginaWed.ToString() : string.Empty;
+                modelo.NombreUsuario = form.TryGetValue("NombreUsuario", out var NombreUsuario) ? NombreUsuario.ToString() : string.Empty;
+                modelo.Password = form.TryGetValue("Password", out var Password) ? Password.ToString() : string.Empty;
+                modelo.Descripcion = form.TryGetValue("Descripcion", out var Descripcion) ? Descripcion.ToString() : string.Empty;
+                modelo.Facebook = form.TryGetValue("Facebook", out var Facebook) ? Facebook.ToString() : string.Empty;
+                modelo.Intagram = form.TryGetValue("Intagram", out var Intagram) ? Intagram.ToString() : string.Empty;
                 modelo.WhatsApp = form.TryGetValue("WhatsApp", out var WhatsApp) ? bool.TryParse(WhatsApp, out bool whats) ? whats : null : null;
-                return modelo; 
-            }
-            catch (Exception)
-            {
+                modelo.Envio = form.TryGetValue("Envio", out var Envio) ? bool.TryParse(Envio, out bool envi) ? envi : null : null;
+                modelo.Correo = form.TryGetValue("Correo", out var Correo) ? Correo.ToString() : string.Empty;
+                modelo.subLug_Id = form.TryGetValue("subLug_Id", out var subLug_Id) ? int.TryParse(subLug_Id, out int idSubLug) ? idSubLug : 0 : 0;
+                modelo.Latitud = form.TryGetValue("Latitud", out var Latitud) ? Latitud.ToString() : string.Empty;
+                modelo.Longitub = form.TryGetValue("Longitub", out var Longitub) ? Longitub.ToString() : string.Empty;
+                int idexHora = 0;
+                while (true)
+                {
+                    var diaNumero = $"Horario[{idexHora}].DiaNumero";
+                    var horaInicio = $"Horario[{idexHora}].HoraInicio";
+                    var minutoInicio = $"Horario[{idexHora}].MinutoInicio";
+                    var horaFin = $"Horario[{idexHora}].HoraFin";
+                    var minutoFin = $"Horario[{idexHora}].MinutoFin";
+                    if (!form.ContainsKey(diaNumero) || !form.ContainsKey(horaInicio) || !form.ContainsKey(minutoInicio) || !form.ContainsKey(horaFin) || !form.ContainsKey(minutoFin))
+                    {
+                        break;
+                    }
+                    int iDiaNumero = form.TryGetValue(diaNumero, out var DiaNumero) ? int.TryParse(DiaNumero, out int diaN) ? diaN : 0 : 0;
+                    int iHoraInicio = form.TryGetValue(horaInicio, out var HoraInicio) ? int.TryParse(HoraInicio, out int horIn) ? horIn : 0 : 0;
+                    int iMinutoInicio = form.TryGetValue(minutoInicio, out var MinutoInicio) ? int.TryParse(MinutoInicio, out int minuIni) ? minuIni : 0 : 0;
+                    int iHoraFin = form.TryGetValue(horaFin, out var HoraFin) ? int.TryParse(HoraFin, out int horF) ? horF : 0 : 0;
+                    int iMinutoFin = form.TryGetValue(minutoFin, out var MinutoFin) ? int.TryParse(MinutoFin, out int minuF) ? minuF : 0 : 0;
 
-                throw;
+                    horario.Add(new HorarioModel
+                    {
+                        DiaNumero = iDiaNumero,
+                        HoraInicio = iHoraInicio,
+                        MinutoInicio = iMinutoInicio,
+                        HoraFin = iHoraFin,
+                        MinutoFin = iMinutoFin
+                    });
+                    idexHora++;
+                }
+                modelo.Horario = horario;
+                int indexCat = 0;
+                while (true)
+                {
+                    var idCategoria = $"Categoria[{indexCat}].catg_Id";
+                    if (!form.ContainsKey(idCategoria)) break;
+                    int id = form.TryGetValue(idCategoria, out var catg_Id) ? int.TryParse(catg_Id, out int idC) ? idC : 0 : 0;
+                    categorias.Add(new CategoriaItemModel { catg_Id = id });
+                    indexCat++;
+                }
+                modelo.Categoria = categorias;
+                int indexTel = 0;
+                while (true)
+                {
+                    var idTipoTelefono = $"Telefono[{indexTel}].idTipoTelefono";
+                    var Nutelefono = $"Telefono[{indexTel}].Telefono";
+                    if (!form.ContainsKey(idTipoTelefono) || !form.ContainsKey(Nutelefono)) break;
+                    int id = form.TryGetValue(idTipoTelefono, out var idTipo) ? int.TryParse(idTipo, out int idT) ? idT : 0 : 0;
+                    string numero = form.TryGetValue(Nutelefono, out var NumeTele) ? NumeTele.ToString() : string.Empty;
+
+                    telefono.Add(new TelefonoViewModel { idTipoTelefono = id, Telefono = numero });
+                    indexTel++;
+                }
+                modelo.Telefono = telefono;
+
+                return resul = new() { Message = "Conversien si errores", Value = modelo, Success = true, Type = ServiceResultType.Success };
+            }
+            catch (Exception ex)
+            {
+                return resul = new() { Success = false, Message = $"El error ocurrio al convertir al tipo de modelo{ex.Message}", Type = ServiceResultType.Error };
             }
 
         }
@@ -482,11 +496,15 @@ namespace AppCircular.BusinessLogic.Services
 
         public async Task<ServiceResult> ActualizarTelefonoUsuario(int id, TelefonoModel model)
         {
-
             var listado = await _telefonoRepository.UpdateAsync(id, model);
             return new Convertidor<TelefonoViewModel>().mape(listado);
         }
 
+        public async Task<ServiceResult> UsuarioVarificado(int id)
+        {
+            var verificado = await _usuarioRepository.UsuarioVarificado(id);
+            return new Convertidor<bool>().mape(verificado);
+        }
         #endregion
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppCircular.Common.Models.Usuario
 {
-    public class HorarioModel: IValidatableObject
+    public class HorarioModel : IValidatableObject
     {
         [Required(ErrorMessage = "El número de día es requerido.")]
         [Range(1, 7, ErrorMessage = "El número de día debe estar entre 1 y 7.")]

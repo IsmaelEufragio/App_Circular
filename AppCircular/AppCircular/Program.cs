@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     }
-) ;
+);
 
 builder.Services.Configure<JwtModel>(builder.Configuration.GetSection("Jwt"));
 
@@ -50,7 +50,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1",
         Title = "Api Circular",
-        Description = "Una API web de ASP.NET Core para administrar elementos Api Circular",        
+        Description = "Una API web de ASP.NET Core para administrar elementos Api Circular",
         Contact = new OpenApiContact
         {
             Name = "Nuestro App Wed",
@@ -96,11 +96,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI(c=>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API V1");
-    });
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API V1");
+});
 //}
 
 app.UseHttpsRedirection();

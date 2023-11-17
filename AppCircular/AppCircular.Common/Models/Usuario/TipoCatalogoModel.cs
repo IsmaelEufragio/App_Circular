@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppCircular.Common.Models.Usuario
 {
-    public class TipoCatalogoModel: TipoCatalogoViewModel
+    public class TipoCatalogoModel : TipoCatalogoViewModel
     {
         [JsonIgnore]
         public new int Id { get; set; }

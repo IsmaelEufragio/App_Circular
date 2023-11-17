@@ -41,7 +41,7 @@ namespace AppCircular.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message= $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = true, Type = ServiceResultType.Error};
+                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = true, Type = ServiceResultType.Error };
                 return error;
             }
         }
@@ -55,8 +55,8 @@ namespace AppCircular.DataAccess.Repositories
                 var pais = await db.tbPais.ToListAsync();
 
                 relt.Message = pais.Count > 0 ? "Operacion Exitosa, Listada De pais" : "No se encontro Ningun Pais";
-                relt.Type = pais.Count >0 ? ServiceResultType.Success: ServiceResultType.NoContent;
-                relt.Data = pais.Select(a=> new PaisViewModel
+                relt.Type = pais.Count > 0 ? ServiceResultType.Success : ServiceResultType.NoContent;
+                relt.Data = pais.Select(a => new PaisViewModel
                 {
                     Id = a.pais_Id,
                     Nombre = a.pais_Nombre,
@@ -67,7 +67,7 @@ namespace AppCircular.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false ,Type = ServiceResultType.Error };
+                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }
@@ -89,13 +89,13 @@ namespace AppCircular.DataAccess.Repositories
                     return relt;
                 }
                 relt.Message = "El pais que desa actualizar no existe";
-                relt.Success= false;
+                relt.Success = false;
                 relt.Type = ServiceResultType.Error;
                 return relt;
             }
             catch (Exception e)
             {
-                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type= ServiceResultType.Error };
+                ServiceResult error = new ServiceResult() { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }

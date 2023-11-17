@@ -58,7 +58,7 @@ namespace AppCircular.DataAccess.Repositories
                 relt.Type = conf.Count > 0 ? ServiceResultType.Success : ServiceResultType.NoContent;
                 if (conf.Count == 0)
                 {
-                    relt.Data = new List<ConfiguracioViewModel>(); 
+                    relt.Data = new List<ConfiguracioViewModel>();
                     return relt;
                 }
                 relt.Data = conf.Select(a => new ConfiguracioViewModel
@@ -149,4 +149,4 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
     }
-} 
+}

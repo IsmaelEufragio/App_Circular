@@ -1,4 +1,5 @@
-﻿using AppCircular.Common.Models.Configuracion;
+﻿using AppCircular.Common.Models.Account;
+using AppCircular.Common.Models.Configuracion;
 using AppCircular.DataAccess.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -8,8 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Newtonsoft.Json.Linq;
 
 namespace AppCircular.BusinessLogic.Services
 {
@@ -118,7 +125,6 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
-
         static void ComprimirArchivo(IFormFile archivoOrigen, string archivoDestino)
         {
             using (FileStream archivoComprimido = File.Create(archivoDestino))
@@ -134,6 +140,127 @@ namespace AppCircular.BusinessLogic.Services
                         }
                     }
                 }
+            }
+        }
+
+        public async Task<ServiceResult> Correo(EmailModel emailModel)
+        {
+            var result = new ServiceResult();
+            var smtpServCon = await _configuracionRepository.WhereAsync("smtpServer");
+            if (!smtpServCon.Success) return result.Error("No se encontro la configuracion 'smtpServer'");
+            string smtpServer = smtpServCon.Value; // Cambia esto al servidor SMTP que utilices
+
+            var smtpPortCon = await _configuracionRepository.WhereAsync("smtpPort");
+            if (!smtpPortCon.Success) return result.Error("No se encontro la configuracion 'smtpPort'");
+            if (!(int.TryParse(smtpPortCon.Value, out int smtpPort))) return result.Error("La configuracion 'smtpPort' devolvio un string que no se puede convertir a numero");
+
+            var senderEmailCon = await _configuracionRepository.WhereAsync("senderEmail");
+            if (!senderEmailCon.Success) return result.Error("No se encontro la configuracion 'senderEmail'");
+            string senderEmail = senderEmailCon.Value; // Tu dirección de correo electrónico
+
+            var senderPasswordCon = await _configuracionRepository.WhereAsync("senderPassword");
+            if (!senderPasswordCon.Success) return result.Error("No se encontro la configuracion 'senderPassword'");
+            string senderPassword = senderPasswordCon.Value; // Tu contraseña de correo electrónico
+
+            using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+            {
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
+                smtpClient.EnableSsl = true;
+
+                MailMessage mailMessage = new MailMessage(senderEmail, emailModel.DestinoCorreo, emailModel.Asunto, emailModel.Cuerpo);
+                mailMessage.IsBodyHtml = true; // Si deseas enviar un correo HTML
+                try
+                {
+                    await smtpClient.SendMailAsync(mailMessage);
+                    result.Type = ServiceResultType.NoContent;
+                    result.Success = true;
+                    result.Message = "Correo enviado exitosamente.";
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    result.Type = ServiceResultType.Error;
+                    result.Success = false;
+                    result.Message = $"Error al enviar el correo: {ex.Message}";
+                    return result;
+                }
+            }
+        }
+
+        public async Task<ServiceResult> Token(int tiempoExpiracion, int idUsario, bool Varificacion = false)
+        {
+            var resul = new ServiceResult();
+            try
+            {
+                var jwt = _jwtSettings;
+                var claims = new[]
+                {
+                new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("UserId", idUsario.ToString())
+                };
+
+                var verifi = new[]
+                {
+                new Claim("UserId", idUsario.ToString())
+                };
+                claims = Varificacion ? verifi : claims;
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
+                var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var token = new JwtSecurityToken(
+                        jwt.Issuer,
+                        jwt.Audience,
+                        claims,
+                        expires: DateTime.Now.AddMinutes(tiempoExpiracion),
+                        signingCredentials: singIn);
+                var resp = new JwtSecurityTokenHandler().WriteToken(token);
+                resul.Success = true;
+                resul.Type = ServiceResultType.NoContent;
+                resul.Data = resp;
+                resul.Message = $"Token Generado tiempo de Expiracion {tiempoExpiracion} minuto";
+                return resul;
+            }
+            catch (Exception ex)
+            {
+                resul.Success = false;
+                resul.Type = ServiceResultType.Error;
+                resul.Message = $"TokenGenerado {ex.Message}";
+                return resul;
+            }
+        }
+
+        public ResultadoModel<bool> ValidarToken(string token)
+        {
+            ResultadoModel<bool> resul = new ResultadoModel<bool>();
+            var jwtSecret = _jwtSettings.Key; // Cambia esto por tu secreto real
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(jwtSecret);
+
+            try
+            {
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+
+                var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out _);
+                resul.Success = true;
+                resul.Message = "Token válido";
+                resul.Type = ServiceResultType.NoContent;
+                return resul;
+            }
+            catch (Exception ex)
+            {
+                resul.Success = false;
+                resul.Message = "Token Invalido";
+                resul.Type = ServiceResultType.Forbidden;
+                return resul;
             }
         }
     }

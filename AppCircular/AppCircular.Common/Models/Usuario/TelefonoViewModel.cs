@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppCircular.Common.Models.Usuario
 {
-    public class TelefonoViewModel:TelefonoModel
+    public class TelefonoViewModel : TelefonoModel
     {
         [JsonIgnore]
         public new int IdUsuario { get; set; }

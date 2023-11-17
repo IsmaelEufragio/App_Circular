@@ -8,7 +8,7 @@ using AppCircular.Common.Models.Usuario;
 
 namespace AppCircular.Common.Models.Genericos
 {
-    public class TipoTelefonoModel:TipoTelefonoViewModel
+    public class TipoTelefonoModel : TipoTelefonoViewModel
     {
         [JsonIgnore]
         public new int? IdTipoTelefono { get; set; }

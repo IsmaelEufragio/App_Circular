@@ -4,6 +4,7 @@ using AppCircular.Common.Models.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppCircular.Controllers
 {
@@ -41,7 +42,7 @@ namespace AppCircular.Controllers
 
             //    // Puedes realizar otras operaciones con los datos del modelo aquí.
 
-               return Ok("Imagen subida exitosamente.");
+            return Ok("Imagen subida exitosamente.");
             //}
         }
         [HttpPost, Route("CrearUsuario")]
@@ -54,13 +55,25 @@ namespace AppCircular.Controllers
 
         [HttpPost, Route("TesListado")]
         public async Task<IActionResult> list(IFormCollection form)
-         
         {
-            var jsonString = form["jsonData"]; // Supongamos que el campo del formulario contiene JSON
-            var modelo = JsonConvert.DeserializeObject<TelefonoViewModel>(jsonString);
-            //var resul = await _usuarioServices.CrearUsaurio(modelo);
-            //return Ok(resul);
-            return Ok("Tuanis");
+            var modelo = _usuarioServices.convertirUsuario(form);
+            if (!modelo.Success) return Ok(modelo);
+
+            var validationContext = new ValidationContext(modelo.Value, null, null);
+            var validationResults = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(modelo.Value, validationContext, validationResults, true);
+            if (isValid)
+            {
+                var resul = await _usuarioServices.CrearUsaurio(modelo.Value);
+                return Ok(resul);
+                //return Ok("Tuanis");
+            }
+            else
+            {
+                // El modelo no es válido, muestra errores de validación.
+                var errores = validationResults.Select(result => result.ErrorMessage).ToList();
+                return BadRequest(errores);
+            }
         }
 
     }

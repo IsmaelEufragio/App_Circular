@@ -15,6 +15,7 @@ namespace AppCircular.DataAccess.Repositories.Interface
         public Task<ResultadoModel<int>> CrearUsuario(UsuarioCrearModel usuario);
         public Task<ResultadoModel<bool>> WhereAsync(string correo, List<TelefonoViewModel> telefono);
         public Task<ResultadoModel<bool>> ActualizarLogo(int idUsuario, string RutaImagen);
-        public Task<ResultadoModel<tbUsuarios>> Login(string correo); 
+        public Task<ResultadoModel<tbUsuarios>> Login(string correo, bool login = true);
+        public Task<ResultadoModel<bool>> UsuarioVarificado(int Id);
     }
 }

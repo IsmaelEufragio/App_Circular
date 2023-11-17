@@ -20,7 +20,7 @@ namespace AppCircular.DataAccess.Repositories
             {
                 using var db = new AppCircularContext();
                 var result = new ResultadoModel<DeparmentoMunicipioViewModel>();
-                var paisW = db.tbMunicipio.Any(a => (a.muni_Nombre.ToLower() == item.muni_Nombre.ToLower() && a.dept_Id== item.dept_Id) || (a.muni_NuIdentidad == item.muni_NuIdentidad && a.dept_Id == item.dept_Id));
+                var paisW = db.tbMunicipio.Any(a => (a.muni_Nombre.ToLower() == item.muni_Nombre.ToLower() && a.dept_Id == item.dept_Id) || (a.muni_NuIdentidad == item.muni_NuIdentidad && a.dept_Id == item.dept_Id));
                 if (!paisW)
                 {
                     db.tbMunicipio.Add(item);
@@ -62,14 +62,14 @@ namespace AppCircular.DataAccess.Repositories
                         Id = a.dept_Id,
                         Departamento = a.dept_Nombre,
                         NuIdentidad = a.dept_NuIdentidad,
-                        Municipio = a.tbMunicipio != null? a.tbMunicipio.Select(e => new MunicipioViewModel
+                        Municipio = a.tbMunicipio != null ? a.tbMunicipio.Select(e => new MunicipioViewModel
                         {
                             Id = e.muni_Id,
                             Nombre = e.muni_Nombre,
                             NuIdentidad = e.muni_NuIdentidad,
                             ValidaciosTelefono = e.muni_ValidaciosTelefono,
                             ValidaciosTelefonoFijo = e.muni_ValidaciosTelefonoFijo
-                        }).ToList(): new List<MunicipioViewModel>(),
+                        }).ToList() : new List<MunicipioViewModel>(),
                     }).ToList();
                     relt.Success = true;
                     relt.Message = "Operacion realizada con exito";
@@ -123,7 +123,7 @@ namespace AppCircular.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                var error = new ResultadoModel<DeparmentoMunicipioViewModel>{ Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
+                var error = new ResultadoModel<DeparmentoMunicipioViewModel> { Message = $"Lugar: Repositorio de Pais, Error: {e.Message}", Success = false, Type = ServiceResultType.Error };
                 return error;
             }
         }

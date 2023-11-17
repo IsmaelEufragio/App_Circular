@@ -4,7 +4,6 @@ using AppCircular.Common.Models.Configuracion;
 using AppCircular.Common.Models.Genericos;
 using AppCircular.Common.Models.Usuario;
 using AppCircular.DataAccess.Repositories;
-using AppCircular.DataAccess.Repositories.Interface;
 using AppCircular.Entities.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -16,21 +15,27 @@ using System.Threading.Tasks;
 
 namespace AppCircular.BusinessLogic.Services
 {
-    public class ConfiguracionServices:BaseServices
+    public class ConfiguracionServices : BaseServices
     {
         private static string nombre = "Configuracion";
         private readonly TipoTelefonoRepository _tipoTelefonoRepository;
         private readonly TipoCatalogoRepository _tipoCatalogoRepository;
         private readonly TipoImagenRepository _tipoImagenRepository;
-        public ConfiguracionServices(   IOptions<JwtModel> jwtSettings,
+        private readonly TipoReaccionesRepository _tipoReaccionesRepository;
+        private readonly TipoDePagoRepository _tipoDePagoRepository;
+        public ConfiguracionServices(IOptions<JwtModel> jwtSettings,
                                         TipoTelefonoRepository tipoTelefonoRepository,
                                         TipoCatalogoRepository tipoCatalogoRepository,
-                                        TipoImagenRepository tipoImagenRepository
+                                        TipoImagenRepository tipoImagenRepository,
+                                        TipoReaccionesRepository tipoReaccionesRepository,
+                                        TipoDePagoRepository tipoDePagoRepository
             ) : base(jwtSettings)
         {
             _tipoTelefonoRepository = tipoTelefonoRepository;
             _tipoCatalogoRepository = tipoCatalogoRepository;
             _tipoImagenRepository = tipoImagenRepository;
+            _tipoReaccionesRepository = tipoReaccionesRepository;
+            _tipoDePagoRepository = tipoDePagoRepository;
         }
         #region Configuracion
         public async Task<ServiceResult> listaConfiguarcion()
@@ -157,6 +162,72 @@ namespace AppCircular.BusinessLogic.Services
         {
             var listado = await _tipoImagenRepository.UpdateAsync(id, model);
             return new Convertidor<TipoImagenViewModel>().mape(listado);
+        }
+
+        #endregion
+
+        #region Tipo de Reaccion
+
+        public async Task<ServiceResult> listaTipoReaccion()
+        {
+            try
+            {
+                var repositorio = await _tipoReaccionesRepository.ListAsync();
+                var resul = new Convertidor<TipoReaccionViewModel>().mape(repositorio);
+                return resul;
+            }
+            catch (Exception e)
+            {
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio {nombre}, Mesaje {e.Message}" };
+                return result;
+            }
+        }
+
+        public async Task<ServiceResult> CrearTipoReaccion(TipoReaccionModel model)
+        {
+            var tb = new tbTipoReaccion();
+            tb.tipRea_Descripcion = model.Descripcion;
+            var repositorio = await _tipoReaccionesRepository.InsertAsync(tb);
+            return new Convertidor<TipoReaccionViewModel>().mape(repositorio);
+        }
+
+        public async Task<ServiceResult> ActualizarTipoReaccion(int id, TipoReaccionModel model)
+        {
+            var listado = await _tipoReaccionesRepository.UpdateAsync(id, model);
+            return new Convertidor<TipoReaccionViewModel>().mape(listado);
+        }
+
+        #endregion
+
+        #region Tipo de Pago
+
+        public async Task<ServiceResult> listaTipoPago()
+        {
+            try
+            {
+                var repositorio = await _tipoDePagoRepository.ListAsync();
+                var resul = new Convertidor<TipoDePagoViewModel>().mape(repositorio);
+                return resul;
+            }
+            catch (Exception e)
+            {
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio {nombre}, Mesaje {e.Message}" };
+                return result;
+            }
+        }
+
+        public async Task<ServiceResult> CrearTipoPago(TipoDePagoModel model)
+        {
+            var tb = new tbTipoPago();
+            tb.tipPag_Descripcion = model.Descripcion;
+            var repositorio = await _tipoDePagoRepository.InsertAsync(tb);
+            return new Convertidor<TipoDePagoViewModel>().mape(repositorio);
+        }
+
+        public async Task<ServiceResult> ActualizarTipoPago(int id, TipoDePagoModel model)
+        {
+            var listado = await _tipoDePagoRepository.UpdateAsync(id, model);
+            return new Convertidor<TipoDePagoViewModel>().mape(listado);
         }
 
         #endregion

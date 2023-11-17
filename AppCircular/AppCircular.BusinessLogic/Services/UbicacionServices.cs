@@ -22,8 +22,8 @@ namespace AppCircular.BusinessLogic.Services
         private readonly SubdivicionLugarRepository _subdivicionLugarRepository;
 
         public UbicacionServices(
-            PaisRepository paisRepository, 
-            DepartamentoRepository departamentoRepository, 
+            PaisRepository paisRepository,
+            DepartamentoRepository departamentoRepository,
             MunicipioRepository municipioRepository,
             CategoriaLugarRepository categoriaLugarRepository,
             LugarRepository lugarRepository,
@@ -47,15 +47,16 @@ namespace AppCircular.BusinessLogic.Services
                 var result = new ServiceResult();
                 var resultado = await _paisRepository.ListAsync();
                 result.Data = resultado.Data;
-                if (!resultado.Success) {
+                if (!resultado.Success)
+                {
                     return result.SetMessage($"{resultado.Message}", ServiceResultType.Info);
                 }
-                result.Data =  resultado.Data;
+                result.Data = resultado.Data;
                 return result.SetMessage(resultado.Message, resultado.Type);
             }
             catch (Exception e)
             {
-                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio Ubicacion, Mesaje {e.Message}"};
+                var result = new ServiceResult() { Success = false, Message = $"Lugar Error: Servicio Ubicacion, Mesaje {e.Message}" };
                 return result;
             }
         }

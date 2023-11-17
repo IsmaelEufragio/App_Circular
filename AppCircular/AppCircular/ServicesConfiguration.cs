@@ -3,7 +3,6 @@ using AppCircular.Common.Models.Configuracion;
 using AppCircular.DataAccess;
 using AppCircular.DataAccess.Context;
 using AppCircular.DataAccess.Repositories;
-using AppCircular.DataAccess.Repositories.Interface;
 
 namespace AppCircular
 {
@@ -27,6 +26,8 @@ namespace AppCircular
             services.AddScoped<TipoTelefonoRepository>();
             services.AddScoped<TipoCatalogoRepository>();
             services.AddScoped<TipoImagenRepository>();
+            services.AddScoped<TipoReaccionesRepository>();
+            services.AddScoped<TipoDePagoRepository>();
             AppCircularContext.BuildConnectionString(connectionString);
         }
 

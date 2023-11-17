@@ -58,7 +58,7 @@ namespace AppCircular.DataAccess.Repositories
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<PaisDepartamentoViewModel>();
-                var depart = await db.tbPais.Include(a=> a.tbDepartamento).ToListAsync();
+                var depart = await db.tbPais.Include(a => a.tbDepartamento).ToListAsync();
                 if (depart != null)
                 {
                     var paisDepart = depart.Select(a => new PaisDepartamentoViewModel
@@ -100,7 +100,7 @@ namespace AppCircular.DataAccess.Repositories
                 var dep = await db.tbDepartamento.SingleOrDefaultAsync(a => a.dept_Id == Id);
                 if (Id > 0 && dep != null)
                 {
-                    var depW = db.tbDepartamento.Where(e=> e.dept_Id != Id).Any(a => (a.dept_Nombre.ToLower() == item.Nombre.ToLower() && a.pais_Id == item.pais_Id) || (a.dept_NuIdentidad == item.NuIdentidad && a.pais_Id == item.pais_Id));
+                    var depW = db.tbDepartamento.Where(e => e.dept_Id != Id).Any(a => (a.dept_Nombre.ToLower() == item.Nombre.ToLower() && a.pais_Id == item.pais_Id) || (a.dept_NuIdentidad == item.NuIdentidad && a.pais_Id == item.pais_Id));
                     if (!depW)
                     {
                         dep.dept_Nombre = item.Nombre;

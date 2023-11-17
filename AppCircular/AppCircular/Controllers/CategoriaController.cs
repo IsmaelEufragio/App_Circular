@@ -17,7 +17,6 @@ namespace AppCircular.Controllers
             _usuarioServices = usuarioServices;
         }
         [HttpGet]
-        [Authorize]
         [Route("LisCategoria")]
         public async Task<IActionResult> ListaCategoria()
         {

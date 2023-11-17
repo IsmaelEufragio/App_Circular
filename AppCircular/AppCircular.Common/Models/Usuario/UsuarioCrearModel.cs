@@ -14,6 +14,7 @@ namespace AppCircular.Common.Models.Usuario
     public class UsuarioCrearModel
     {
         public IFormFile Logo { get; set; }
+        public string RutaLogo { get; set; }
         [Required(ErrorMessage = "El tipo de Usuario es requerido.")]
         public int tipUs_Id { get; set; }
 
@@ -77,13 +78,13 @@ namespace AppCircular.Common.Models.Usuario
 
         [Required(ErrorMessage = "La lista de Telefono es requerida.")]
         [MinLength(1, ErrorMessage = "Debe haber al menos un elemento en la lista de Telefono.")]
-        public List<TelefonoViewModel> Telefono{ get; set; }
+        public List<TelefonoViewModel> Telefono { get; set; }
 
-        [JsonIgnore, BindNever]
+        [JsonIgnore]
         public DataTable? HorarioDate { get; set; }
-        [JsonIgnore, BindNever]
+        [JsonIgnore]
         public DataTable? CategoriaDate { get; set; }
-        [JsonIgnore, BindNever]
+        [JsonIgnore]
         public DataTable? TelefonoDate { get; set; }
     }
 }
