@@ -3,6 +3,17 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Ignorar archivos generados automáticamente
+**/bin/
+**/obj/
+**/*.deps.json
+**/*.nuget.dgspec.json
+**/*.nuget.g.props
+**/project.assets.json
+**/*.GeneratedMSBuildEditorConfig.editorconfig
+**/*.FileListAbsolute.txt
+
+
 # User-specific files
 *.rsuser
 *.suo
