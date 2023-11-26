@@ -188,7 +188,7 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
-        public async Task<ServiceResult> Token(int tiempoExpiracion, int idUsario, bool Varificacion = false)
+        public async Task<ServiceResult> Token(int tiempoExpiracion, Guid idUsario, bool Varificacion = false)
         {
             var resul = new ServiceResult();
             try

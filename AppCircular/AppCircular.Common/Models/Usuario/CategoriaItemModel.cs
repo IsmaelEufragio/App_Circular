@@ -8,6 +8,6 @@ namespace AppCircular.Common.Models.Usuario
 {
     public class CategoriaItemModel
     {
-        public int catg_Id { get; set; }
+        public Guid catg_Id { get; set; }
     }
 }

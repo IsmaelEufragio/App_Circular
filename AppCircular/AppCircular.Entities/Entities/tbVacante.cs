@@ -3,49 +3,40 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbVacante
+namespace AppCircular.Entities.Entities
 {
-    public int vac_Id { get; set; }
+    public partial class tbVacante
+    {
+        public tbVacante()
+        {
+            tbCargo = new HashSet<tbCargo>();
+            tbEducacion = new HashSet<tbEducacion>();
+            tbExperiencia = new HashSet<tbExperiencia>();
+            tbIdiomaItem = new HashSet<tbIdiomaItem>();
+            tbOtrosConocimientos = new HashSet<tbOtrosConocimientos>();
+        }
 
-    public string vac_DescripcionOferta { get; set; }
+        public Guid vac_Id { get; set; }
+        public string vac_DescripcionOferta { get; set; }
+        public Guid user_Id { get; set; }
+        public Guid ariaP_Id { get; set; }
+        public Guid puest_Id { get; set; }
+        public Guid tipC_Id { get; set; }
+        public Guid gene_Id { get; set; }
+        public int vac_Edad { get; set; }
+        public decimal vac_SalarioMax { get; set; }
+        public decimal? vac_SalarioMinio { get; set; }
+        public bool vac_Vahiculo { get; set; }
 
-    public int user_Id { get; set; }
-
-    public int ariaP_Id { get; set; }
-
-    public int puest_Id { get; set; }
-
-    public int tipC_Id { get; set; }
-
-    public int gene_Id { get; set; }
-
-    public decimal vac_Edad { get; set; }
-
-    public decimal? vac_SalarioMax { get; set; }
-
-    public int vac_SalarioMinio { get; set; }
-
-    public bool vac_Vahiculo { get; set; }
-
-    public virtual tbAriaPuesto ariaP { get; set; }
-
-    public virtual tbGenero gene { get; set; }
-
-    public virtual tbPuesto puest { get; set; }
-
-    public virtual ICollection<tbCargo> tbCargo { get; set; } = new List<tbCargo>();
-
-    public virtual ICollection<tbEducacion> tbEducacion { get; set; } = new List<tbEducacion>();
-
-    public virtual ICollection<tbExperiencia> tbExperiencia { get; set; } = new List<tbExperiencia>();
-
-    public virtual ICollection<tbIdiomaItem> tbIdiomaItem { get; set; } = new List<tbIdiomaItem>();
-
-    public virtual ICollection<tbOtrosConocimientos> tbOtrosConocimientos { get; set; } = new List<tbOtrosConocimientos>();
-
-    public virtual tbTipoContrato tipC { get; set; }
-
-    public virtual tbUsuarios user { get; set; }
+        public virtual tbAriaPuesto ariaP { get; set; }
+        public virtual tbGenero gene { get; set; }
+        public virtual tbPuesto puest { get; set; }
+        public virtual tbTipoContrato tipC { get; set; }
+        public virtual tbUsuarios user { get; set; }
+        public virtual ICollection<tbCargo> tbCargo { get; set; }
+        public virtual ICollection<tbEducacion> tbEducacion { get; set; }
+        public virtual ICollection<tbExperiencia> tbExperiencia { get; set; }
+        public virtual ICollection<tbIdiomaItem> tbIdiomaItem { get; set; }
+        public virtual ICollection<tbOtrosConocimientos> tbOtrosConocimientos { get; set; }
+    }
 }

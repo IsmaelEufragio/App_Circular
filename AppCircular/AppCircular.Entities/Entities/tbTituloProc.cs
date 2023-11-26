@@ -3,17 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTituloProc
+namespace AppCircular.Entities.Entities
 {
-    public int tiProc_Id { get; set; }
+    public partial class tbTituloProc
+    {
+        public Guid tiProc_Id { get; set; }
+        public Guid titu_Id { get; set; }
+        public Guid proc_Id { get; set; }
 
-    public int titu_Id { get; set; }
-
-    public int proc_Id { get; set; }
-
-    public virtual tbProceso proc { get; set; }
-
-    public virtual tbTitulo titu { get; set; }
+        public virtual tbProceso proc { get; set; }
+        public virtual tbTitulo titu { get; set; }
+    }
 }

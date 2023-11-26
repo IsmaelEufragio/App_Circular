@@ -73,14 +73,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<LugarViewModel>> UpdateAsync(int id, LugarModel item)
+        public async Task<ResultadoModel<LugarViewModel>> UpdateAsync(Guid id, LugarModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<LugarViewModel>();
                 var tblugar = await db.tbLugar.SingleOrDefaultAsync(a => a.lug_Id == id);
-                if (id > 0 && tblugar != null)
+                if (id != Guid.Empty && tblugar != null)
                 {
                     var lugarW = db.tbLugar.Where(e => e.lug_Id != id).Any(a => a.lug_Nombre.ToLower() == item.Nombre.ToLower() && a.muni_Id == item.muni_Id);
                     if (!lugarW)

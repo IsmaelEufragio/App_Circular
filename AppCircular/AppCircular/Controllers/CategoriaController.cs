@@ -41,7 +41,7 @@ namespace AppCircular.Controllers
         [HttpPut]
         [Authorize]
         [Route("UpdateCategoria/{Id}")]
-        public async Task<IActionResult> ActulizarCategoria(int Id, CategoriaModel model)
+        public async Task<IActionResult> ActulizarCategoria(Guid Id, CategoriaModel model)
         {
             var resul = new ServiceResult();
             if (model != null)

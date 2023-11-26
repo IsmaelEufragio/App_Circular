@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTipoReaccion
+namespace AppCircular.Entities.Entities
 {
-    public int tipRea_Id { get; set; }
-
-    public string tipRea_Descripcion { get; set; }
+    public partial class tbTipoReaccion
+    {
+        public Guid tipRea_Id { get; set; }
+        public string tipRea_Descripcion { get; set; }
+    }
 }

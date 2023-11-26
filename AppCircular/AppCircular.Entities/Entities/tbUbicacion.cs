@@ -3,21 +3,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbUbicacion
+namespace AppCircular.Entities.Entities
 {
-    public int ubc_Id { get; set; }
+    public partial class tbUbicacion
+    {
+        public tbUbicacion()
+        {
+            tbCatalogoOng = new HashSet<tbCatalogoOng>();
+            tbUsuarios = new HashSet<tbUsuarios>();
+        }
 
-    public string ubc_Latitud { get; set; }
+        public Guid ubc_Id { get; set; }
+        public string ubc_Latitud { get; set; }
+        public string ubc_Longitub { get; set; }
+        public Guid subLug_Id { get; set; }
 
-    public string ubc_Longitub { get; set; }
-
-    public int subLug_Id { get; set; }
-
-    public virtual tbSubdivicionLugar subLug { get; set; }
-
-    public virtual ICollection<tbCatalogoOng> tbCatalogoOng { get; set; } = new List<tbCatalogoOng>();
-
-    public virtual ICollection<tbUsuarios> tbUsuarios { get; set; } = new List<tbUsuarios>();
+        public virtual tbSubdivicionLugar subLug { get; set; }
+        public virtual ICollection<tbCatalogoOng> tbCatalogoOng { get; set; }
+        public virtual ICollection<tbUsuarios> tbUsuarios { get; set; }
+    }
 }

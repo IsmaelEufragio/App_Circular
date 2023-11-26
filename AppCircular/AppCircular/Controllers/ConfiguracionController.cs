@@ -43,7 +43,7 @@ namespace AppCircular.Controllers
         [HttpPut]
         [Authorize]
         [Route("UpdateConfiguracion/{Id}")]
-        public async Task<IActionResult> ActulizarConfig(int Id, ConfiguracionModel model)
+        public async Task<IActionResult> ActulizarConfig(Guid Id, ConfiguracionModel model)
         {
             var resul = new ServiceResult();
             if (model != null)

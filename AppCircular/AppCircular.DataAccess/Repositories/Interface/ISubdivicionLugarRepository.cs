@@ -13,7 +13,7 @@ namespace AppCircular.DataAccess.Repositories.Interface
     {
         public Task<ResultadoModel<SubdivicionLugarViewModel>> ListAsync();
         public Task<ResultadoModel<SubdivicionLugarViewModel>> InsertAsync(T item);
-        public Task<ResultadoModel<SubdivicionLugarViewModel>> UpdateAsync(int id, SubdivicionLugarModel item);
-        public Task<ResultadoModel<bool>> WhereAsync(int idSubDivicionLugar);
+        public Task<ResultadoModel<SubdivicionLugarViewModel>> UpdateAsync(Guid id, SubdivicionLugarModel item);
+        public Task<ResultadoModel<bool>> WhereAsync(Guid idSubDivicionLugar);
     }
 }

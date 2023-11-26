@@ -3,19 +3,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbUsuarioTelefono
+namespace AppCircular.Entities.Entities
 {
-    public int usTel_Id { get; set; }
+    public partial class tbUsuarioTelefono
+    {
+        public Guid usTel_Id { get; set; }
+        public Guid tipTel_Id { get; set; }
+        public Guid user_Id { get; set; }
+        public string usTel_Numero { get; set; }
 
-    public int tipTel_Id { get; set; }
-
-    public int user_Id { get; set; }
-
-    public string usTel_Numero { get; set; }
-
-    public virtual tbTipoTelefono tipTel { get; set; }
-
-    public virtual tbUsuarios user { get; set; }
+        public virtual tbTipoTelefono tipTel { get; set; }
+        public virtual tbUsuarios user { get; set; }
+    }
 }

@@ -74,14 +74,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<SubdivicionLugarViewModel>> UpdateAsync(int id, SubdivicionLugarModel item)
+        public async Task<ResultadoModel<SubdivicionLugarViewModel>> UpdateAsync(Guid id, SubdivicionLugarModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<SubdivicionLugarViewModel>();
                 var tbsubLug = await db.tbSubdivicionLugar.SingleOrDefaultAsync(a => a.subLug_Id == id);
-                if (id > 0 && tbsubLug != null)
+                if (id != Guid.Empty && tbsubLug != null)
                 {
                     var subLuW = db.tbSubdivicionLugar.Where(e => e.subLug_Id != id).Any(a => a.subLug_Nombre.ToLower() == item.Nombre.ToLower() && a.catSub_Id == item.catSub_Id && a.lug_Id == item.lug_Id);
                     if (!subLuW)
@@ -111,13 +111,13 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<bool>> WhereAsync(int idSubDivicionLugar)
+        public async Task<ResultadoModel<bool>> WhereAsync(Guid idSubDivicionLugar)
         {
             var relt = new ResultadoModel<bool>();
             try
             {
 
-                if (idSubDivicionLugar > 0)
+                if (idSubDivicionLugar !=  Guid.Empty)
                 {
                     using var db = new AppCircularContext();
                     bool tb = await db.tbSubdivicionLugar.AnyAsync(a => a.subLug_Id == idSubDivicionLugar);

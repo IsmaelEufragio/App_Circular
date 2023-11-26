@@ -3,45 +3,41 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbCatalogo
+namespace AppCircular.Entities.Entities
 {
-    public int catg_Id { get; set; }
+    public partial class tbCatalogo
+    {
+        public tbCatalogo()
+        {
+            Inversecatg_IdDesperdicioNavigation = new HashSet<tbCatalogo>();
+            tbCatalogoImagen = new HashSet<tbCatalogoImagen>();
+            tbCatalogoOng = new HashSet<tbCatalogoOng>();
+            tbCatalogoReaccion = new HashSet<tbCatalogoReaccion>();
+            tbContribuyente = new HashSet<tbContribuyente>();
+            tbGuardar = new HashSet<tbGuardar>();
+            tbPrecio = new HashSet<tbPrecio>();
+        }
 
-    public string catg_Nombre { get; set; }
+        public Guid catg_Id { get; set; }
+        public string catg_Nombre { get; set; }
+        public string catg_Descripcion { get; set; }
+        public string catg_JsonReaccion { get; set; }
+        public Guid? catg_IdDesperdicio { get; set; }
+        public Guid categ_Id { get; set; }
+        public Guid user_Id { get; set; }
+        public byte catg_EdadActaParaVer { get; set; }
+        public DateTime catg_FechaCreacion { get; set; }
+        public bool catag_EsGratis { get; set; }
 
-    public string catg_Descripcion { get; set; }
-
-    public string catg_JsonReaccion { get; set; }
-
-    public int? catg_IdDesperdicio { get; set; }
-
-    public int categ_Id { get; set; }
-
-    public int user_Id { get; set; }
-
-    public byte catg_EdadActaParaVer { get; set; }
-
-    public DateTime catg_FechaCreacion { get; set; }
-
-    public virtual ICollection<tbCatalogo> Inversecatg_IdDesperdicioNavigation { get; set; } = new List<tbCatalogo>();
-
-    public virtual tbCategoria categ { get; set; }
-
-    public virtual tbCatalogo catg_IdDesperdicioNavigation { get; set; }
-
-    public virtual ICollection<tbCatalogoOng> tbCatalogoOng { get; set; } = new List<tbCatalogoOng>();
-
-    public virtual ICollection<tbCatalogoReaccion> tbCatalogoReaccion { get; set; } = new List<tbCatalogoReaccion>();
-
-    public virtual ICollection<tbContribuyente> tbContribuyente { get; set; } = new List<tbContribuyente>();
-
-    public virtual ICollection<tbGuardar> tbGuardar { get; set; } = new List<tbGuardar>();
-
-    public virtual ICollection<tbOrigenImagen> tbOrigenImagen { get; set; } = new List<tbOrigenImagen>();
-
-    public virtual ICollection<tbPrecio> tbPrecio { get; set; } = new List<tbPrecio>();
-
-    public virtual tbUsuarios user { get; set; }
+        public virtual tbCategoria categ { get; set; }
+        public virtual tbCatalogo catg_IdDesperdicioNavigation { get; set; }
+        public virtual tbUsuarios user { get; set; }
+        public virtual ICollection<tbCatalogo> Inversecatg_IdDesperdicioNavigation { get; set; }
+        public virtual ICollection<tbCatalogoImagen> tbCatalogoImagen { get; set; }
+        public virtual ICollection<tbCatalogoOng> tbCatalogoOng { get; set; }
+        public virtual ICollection<tbCatalogoReaccion> tbCatalogoReaccion { get; set; }
+        public virtual ICollection<tbContribuyente> tbContribuyente { get; set; }
+        public virtual ICollection<tbGuardar> tbGuardar { get; set; }
+        public virtual ICollection<tbPrecio> tbPrecio { get; set; }
+    }
 }

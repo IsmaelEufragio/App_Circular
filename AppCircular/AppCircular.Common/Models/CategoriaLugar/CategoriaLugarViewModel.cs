@@ -8,7 +8,7 @@ namespace AppCircular.Common.Models.CategoriaLugar
 {
     public class CategoriaLugarViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Nombre { get; set; }
     }
 }

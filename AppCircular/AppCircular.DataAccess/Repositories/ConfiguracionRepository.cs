@@ -77,14 +77,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<ConfiguracioViewModel>> UpdateAsync(int id, ConfiguracionModel item)
+        public async Task<ResultadoModel<ConfiguracioViewModel>> UpdateAsync(Guid id, ConfiguracionModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<ConfiguracioViewModel>();
                 var tbConfi = await db.tbConfiguracion.SingleOrDefaultAsync(a => a.conf_Id == id);
-                if (id > 0 && tbConfi != null)
+                if (id != Guid.Empty && tbConfi != null)
                 {
                     var tipoW = db.tbTipoUsuario.Where(e => e.tipUs_Id != id).Any(a => a.tipUs_Descripcion.ToLower() == item.Descripcion.ToLower());
                     if (!tipoW)

@@ -63,7 +63,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarConfiguracion(int id, ConfiguracionModel model)
+        public async Task<ServiceResult> ActualizarConfiguracion(Guid id, ConfiguracionModel model)
         {
             var listado = await _configuracionRepository.UpdateAsync(id, model);
             return new Convertidor<TipoUsuarioViewModel>().mape(listado);
@@ -94,7 +94,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoTelefonoViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoTelefono(int id, TipoTelefonoModel model)
+        public async Task<ServiceResult> ActualizarTipoTelefono(Guid id, TipoTelefonoModel model)
         {
             var listado = await _tipoTelefonoRepository.UpdateAsync(id, model);
             return new Convertidor<TipoTelefonoViewModel>().mape(listado);
@@ -125,7 +125,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoCatalogoViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoCatalogo(int id, TipoCatalogoModel model)
+        public async Task<ServiceResult> ActualizarTipoCatalogo(Guid id, TipoCatalogoModel model)
         {
             var listado = await _tipoCatalogoRepository.UpdateAsync(id, model);
             return new Convertidor<TipoCatalogoViewModel>().mape(listado);
@@ -158,7 +158,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoImagenViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoImagen(int id, TipoImagenModel model)
+        public async Task<ServiceResult> ActualizarTipoImagen(Guid id, TipoImagenModel model)
         {
             var listado = await _tipoImagenRepository.UpdateAsync(id, model);
             return new Convertidor<TipoImagenViewModel>().mape(listado);
@@ -191,7 +191,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoReaccionViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoReaccion(int id, TipoReaccionModel model)
+        public async Task<ServiceResult> ActualizarTipoReaccion(Guid id, TipoReaccionModel model)
         {
             var listado = await _tipoReaccionesRepository.UpdateAsync(id, model);
             return new Convertidor<TipoReaccionViewModel>().mape(listado);
@@ -224,7 +224,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoDePagoViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoPago(int id, TipoDePagoModel model)
+        public async Task<ServiceResult> ActualizarTipoPago(Guid id, TipoDePagoModel model)
         {
             var listado = await _tipoDePagoRepository.UpdateAsync(id, model);
             return new Convertidor<TipoDePagoViewModel>().mape(listado);

@@ -73,14 +73,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<TipoUsuarioViewModel>> UpdateAsync(int id, TipoUsuarioModel item)
+        public async Task<ResultadoModel<TipoUsuarioViewModel>> UpdateAsync(Guid id, TipoUsuarioModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<TipoUsuarioViewModel>();
                 var tbTipoUser = await db.tbTipoUsuario.SingleOrDefaultAsync(a => a.tipUs_Id == id);
-                if (id > 0 && tbTipoUser != null)
+                if (id != Guid.Empty && tbTipoUser != null)
                 {
                     var tipoW = db.tbTipoUsuario.Where(e => e.tipUs_Id != id).Any(a => a.tipUs_Descripcion.ToLower() == item.Descripcion.ToLower());
                     if (!tipoW)
@@ -108,13 +108,13 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<bool>> WhereAsync(int idTipoUsuario)
+        public async Task<ResultadoModel<bool>> WhereAsync(Guid idTipoUsuario)
         {
             var relt = new ResultadoModel<bool>();
             try
             {
 
-                if (idTipoUsuario > 0)
+                if (idTipoUsuario != Guid.Empty)
                 {
                     using var db = new AppCircularContext();
                     bool tb = await db.tbTipoUsuario.AnyAsync(a => a.tipUs_Id == idTipoUsuario);

@@ -5,15 +5,14 @@ using System.Collections.Generic;
 
 namespace AppCircular.Entities.Entities
 {
-    public partial class tbContribuyente
+    public partial class tbCatalogoImagen
     {
-        public Guid contr_Id { get; set; }
-        public string contr_Descripcion { get; set; }
-        public bool contr_Varificado { get; set; }
-        public Guid user_Id { get; set; }
+        public Guid catImg_Id { get; set; }
         public Guid catg_Id { get; set; }
+        public Guid tipImg_Id { get; set; }
+        public string catImg_RutaImagen { get; set; }
 
         public virtual tbCatalogo catg { get; set; }
-        public virtual tbUsuarios user { get; set; }
+        public virtual tbTipoImagen tipImg { get; set; }
     }
 }

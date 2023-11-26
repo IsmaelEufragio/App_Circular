@@ -3,17 +3,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbPuesto
+namespace AppCircular.Entities.Entities
 {
-    public int puest_Id { get; set; }
+    public partial class tbPuesto
+    {
+        public tbPuesto()
+        {
+            tbVacante = new HashSet<tbVacante>();
+        }
 
-    public string puest_Descripcion { get; set; }
+        public Guid puest_Id { get; set; }
+        public string puest_Descripcion { get; set; }
+        public Guid ariaP_Id { get; set; }
 
-    public int ariaP_Id { get; set; }
-
-    public virtual tbAriaPuesto ariaP { get; set; }
-
-    public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
+        public virtual tbAriaPuesto ariaP { get; set; }
+        public virtual ICollection<tbVacante> tbVacante { get; set; }
+    }
 }

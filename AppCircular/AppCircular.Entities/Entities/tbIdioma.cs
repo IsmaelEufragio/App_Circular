@@ -3,11 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbIdioma
+namespace AppCircular.Entities.Entities
 {
-    public int idio_Id { get; set; }
+    public partial class tbIdioma
+    {
+        public tbIdioma()
+        {
+            tbIdiomaItem = new HashSet<tbIdiomaItem>();
+        }
 
-    public string idio_Descripcion { get; set; }
+        public Guid idio_Id { get; set; }
+        public string idio_Descripcion { get; set; }
+
+        public virtual ICollection<tbIdiomaItem> tbIdiomaItem { get; set; }
+    }
 }

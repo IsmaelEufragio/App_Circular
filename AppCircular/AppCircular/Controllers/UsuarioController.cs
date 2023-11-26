@@ -50,7 +50,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut, Authorize, Route("TipoUsuarioUpdate/{Id}")]
-        public async Task<IActionResult> ActulizarTipoUsuario(int Id, TipoUsuarioModel model)
+        public async Task<IActionResult> ActulizarTipoUsuario(Guid Id, TipoUsuarioModel model)
         {
             var resul = new ServiceResult();
             if (model != null)
@@ -82,7 +82,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut, Authorize, Route("InfoUsuarioUpdate/{Id}")]
-        public async Task<IActionResult> ActulizarInfoUsuario(int Id, InfoUnicaUsuarioViewModel model)
+        public async Task<IActionResult> ActulizarInfoUsuario(Guid Id, InfoUnicaUsuarioViewModel model)
         {
             var resul = new ServiceResult();
             if (model != null)
@@ -118,7 +118,7 @@ namespace AppCircular.Controllers
             var userIdClaim = _usuarioServices.GetClaimsFromToken(Token);
             if (userIdClaim != null)
             {
-                int userId = int.Parse(userIdClaim.FirstOrDefault(a => a.Type == "UserId").Value);
+                Guid userId = Guid.Parse(userIdClaim.FirstOrDefault(a => a.Type == "UserId").Value);
                 // Ahora tienes el ID del usuario para usar en tu lógica
                 var vali = await _usuarioServices.UsuarioVarificado(userId);
                 return Ok(vali);
@@ -172,7 +172,7 @@ namespace AppCircular.Controllers
 
                 if (userIdClaim != null)
                 {
-                    int userId = int.Parse(userIdClaim.Value);
+                    Guid userId = Guid.Parse(userIdClaim.Value);
                     // Ahora tienes el ID del usuario para usar en tu lógica
                     var vali = await _usuarioServices.SubirArchivoAsync(fichero, userId);
                     return Ok(vali);
@@ -207,7 +207,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut, Authorize, Route("TelefonoUsuarioUpdate/{Id}")]
-        public async Task<IActionResult> ActulizarUsuarioTelefono(int Id, TelefonoModel model)
+        public async Task<IActionResult> ActulizarUsuarioTelefono(Guid Id, TelefonoModel model)
         {
             var resul = new ServiceResult();
             if (model != null)

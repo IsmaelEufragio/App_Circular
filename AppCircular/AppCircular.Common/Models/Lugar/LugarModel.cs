@@ -9,7 +9,7 @@ namespace AppCircular.Common.Models.Lugar
     public class LugarModel
     {
         public string Nombre { get; set; }
-        public int catLug_Id { get; set; }
-        public int muni_Id { get; set; }
+        public Guid catLug_Id { get; set; }
+        public Guid muni_Id { get; set; }
     }
 }

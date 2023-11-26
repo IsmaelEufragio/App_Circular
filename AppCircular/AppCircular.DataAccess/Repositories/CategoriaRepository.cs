@@ -73,14 +73,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<CategoriaViewModel>> UpdateAsync(int id, CategoriaModel item)
+        public async Task<ResultadoModel<CategoriaViewModel>> UpdateAsync(Guid id, CategoriaModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<CategoriaViewModel>();
                 var tb = await db.tbCategoria.SingleOrDefaultAsync(a => a.catg_Id == id);
-                if (id > 0 && tb != null)
+                if (id != Guid.Empty && tb != null)
                 {
                     var W = db.tbCategoria.Where(e => e.catg_Id != id).Any(a => a.catg_Nombre.ToLower() == item.Nombre.ToLower());
                     if (!W)

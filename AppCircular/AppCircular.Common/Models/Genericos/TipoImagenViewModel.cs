@@ -9,7 +9,7 @@ namespace AppCircular.Common.Models.Genericos
 {
     public class TipoImagenViewModel
     {
-        public int IdTipImagen { get; set; }
+        public Guid IdTipImagen { get; set; }
 
         [Required(ErrorMessage = "La descripcion es requerido.")]
         [StringLength(300, MinimumLength = 2, ErrorMessage = "El descripcion debe tener entre 2 y 300 caracteres.")]

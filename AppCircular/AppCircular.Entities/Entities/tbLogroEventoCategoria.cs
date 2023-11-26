@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbLogroEventoCategoria
+namespace AppCircular.Entities.Entities
 {
-    public int logCa_Id { get; set; }
-
-    public string logCa_Descripcion { get; set; }
+    public partial class tbLogroEventoCategoria
+    {
+        public Guid logCa_Id { get; set; }
+        public string logCa_Descripcion { get; set; }
+    }
 }

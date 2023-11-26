@@ -79,14 +79,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<TipoDePagoViewModel>> UpdateAsync(int id, TipoDePagoModel item)
+        public async Task<ResultadoModel<TipoDePagoViewModel>> UpdateAsync(Guid id, TipoDePagoModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<TipoDePagoViewModel>();
                 var tb = await db.tbTipoPago.SingleOrDefaultAsync(a => a.tipPag_Id == id);
-                if (id > 0 && tb != null)
+                if (id != Guid.Empty && tb != null)
                 {
                     var tipoW = db.tbTipoPago.Where(e => e.tipPag_Id != id).Any(a => a.tipPag_Descripcion.ToLower() == item.Descripcion.ToLower());
                     if (!tipoW)

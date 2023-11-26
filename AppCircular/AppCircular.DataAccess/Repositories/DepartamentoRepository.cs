@@ -91,14 +91,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<PaisDepartamentoViewModel>> UpdateAsync(int Id, DepartamentoModel item)
+        public async Task<ResultadoModel<PaisDepartamentoViewModel>> UpdateAsync(Guid Id, DepartamentoModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<PaisDepartamentoViewModel>();
                 var dep = await db.tbDepartamento.SingleOrDefaultAsync(a => a.dept_Id == Id);
-                if (Id > 0 && dep != null)
+                if (Id != Guid.Empty && dep != null)
                 {
                     var depW = db.tbDepartamento.Where(e => e.dept_Id != Id).Any(a => (a.dept_Nombre.ToLower() == item.Nombre.ToLower() && a.pais_Id == item.pais_Id) || (a.dept_NuIdentidad == item.NuIdentidad && a.pais_Id == item.pais_Id));
                     if (!depW)

@@ -8,7 +8,7 @@ namespace AppCircular.Common.Models.Municipio
 {
     public class DeparmentoMunicipioViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Departamento { get; set; }
         public int NuIdentidad { get; set; }
         public List<MunicipioViewModel> Municipio { get; set; }

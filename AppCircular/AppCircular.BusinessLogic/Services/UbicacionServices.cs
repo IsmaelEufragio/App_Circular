@@ -70,7 +70,7 @@ namespace AppCircular.BusinessLogic.Services
             return await _paisRepository.InsertAsync(tpPais);
         }
 
-        public async Task<ServiceResult> ActualizarPais(int id, PaisModel model)
+        public async Task<ServiceResult> ActualizarPais(Guid id, PaisModel model)
         {
             return await _paisRepository.UpdateAsync(id, model);
         }
@@ -106,7 +106,7 @@ namespace AppCircular.BusinessLogic.Services
             return resul;
         }
 
-        public async Task<ServiceResult> ActualizarDepartamento(int id, DepartamentoModel model)
+        public async Task<ServiceResult> ActualizarDepartamento(Guid id, DepartamentoModel model)
         {
             var repositorio = await _departamentoRepository.UpdateAsync(id, model);
             var resul = new Convertidor<PaisDepartamentoViewModel>().mape(repositorio);
@@ -146,7 +146,7 @@ namespace AppCircular.BusinessLogic.Services
             return resul;
         }
 
-        public async Task<ServiceResult> ActualizarMunicipio(int id, MunicipioModel model)
+        public async Task<ServiceResult> ActualizarMunicipio(Guid id, MunicipioModel model)
         {
             var repositorio = await _municipioRepository.UpdateAsync(id, model);
             var resul = new Convertidor<DeparmentoMunicipioViewModel>().mape(repositorio);
@@ -179,7 +179,7 @@ namespace AppCircular.BusinessLogic.Services
             return await _categoriaLugarRepository.InsertAsync(tbMuni);
         }
 
-        public async Task<ServiceResult> ActualizarCategoriaLugar(int id, CategoriaLugarModel model)
+        public async Task<ServiceResult> ActualizarCategoriaLugar(Guid id, CategoriaLugarModel model)
         {
             return await _categoriaLugarRepository.UpdateAsync(id, model);
         }
@@ -215,7 +215,7 @@ namespace AppCircular.BusinessLogic.Services
             return resul;
         }
 
-        public async Task<ServiceResult> ActualizarLugar(int id, LugarModel model)
+        public async Task<ServiceResult> ActualizarLugar(Guid id, LugarModel model)
         {
             var repositorio = await _lugarRepository.UpdateAsync(id, model);
             var resul = new Convertidor<LugarViewModel>().mape(repositorio);
@@ -254,7 +254,7 @@ namespace AppCircular.BusinessLogic.Services
             return resul;
         }
 
-        public async Task<ServiceResult> ActualizarSubdivicionLugar(int id, SubdivicionLugarModel model)
+        public async Task<ServiceResult> ActualizarSubdivicionLugar(Guid id, SubdivicionLugarModel model)
         {
             var repositorio = await _subdivicionLugarRepository.UpdateAsync(id, model);
             var resul = new Convertidor<SubdivicionLugarViewModel>().mape(repositorio);

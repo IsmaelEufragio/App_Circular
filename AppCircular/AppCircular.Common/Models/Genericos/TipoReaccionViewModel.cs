@@ -9,7 +9,7 @@ namespace AppCircular.Common.Models.Genericos
 {
     public class TipoReaccionViewModel
     {
-        public int idTipoReaccion { get; set; }
+        public Guid idTipoReaccion { get; set; }
 
         [Required(ErrorMessage = "La descripcion es requerido.")]
         [StringLength(300, MinimumLength = 2, ErrorMessage = "El descripcion debe tener entre 2 y 300 caracteres.")]

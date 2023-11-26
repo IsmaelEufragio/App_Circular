@@ -8,10 +8,10 @@ namespace AppCircular.Common.Models.SubdivicionLugar
 {
     public class SubdivicionLugarViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Nombre { get; set; }
-        public int sub_Id { get; set; }
-        public int lug_Id { get; set; }
+        public Guid sub_Id { get; set; }
+        public Guid lug_Id { get; set; }
 
     }
 }

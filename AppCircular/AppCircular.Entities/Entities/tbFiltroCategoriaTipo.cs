@@ -3,17 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbFiltroCategoriaTipo
+namespace AppCircular.Entities.Entities
 {
-    public int fiCg_Id { get; set; }
+    public partial class tbFiltroCategoriaTipo
+    {
+        public Guid fiCg_Id { get; set; }
+        public Guid catg_Id { get; set; }
+        public Guid tipCatg_Id { get; set; }
 
-    public int catg_Id { get; set; }
-
-    public int tipCatg_Id { get; set; }
-
-    public virtual tbCategoria catg { get; set; }
-
-    public virtual tbTipoCatalogo tipCatg { get; set; }
+        public virtual tbCategoria catg { get; set; }
+        public virtual tbTipoCatalogo tipCatg { get; set; }
+    }
 }

@@ -79,14 +79,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<TipoImagenViewModel>> UpdateAsync(int id, TipoImagenModel item)
+        public async Task<ResultadoModel<TipoImagenViewModel>> UpdateAsync(Guid id, TipoImagenModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<TipoImagenViewModel>();
                 var tb = await db.tbTipoImagen.SingleOrDefaultAsync(a => a.tipImg_Id == id);
-                if (id > 0 && tb != null)
+                if (id != Guid.Empty && tb != null)
                 {
                     var tipoW = db.tbTipoImagen.Where(e => e.tipImg_Id != id).Any(a => a.tipImg_Descripcion.ToLower() == item.Descripcion.ToLower());
                     if (!tipoW)

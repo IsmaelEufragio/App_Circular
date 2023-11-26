@@ -3,23 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbCatalogoOng
+namespace AppCircular.Entities.Entities
 {
-    public int ctgOng_Id { get; set; }
+    public partial class tbCatalogoOng
+    {
+        public Guid ctgOng_Id { get; set; }
+        public DateTime? ctgOng_Fecha { get; set; }
+        public byte ctgOng_HoraInicio { get; set; }
+        public byte ctgOng_HoraFin { get; set; }
+        public Guid? ubc_Id { get; set; }
+        public Guid catg_Id { get; set; }
 
-    public DateTime? ctgOng_Fecha { get; set; }
-
-    public byte ctgOng_HoraInicio { get; set; }
-
-    public byte ctgOng_HoraFin { get; set; }
-
-    public int? ubc_Id { get; set; }
-
-    public int catg_Id { get; set; }
-
-    public virtual tbCatalogo catg { get; set; }
-
-    public virtual tbUbicacion ubc { get; set; }
+        public virtual tbCatalogo catg { get; set; }
+        public virtual tbUbicacion ubc { get; set; }
+    }
 }

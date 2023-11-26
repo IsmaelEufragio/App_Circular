@@ -3,13 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTipoPago
+namespace AppCircular.Entities.Entities
 {
-    public int tipPag_Id { get; set; }
+    public partial class tbTipoPago
+    {
+        public tbTipoPago()
+        {
+            tbPrecio = new HashSet<tbPrecio>();
+        }
 
-    public string tipPag_Descripcion { get; set; }
+        public Guid tipPag_Id { get; set; }
+        public string tipPag_Descripcion { get; set; }
 
-    public virtual ICollection<tbPrecio> tbPrecio { get; set; } = new List<tbPrecio>();
+        public virtual ICollection<tbPrecio> tbPrecio { get; set; }
+    }
 }

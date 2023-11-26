@@ -3,15 +3,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTipoCatalogo
+namespace AppCircular.Entities.Entities
 {
-    public int tipCatg_Id { get; set; }
+    public partial class tbTipoCatalogo
+    {
+        public tbTipoCatalogo()
+        {
+            tbCatalogoPorUsuario = new HashSet<tbCatalogoPorUsuario>();
+            tbFiltroCategoriaTipo = new HashSet<tbFiltroCategoriaTipo>();
+        }
 
-    public string tipCatg_Descripcion { get; set; }
+        public Guid tipCatg_Id { get; set; }
+        public string tipCatg_Descripcion { get; set; }
 
-    public virtual ICollection<tbCatalogoPorUsuario> tbCatalogoPorUsuario { get; set; } = new List<tbCatalogoPorUsuario>();
-
-    public virtual ICollection<tbFiltroCategoriaTipo> tbFiltroCategoriaTipo { get; set; } = new List<tbFiltroCategoriaTipo>();
+        public virtual ICollection<tbCatalogoPorUsuario> tbCatalogoPorUsuario { get; set; }
+        public virtual ICollection<tbFiltroCategoriaTipo> tbFiltroCategoriaTipo { get; set; }
+    }
 }

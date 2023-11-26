@@ -16,10 +16,10 @@ namespace AppCircular.Common.Models.Usuario
         public IFormFile Logo { get; set; }
         public string RutaLogo { get; set; }
         [Required(ErrorMessage = "El tipo de Usuario es requerido.")]
-        public int tipUs_Id { get; set; }
+        public Guid tipUs_Id { get; set; }
 
         [Required(ErrorMessage = "El tipo de Identidad es requerido.")]
-        public int tipIde_Id { get; set; }
+        public Guid tipIde_Id { get; set; }
         [Required(ErrorMessage = "La Identidad es requerido.")]
         public string Identidad { get; set; }
 
@@ -58,7 +58,7 @@ namespace AppCircular.Common.Models.Usuario
         [EmailAddress(ErrorMessage = "Ingrese una dirección de correo electrónico válida.")]
         public string Correo { get; set; }
         [Required(ErrorMessage = "El Sub Lugar es requerido.")]
-        public int subLug_Id { get; set; }
+        public Guid subLug_Id { get; set; }
 
         [Required(ErrorMessage = "La Latitud es requerida.")]
         [RegularExpression(@"^-?([1-8]?\d(?:\.\d{1,18})?|90(?:\.0{1,18})?)$", ErrorMessage = "Ingrese una latitud válida.")]

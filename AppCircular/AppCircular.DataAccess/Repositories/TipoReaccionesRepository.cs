@@ -79,14 +79,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<TipoReaccionViewModel>> UpdateAsync(int id, TipoReaccionModel item)
+        public async Task<ResultadoModel<TipoReaccionViewModel>> UpdateAsync(Guid id, TipoReaccionModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 var relt = new ResultadoModel<TipoReaccionViewModel>();
                 var tb = await db.tbTipoReaccion.SingleOrDefaultAsync(a => a.tipRea_Id == id);
-                if (id > 0 && tb != null)
+                if (id != Guid.Empty && tb != null)
                 {
                     var tipoW = db.tbTipoReaccion.Where(e => e.tipRea_Id != id).Any(a => a.tipRea_Descripcion.ToLower() == item.Descripcion.ToLower());
                     if (!tipoW)

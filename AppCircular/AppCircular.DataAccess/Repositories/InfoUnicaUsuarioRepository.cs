@@ -33,7 +33,7 @@ namespace AppCircular.DataAccess.Repositories
             return await db.tbInfoUnicaUsuario.ToListAsync();
         }
 
-        public async Task<int> UpdateAsync(int Id, InfoUnicaUsuarioViewModel item)
+        public async Task<int> UpdateAsync(Guid Id, InfoUnicaUsuarioViewModel item)
         {
             using var db = new AppCircularContext();
             var userinfo = await db.tbInfoUnicaUsuario.SingleOrDefaultAsync(a => a.usInf_Id == Id);

@@ -3,19 +3,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbAriaPuesto
+namespace AppCircular.Entities.Entities
 {
-    public int ariaP_Id { get; set; }
+    public partial class tbAriaPuesto
+    {
+        public tbAriaPuesto()
+        {
+            tbExperiencia = new HashSet<tbExperiencia>();
+            tbPuesto = new HashSet<tbPuesto>();
+            tbTitulo = new HashSet<tbTitulo>();
+            tbVacante = new HashSet<tbVacante>();
+        }
 
-    public string ariaP_Descripcion { get; set; }
+        public Guid ariaP_Id { get; set; }
+        public string ariaP_Descripcion { get; set; }
 
-    public virtual ICollection<tbExperiencia> tbExperiencia { get; set; } = new List<tbExperiencia>();
-
-    public virtual ICollection<tbPuesto> tbPuesto { get; set; } = new List<tbPuesto>();
-
-    public virtual ICollection<tbTitulo> tbTitulo { get; set; } = new List<tbTitulo>();
-
-    public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
+        public virtual ICollection<tbExperiencia> tbExperiencia { get; set; }
+        public virtual ICollection<tbPuesto> tbPuesto { get; set; }
+        public virtual ICollection<tbTitulo> tbTitulo { get; set; }
+        public virtual ICollection<tbVacante> tbVacante { get; set; }
+    }
 }

@@ -3,15 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbConfiguracion
+namespace AppCircular.Entities.Entities
 {
-    public int conf_Id { get; set; }
-
-    public string conf_Nombre { get; set; }
-
-    public string conf_Valor { get; set; }
-
-    public string conf_Descripcion { get; set; }
+    public partial class tbConfiguracion
+    {
+        public Guid conf_Id { get; set; }
+        public string conf_Nombre { get; set; }
+        public string conf_Valor { get; set; }
+        public string conf_Descripcion { get; set; }
+    }
 }

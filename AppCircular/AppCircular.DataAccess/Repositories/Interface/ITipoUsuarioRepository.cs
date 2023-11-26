@@ -14,7 +14,7 @@ namespace AppCircular.DataAccess.Repositories.Interface
     {
         public Task<ResultadoModel<TipoUsuarioViewModel>> ListAsync();
         public Task<ResultadoModel<TipoUsuarioViewModel>> InsertAsync(T item);
-        public Task<ResultadoModel<TipoUsuarioViewModel>> UpdateAsync(int Id, TipoUsuarioModel item);
-        public Task<ResultadoModel<bool>> WhereAsync(int idTipoUsuario);
+        public Task<ResultadoModel<TipoUsuarioViewModel>> UpdateAsync(Guid Id, TipoUsuarioModel item);
+        public Task<ResultadoModel<bool>> WhereAsync(Guid idTipoUsuario);
     }
 }

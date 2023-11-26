@@ -3,13 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTipoTelefono
+namespace AppCircular.Entities.Entities
 {
-    public int tipTel_Id { get; set; }
+    public partial class tbTipoTelefono
+    {
+        public tbTipoTelefono()
+        {
+            tbUsuarioTelefono = new HashSet<tbUsuarioTelefono>();
+        }
 
-    public string tipTel_Descripcion { get; set; }
+        public Guid tipTel_Id { get; set; }
+        public string tipTel_Descripcion { get; set; }
 
-    public virtual ICollection<tbUsuarioTelefono> tbUsuarioTelefono { get; set; } = new List<tbUsuarioTelefono>();
+        public virtual ICollection<tbUsuarioTelefono> tbUsuarioTelefono { get; set; }
+    }
 }

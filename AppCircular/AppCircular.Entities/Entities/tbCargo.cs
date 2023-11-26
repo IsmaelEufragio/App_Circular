@@ -3,15 +3,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbCargo
+namespace AppCircular.Entities.Entities
 {
-    public int carg_Id { get; set; }
+    public partial class tbCargo
+    {
+        public Guid carg_Id { get; set; }
+        public string carg_Descripcion { get; set; }
+        public Guid vac_Id { get; set; }
 
-    public string carg_Descripcion { get; set; }
-
-    public int vac_Id { get; set; }
-
-    public virtual tbVacante vac { get; set; }
+        public virtual tbVacante vac { get; set; }
+    }
 }

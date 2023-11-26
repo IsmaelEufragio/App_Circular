@@ -72,14 +72,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ServiceResult> UpdateAsync(int id, CategoriaLugarModel item)
+        public async Task<ServiceResult> UpdateAsync(Guid id, CategoriaLugarModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 ServiceResult relt = new ServiceResult();
                 var catLug = await db.tbCategoriaLugar.SingleOrDefaultAsync(a => a.catLug_Id == id);
-                if (id > 0 && catLug != null)
+                if (id != Guid.Empty && catLug != null)
                 {
                     var depW = db.tbCategoriaLugar.Where(e => e.catLug_Id != id).Any(a => a.catLug_Nombre.ToLower() == item.Nombre.ToLower());
                     if (!depW)

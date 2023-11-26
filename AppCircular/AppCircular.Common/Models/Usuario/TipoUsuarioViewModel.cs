@@ -8,7 +8,7 @@ namespace AppCircular.Common.Models.Usuario
 {
     public class TipoUsuarioViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Descripcion { get; set; }
     }
 }

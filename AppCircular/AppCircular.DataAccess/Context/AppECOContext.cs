@@ -6,935 +6,1107 @@ using AppCircular.Entities.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace AppCircular.DataAccess.Context;
-
-public partial class AppECOContext : DbContext
+namespace AppCircular.DataAccess.Context
 {
-    public AppECOContext()
+    public partial class AppECOContext : DbContext
     {
+        public AppECOContext()
+        {
+        }
+
+        public AppECOContext(DbContextOptions<AppECOContext> options)
+            : base(options)
+        {
+        }
+
+        public virtual DbSet<tbAriaPuesto> tbAriaPuesto { get; set; }
+        public virtual DbSet<tbCargo> tbCargo { get; set; }
+        public virtual DbSet<tbCatalogo> tbCatalogo { get; set; }
+        public virtual DbSet<tbCatalogoImagen> tbCatalogoImagen { get; set; }
+        public virtual DbSet<tbCatalogoOng> tbCatalogoOng { get; set; }
+        public virtual DbSet<tbCatalogoPorUsuario> tbCatalogoPorUsuario { get; set; }
+        public virtual DbSet<tbCatalogoReaccion> tbCatalogoReaccion { get; set; }
+        public virtual DbSet<tbCategoria> tbCategoria { get; set; }
+        public virtual DbSet<tbCategoriaItem> tbCategoriaItem { get; set; }
+        public virtual DbSet<tbCategoriaLugar> tbCategoriaLugar { get; set; }
+        public virtual DbSet<tbCategoriaSubdivicion> tbCategoriaSubdivicion { get; set; }
+        public virtual DbSet<tbConfiguracion> tbConfiguracion { get; set; }
+        public virtual DbSet<tbContribuyente> tbContribuyente { get; set; }
+        public virtual DbSet<tbDepartamento> tbDepartamento { get; set; }
+        public virtual DbSet<tbEducacion> tbEducacion { get; set; }
+        public virtual DbSet<tbExperiencia> tbExperiencia { get; set; }
+        public virtual DbSet<tbFiltroCategoriaTipo> tbFiltroCategoriaTipo { get; set; }
+        public virtual DbSet<tbGenero> tbGenero { get; set; }
+        public virtual DbSet<tbGuardar> tbGuardar { get; set; }
+        public virtual DbSet<tbHorario> tbHorario { get; set; }
+        public virtual DbSet<tbIdioma> tbIdioma { get; set; }
+        public virtual DbSet<tbIdiomaItem> tbIdiomaItem { get; set; }
+        public virtual DbSet<tbInfoUnicaUsuario> tbInfoUnicaUsuario { get; set; }
+        public virtual DbSet<tbLogroEventoCategoria> tbLogroEventoCategoria { get; set; }
+        public virtual DbSet<tbLugar> tbLugar { get; set; }
+        public virtual DbSet<tbMunicipio> tbMunicipio { get; set; }
+        public virtual DbSet<tbNivelEducativo> tbNivelEducativo { get; set; }
+        public virtual DbSet<tbOtrosConocimientos> tbOtrosConocimientos { get; set; }
+        public virtual DbSet<tbPais> tbPais { get; set; }
+        public virtual DbSet<tbPrecio> tbPrecio { get; set; }
+        public virtual DbSet<tbProceso> tbProceso { get; set; }
+        public virtual DbSet<tbPuesto> tbPuesto { get; set; }
+        public virtual DbSet<tbSubdivicionLugar> tbSubdivicionLugar { get; set; }
+        public virtual DbSet<tbTipoCatalogo> tbTipoCatalogo { get; set; }
+        public virtual DbSet<tbTipoContrato> tbTipoContrato { get; set; }
+        public virtual DbSet<tbTipoIdentificacion> tbTipoIdentificacion { get; set; }
+        public virtual DbSet<tbTipoImagen> tbTipoImagen { get; set; }
+        public virtual DbSet<tbTipoPago> tbTipoPago { get; set; }
+        public virtual DbSet<tbTipoReaccion> tbTipoReaccion { get; set; }
+        public virtual DbSet<tbTipoTelefono> tbTipoTelefono { get; set; }
+        public virtual DbSet<tbTipoUsuario> tbTipoUsuario { get; set; }
+        public virtual DbSet<tbTitulo> tbTitulo { get; set; }
+        public virtual DbSet<tbTituloProc> tbTituloProc { get; set; }
+        public virtual DbSet<tbUbicacion> tbUbicacion { get; set; }
+        public virtual DbSet<tbUsuarioTelefono> tbUsuarioTelefono { get; set; }
+        public virtual DbSet<tbUsuarios> tbUsuarios { get; set; }
+        public virtual DbSet<tbVacante> tbVacante { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<tbAriaPuesto>(entity =>
+            {
+                entity.HasKey(e => e.ariaP_Id)
+                    .HasName("PK_Genl_tbAriaPuesto_ariaP_Id");
+
+                entity.ToTable("tbAriaPuesto", "Genl");
+
+                entity.Property(e => e.ariaP_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.ariaP_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbCargo>(entity =>
+            {
+                entity.HasKey(e => e.carg_Id)
+                    .HasName("PK_Genl_tbCargo_carg_Id");
+
+                entity.ToTable("tbCargo", "Genl");
+
+                entity.Property(e => e.carg_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.carg_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.HasOne(d => d.vac)
+                    .WithMany(p => p.tbCargo)
+                    .HasForeignKey(d => d.vac_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCargo_tbVacante_vac_Id");
+            });
+
+            modelBuilder.Entity<tbCatalogo>(entity =>
+            {
+                entity.HasKey(e => e.catg_Id)
+                    .HasName("PK_Genl_tbCatalogo_catg_Id");
+
+                entity.ToTable("tbCatalogo", "Genl");
+
+                entity.Property(e => e.catg_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.catg_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.catg_FechaCreacion).HasColumnType("datetime");
+
+                entity.Property(e => e.catg_JsonReaccion)
+                    .IsRequired()
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.catg_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(300)
+                    .HasDefaultValueSql("('')");
+
+                entity.HasOne(d => d.categ)
+                    .WithMany(p => p.tbCatalogo)
+                    .HasForeignKey(d => d.categ_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogo_tbCategoria_catg_Id");
+
+                entity.HasOne(d => d.catg_IdDesperdicioNavigation)
+                    .WithMany(p => p.Inversecatg_IdDesperdicioNavigation)
+                    .HasForeignKey(d => d.catg_IdDesperdicio)
+                    .HasConstraintName("FK_Genl_tbCatalogo_tbCatalogo_catg_IdDesperdicio");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbCatalogo)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogo_tbUsuarios_user_Id");
+            });
+
+            modelBuilder.Entity<tbCatalogoImagen>(entity =>
+            {
+                entity.HasKey(e => e.catImg_Id)
+                    .HasName("PK_Genl_tbCatalogoImagen_catImg_Id");
+
+                entity.ToTable("tbCatalogoImagen", "Genl");
+
+                entity.Property(e => e.catImg_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.catImg_RutaImagen)
+                    .IsRequired()
+                    .HasMaxLength(2000);
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbCatalogoImagen)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoImagen_tbCatalogo_catg_Id");
+
+                entity.HasOne(d => d.tipImg)
+                    .WithMany(p => p.tbCatalogoImagen)
+                    .HasForeignKey(d => d.tipImg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoImagen_tbTipoImagen_tipImg_Id");
+            });
+
+            modelBuilder.Entity<tbCatalogoOng>(entity =>
+            {
+                entity.HasKey(e => e.ctgOng_Id)
+                    .HasName("PK_Genl_tbCatalogoOng_ctgOng_Id");
+
+                entity.ToTable("tbCatalogoOng", "Genl");
+
+                entity.Property(e => e.ctgOng_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.ctgOng_Fecha).HasColumnType("datetime");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbCatalogoOng)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoOng_tbCatalogo_catg_Id");
+
+                entity.HasOne(d => d.ubc)
+                    .WithMany(p => p.tbCatalogoOng)
+                    .HasForeignKey(d => d.ubc_Id)
+                    .HasConstraintName("FK_Genl_tbCatalogoOng_tbUbicacion_ubc_Id");
+            });
+
+            modelBuilder.Entity<tbCatalogoPorUsuario>(entity =>
+            {
+                entity.HasKey(e => e.catUsua_Id)
+                    .HasName("PK_Genl_tbCatalogoPorUsuario_catUsua_Id");
+
+                entity.ToTable("tbCatalogoPorUsuario", "Genl");
+
+                entity.Property(e => e.catUsua_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.tipCatg)
+                    .WithMany(p => p.tbCatalogoPorUsuario)
+                    .HasForeignKey(d => d.tipCatg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoPorUsuario_tbTipoCatalogo_tipCatg_Id");
+
+                entity.HasOne(d => d.tipUs)
+                    .WithMany(p => p.tbCatalogoPorUsuario)
+                    .HasForeignKey(d => d.tipUs_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoPorUsuario_tbTipoUsuario_tipUs_Id");
+            });
+
+            modelBuilder.Entity<tbCatalogoReaccion>(entity =>
+            {
+                entity.HasKey(e => e.catRea_Id)
+                    .HasName("PK_Genl_tbCatalogoReaccion_catRea_Id");
+
+                entity.ToTable("tbCatalogoReaccion", "Genl");
+
+                entity.Property(e => e.catRea_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbCatalogoReaccion)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoReaccion_tbCatalogo_catg_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbCatalogoReaccion)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCatalogoReaccion_tbUsuarios_user_Id");
+            });
+
+            modelBuilder.Entity<tbCategoria>(entity =>
+            {
+                entity.HasKey(e => e.catg_Id)
+                    .HasName("PK_Genl_tbCategoria_catg_Id");
+
+                entity.ToTable("tbCategoria", "Genl");
+
+                entity.Property(e => e.catg_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.catg_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<tbCategoriaItem>(entity =>
+            {
+                entity.HasKey(e => e.catgItem_Id)
+                    .HasName("PK_Genl_tbCategoriaItem_catgItem_Id");
+
+                entity.ToTable("tbCategoriaItem", "Genl");
+
+                entity.Property(e => e.catgItem_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbCategoriaItem)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCategoriaItem_tbCategoria_catg_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbCategoriaItem)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbCategoriaItem_tbUsuarios_user_Id");
+            });
+
+            modelBuilder.Entity<tbCategoriaLugar>(entity =>
+            {
+                entity.HasKey(e => e.catLug_Id)
+                    .HasName("PK_Genl_tbCategoriaLugar_catLug_Id");
+
+                entity.ToTable("tbCategoriaLugar", "Genl");
+
+                entity.Property(e => e.catLug_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.catLug_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<tbCategoriaSubdivicion>(entity =>
+            {
+                entity.HasKey(e => e.catSub_Id)
+                    .HasName("PK_Genl_tbCategoriaSubdivicion_catSub_Id");
+
+                entity.ToTable("tbCategoriaSubdivicion", "Genl");
+
+                entity.Property(e => e.catSub_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.catSub_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<tbConfiguracion>(entity =>
+            {
+                entity.HasKey(e => e.conf_Id)
+                    .HasName("PK_Genl_tbConfiguracion_conf_Id");
+
+                entity.ToTable("tbConfiguracion", "Genl");
+
+                entity.HasIndex(e => e.conf_Nombre, "UQ_Genl_tbConfiguracion_conf_Nombre")
+                    .IsUnique();
+
+                entity.Property(e => e.conf_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.conf_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.conf_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.conf_Valor)
+                    .IsRequired()
+                    .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<tbContribuyente>(entity =>
+            {
+                entity.HasKey(e => e.contr_Id)
+                    .HasName("PK_Genl_tbContribuyente_contr_Id");
+
+                entity.ToTable("tbContribuyente", "Genl");
+
+                entity.Property(e => e.contr_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.contr_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300)
+                    .HasDefaultValueSql("('')");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbContribuyente)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbContribuyente_tbCatalogo_catg_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbContribuyente)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbContribuyente_tbUsuarios_user_Id");
+            });
+
+            modelBuilder.Entity<tbDepartamento>(entity =>
+            {
+                entity.HasKey(e => e.dept_Id)
+                    .HasName("PK_Genl_tbDepartamento_dept_Id");
+
+                entity.ToTable("tbDepartamento", "Genl");
+
+                entity.Property(e => e.dept_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.dept_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.HasOne(d => d.pais)
+                    .WithMany(p => p.tbDepartamento)
+                    .HasForeignKey(d => d.pais_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbDepartamento_tbPais_pai_Id");
+            });
+
+            modelBuilder.Entity<tbEducacion>(entity =>
+            {
+                entity.HasKey(e => e.ed_Id)
+                    .HasName("PK_Genl_tbEducacion_catEd_Id");
+
+                entity.ToTable("tbEducacion", "Genl");
+
+                entity.Property(e => e.ed_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.titu)
+                    .WithMany(p => p.tbEducacion)
+                    .HasForeignKey(d => d.titu_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbEducacion_tbTitulo_titu_Id");
+
+                entity.HasOne(d => d.vac)
+                    .WithMany(p => p.tbEducacion)
+                    .HasForeignKey(d => d.vac_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbEducacion_tbVacante_vac_Id");
+            });
+
+            modelBuilder.Entity<tbExperiencia>(entity =>
+            {
+                entity.HasKey(e => e.exp_Id)
+                    .HasName("PK_Genl_tbExperiencia_exp_Id");
+
+                entity.ToTable("tbExperiencia", "Genl");
+
+                entity.Property(e => e.exp_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.ariaP)
+                    .WithMany(p => p.tbExperiencia)
+                    .HasForeignKey(d => d.ariaP_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbExperiencia_tbAriaPuesto_ariaP_Id");
+
+                entity.HasOne(d => d.vac)
+                    .WithMany(p => p.tbExperiencia)
+                    .HasForeignKey(d => d.vac_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbExperiencia_tbVacante_vac_Id");
+            });
+
+            modelBuilder.Entity<tbFiltroCategoriaTipo>(entity =>
+            {
+                entity.HasKey(e => e.fiCg_Id)
+                    .HasName("PK_Genl_tbFiltroCategoriaTipo_fiCg_Id");
+
+                entity.ToTable("tbFiltroCategoriaTipo", "Genl");
+
+                entity.Property(e => e.fiCg_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbFiltroCategoriaTipo)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbFiltroCategoriaTipo_tbCategoria_catg_Id");
+
+                entity.HasOne(d => d.tipCatg)
+                    .WithMany(p => p.tbFiltroCategoriaTipo)
+                    .HasForeignKey(d => d.tipCatg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbFiltroCategoriaTipo_tbTipoCatalogo_tipCatg_Id");
+            });
+
+            modelBuilder.Entity<tbGenero>(entity =>
+            {
+                entity.HasKey(e => e.gene_Id)
+                    .HasName("PK_Genl_tbGenero_gene_Id");
+
+                entity.ToTable("tbGenero", "Genl");
+
+                entity.Property(e => e.gene_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.gene_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbGuardar>(entity =>
+            {
+                entity.HasKey(e => e.guard_Id)
+                    .HasName("PK_Genl_tbGuardar_guard_Id");
+
+                entity.ToTable("tbGuardar", "Genl");
+
+                entity.Property(e => e.guard_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.guard_RutaPublicacion)
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasDefaultValueSql("('')");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbGuardar)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbGuardar_tbCatalogo_catg_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbGuardar)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbGuardar_tbUsuarios_user_Id");
+            });
+
+            modelBuilder.Entity<tbHorario>(entity =>
+            {
+                entity.HasKey(e => e.hor_Id)
+                    .HasName("PK_Genl_tbHorario_hor_Id");
+
+                entity.ToTable("tbHorario", "Genl");
+
+                entity.Property(e => e.hor_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbHorario)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbHorario_tbUsuarios_User_Id");
+            });
+
+            modelBuilder.Entity<tbIdioma>(entity =>
+            {
+                entity.HasKey(e => e.idio_Id)
+                    .HasName("PK_Genl_tbIdioma_idio_Id");
+
+                entity.ToTable("tbIdioma", "Genl");
+
+                entity.Property(e => e.idio_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.idio_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbIdiomaItem>(entity =>
+            {
+                entity.HasKey(e => e.idItm_Id)
+                    .HasName("PK_Genl_tbIdiomaItem_idItm_Id");
+
+                entity.ToTable("tbIdiomaItem", "Genl");
+
+                entity.Property(e => e.idItm_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.idio)
+                    .WithMany(p => p.tbIdiomaItem)
+                    .HasForeignKey(d => d.idio_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbIdiomaItem_tbIdioma_idio_Id");
+
+                entity.HasOne(d => d.vac)
+                    .WithMany(p => p.tbIdiomaItem)
+                    .HasForeignKey(d => d.vac_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbIdiomaItem_tbVacante_vac_Id");
+            });
+
+            modelBuilder.Entity<tbInfoUnicaUsuario>(entity =>
+            {
+                entity.HasKey(e => e.usInf_Id)
+                    .HasName("PK_Genl_tbInfoUnicaUsuario_usInf_Id");
+
+                entity.ToTable("tbInfoUnicaUsuario", "Genl");
+
+                entity.Property(e => e.usInf_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.usInf_IgualSubInfo)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.usInf_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.usInf_RutaLogo)
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.usInf_RutaPaginaWed)
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasDefaultValueSql("('')");
+
+                entity.HasOne(d => d.tipUs)
+                    .WithMany(p => p.tbInfoUnicaUsuario)
+                    .HasForeignKey(d => d.tipUs_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbInfoUnicaUsuario_tbTipoUsuario_tipUs_Id");
+            });
+
+            modelBuilder.Entity<tbLogroEventoCategoria>(entity =>
+            {
+                entity.HasKey(e => e.logCa_Id)
+                    .HasName("PK_Genl_tbLogroEventoCategoria_logCa_Id");
+
+                entity.ToTable("tbLogroEventoCategoria", "Genl");
+
+                entity.Property(e => e.logCa_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.logCa_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbLugar>(entity =>
+            {
+                entity.HasKey(e => e.lug_Id)
+                    .HasName("PK_Genl_tbLugar_lug_Id");
+
+                entity.ToTable("tbLugar", "Genl");
+
+                entity.Property(e => e.lug_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.lug_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.HasOne(d => d.catLug)
+                    .WithMany(p => p.tbLugar)
+                    .HasForeignKey(d => d.catLug_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbLugar_tbCategoriaLugar_catLug_Id");
+
+                entity.HasOne(d => d.muni)
+                    .WithMany(p => p.tbLugar)
+                    .HasForeignKey(d => d.muni_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbLugar_tbMunicipio_muni_Id");
+            });
+
+            modelBuilder.Entity<tbMunicipio>(entity =>
+            {
+                entity.HasKey(e => e.muni_Id)
+                    .HasName("PK_Genl_tbMunicipio_muni_Id");
+
+                entity.ToTable("tbMunicipio", "Genl");
+
+                entity.Property(e => e.muni_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.muni_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.muni_ValidaciosTelefono)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.muni_ValidaciosTelefonoFijo)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasDefaultValueSql("('')");
+
+                entity.HasOne(d => d.dept)
+                    .WithMany(p => p.tbMunicipio)
+                    .HasForeignKey(d => d.dept_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbMunicipio_tbDepartamento_dept_Id");
+            });
+
+            modelBuilder.Entity<tbNivelEducativo>(entity =>
+            {
+                entity.HasKey(e => e.nivEd_Id)
+                    .HasName("PK_Genl_tbNivelEducativo_nivEd_Id");
+
+                entity.ToTable("tbNivelEducativo", "Genl");
+
+                entity.Property(e => e.nivEd_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.nivEd_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbOtrosConocimientos>(entity =>
+            {
+                entity.HasKey(e => e.otrCo_Id)
+                    .HasName("PK_Genl_tbOtrosConocimientos_otrCo_Id");
+
+                entity.ToTable("tbOtrosConocimientos", "Genl");
+
+                entity.Property(e => e.otrCo_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.otrCo_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.HasOne(d => d.vac)
+                    .WithMany(p => p.tbOtrosConocimientos)
+                    .HasForeignKey(d => d.vac_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbOtrosConocimientos_tbVacante_vac_Id");
+            });
+
+            modelBuilder.Entity<tbPais>(entity =>
+            {
+                entity.HasKey(e => e.pais_Id)
+                    .HasName("PK_Genl_tbPais_pais_Id");
+
+                entity.ToTable("tbPais", "Genl");
+
+                entity.Property(e => e.pais_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.pais_Abrebiatura)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.pais_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<tbPrecio>(entity =>
+            {
+                entity.HasKey(e => e.prec_Id)
+                    .HasName("PK_Genl_tbPrecio_prec_Id");
+
+                entity.ToTable("tbPrecio", "Genl");
+
+                entity.Property(e => e.prec_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.prec_Final).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.prec_Inicial).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.catg)
+                    .WithMany(p => p.tbPrecio)
+                    .HasForeignKey(d => d.catg_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbPrecio_tbCatalogo_catg_Id");
+
+                entity.HasOne(d => d.tipPag)
+                    .WithMany(p => p.tbPrecio)
+                    .HasForeignKey(d => d.tipPag_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbPrecio_tbTipoPago_user_Id");
+            });
+
+            modelBuilder.Entity<tbProceso>(entity =>
+            {
+                entity.HasKey(e => e.proc_Id)
+                    .HasName("PK_Genl_tbProceso_proc");
+
+                entity.ToTable("tbProceso", "Genl");
+
+                entity.Property(e => e.proc_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.proc_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbPuesto>(entity =>
+            {
+                entity.HasKey(e => e.puest_Id)
+                    .HasName("PK_Genl_tbPuesto_puest_Id");
+
+                entity.ToTable("tbPuesto", "Genl");
+
+                entity.Property(e => e.puest_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.puest_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.HasOne(d => d.ariaP)
+                    .WithMany(p => p.tbPuesto)
+                    .HasForeignKey(d => d.ariaP_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbPuesto_tbAriaPuesto_ariaP_Id");
+            });
+
+            modelBuilder.Entity<tbSubdivicionLugar>(entity =>
+            {
+                entity.HasKey(e => e.subLug_Id)
+                    .HasName("PK_Genl_tbSubdivicionLugar_subLug_Id");
+
+                entity.ToTable("tbSubdivicionLugar", "Genl");
+
+                entity.Property(e => e.subLug_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.subLug_Nombre)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.HasOne(d => d.catSub)
+                    .WithMany(p => p.tbSubdivicionLugar)
+                    .HasForeignKey(d => d.catSub_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbSubdivicionLugar_tbCategoriaSubdivicion_catSub_Id");
+
+                entity.HasOne(d => d.lug)
+                    .WithMany(p => p.tbSubdivicionLugar)
+                    .HasForeignKey(d => d.lug_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbSubdivicionLugar_tbLugar_lug_Id");
+            });
+
+            modelBuilder.Entity<tbTipoCatalogo>(entity =>
+            {
+                entity.HasKey(e => e.tipCatg_Id)
+                    .HasName("PK_Genl_tbTipoCatalogo_tipCatg_Id");
+
+                entity.ToTable("tbTipoCatalogo", "Genl");
+
+                entity.Property(e => e.tipCatg_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipCatg_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbTipoContrato>(entity =>
+            {
+                entity.HasKey(e => e.tipC_Id)
+                    .HasName("PK_Genl_tbTipoContrato_tipC_Id");
+
+                entity.ToTable("tbTipoContrato", "Genl");
+
+                entity.Property(e => e.tipC_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipC_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbTipoIdentificacion>(entity =>
+            {
+                entity.HasKey(e => e.tipIde_Id)
+                    .HasName("PK_Genl_tbTipoIdentificacion_tipIde_Id");
+
+                entity.ToTable("tbTipoIdentificacion", "Genl");
+
+                entity.Property(e => e.tipIde_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipIde_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbTipoImagen>(entity =>
+            {
+                entity.HasKey(e => e.tipImg_Id)
+                    .HasName("PK_Genl_tbTipoImagen_tipImg_Id");
+
+                entity.ToTable("tbTipoImagen", "Genl");
+
+                entity.Property(e => e.tipImg_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipImg_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<tbTipoPago>(entity =>
+            {
+                entity.HasKey(e => e.tipPag_Id)
+                    .HasName("PK_Genl_tbTipoPago_tipPag_Id");
+
+                entity.ToTable("tbTipoPago", "Genl");
+
+                entity.Property(e => e.tipPag_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipPag_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<tbTipoReaccion>(entity =>
+            {
+                entity.HasKey(e => e.tipRea_Id)
+                    .HasName("PK_Genl_tbTipoReaccion_tipRea_Id");
+
+                entity.ToTable("tbTipoReaccion", "Genl");
+
+                entity.Property(e => e.tipRea_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipRea_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<tbTipoTelefono>(entity =>
+            {
+                entity.HasKey(e => e.tipTel_Id)
+                    .HasName("PK_Genl_tbTipoTelefono_tipTel_Id");
+
+                entity.ToTable("tbTipoTelefono", "Genl");
+
+                entity.Property(e => e.tipTel_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipTel_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbTipoUsuario>(entity =>
+            {
+                entity.HasKey(e => e.tipUs_Id)
+                    .HasName("PK_Genl_tbTipoUsuario_tipUs_Id");
+
+                entity.ToTable("tbTipoUsuario", "Genl");
+
+                entity.Property(e => e.tipUs_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipUs_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<tbTitulo>(entity =>
+            {
+                entity.HasKey(e => e.titu_Id)
+                    .HasName("PK_Genl_tbTitulo_titu_Id");
+
+                entity.ToTable("tbTitulo", "Genl");
+
+                entity.Property(e => e.titu_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.titu_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.HasOne(d => d.ariaP)
+                    .WithMany(p => p.tbTitulo)
+                    .HasForeignKey(d => d.ariaP_Id)
+                    .HasConstraintName("FK_Genl_tbTitulo_tbAriaPuesto_nesCa_Id");
+
+                entity.HasOne(d => d.nivEd)
+                    .WithMany(p => p.tbTitulo)
+                    .HasForeignKey(d => d.nivEd_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbTitulo_tbNivelEducativo_nivEd_Id");
+            });
+
+            modelBuilder.Entity<tbTituloProc>(entity =>
+            {
+                entity.HasKey(e => e.tiProc_Id)
+                    .HasName("PK_Genl_tbTituloProc_tiProc_Id");
+
+                entity.ToTable("tbTituloProc", "Genl");
+
+                entity.Property(e => e.tiProc_Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.proc)
+                    .WithMany(p => p.tbTituloProc)
+                    .HasForeignKey(d => d.proc_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbTituloProc_tbProceso_proc_Id");
+
+                entity.HasOne(d => d.titu)
+                    .WithMany(p => p.tbTituloProc)
+                    .HasForeignKey(d => d.titu_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbTituloProc_tbTitulo_titu_Id");
+            });
+
+            modelBuilder.Entity<tbUbicacion>(entity =>
+            {
+                entity.HasKey(e => e.ubc_Id)
+                    .HasName("PK_Genl_tbUbicacion_ubc_Id");
+
+                entity.ToTable("tbUbicacion", "Genl");
+
+                entity.Property(e => e.ubc_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.ubc_Latitud)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.ubc_Longitub)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.HasOne(d => d.subLug)
+                    .WithMany(p => p.tbUbicacion)
+                    .HasForeignKey(d => d.subLug_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbUbicacion_tbSubdivicionLugar_subLug_Id");
+            });
+
+            modelBuilder.Entity<tbUsuarioTelefono>(entity =>
+            {
+                entity.HasKey(e => e.usTel_Id)
+                    .HasName("PK_Genl_tbUsuarioTelefono_usTel_Id");
+
+                entity.ToTable("tbUsuarioTelefono", "Genl");
+
+                entity.Property(e => e.usTel_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.usTel_Numero)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.HasOne(d => d.tipTel)
+                    .WithMany(p => p.tbUsuarioTelefono)
+                    .HasForeignKey(d => d.tipTel_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbUsuarioTelefono_tbTipoTelefono_tipTel_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbUsuarioTelefono)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbUsuarioTelefono_tbUsuarios_user_Id");
+            });
+
+            modelBuilder.Entity<tbUsuarios>(entity =>
+            {
+                entity.HasKey(e => e.user_Id)
+                    .HasName("PK_Genl_tbUsuarios_User_Id");
+
+                entity.ToTable("tbUsuarios", "Genl");
+
+                entity.Property(e => e.user_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.tipIde_Id).HasDefaultValueSql("('F0932129-5A5C-4B93-AE15-5922C3875E07')");
+
+                entity.Property(e => e.user_Correo)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.user_Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.user_Facebook)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.user_FechaCreacion).HasColumnType("datetime");
+
+                entity.Property(e => e.user_Identificacion)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.user_Intagram)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.user_NombreUsuario)
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.user_Password)
+                    .IsRequired()
+                    .HasMaxLength(1000);
+
+                entity.Property(e => e.user_PasswordSal)
+                    .IsRequired()
+                    .HasMaxLength(1000);
+
+                entity.HasOne(d => d.tipIde)
+                    .WithMany(p => p.tbUsuarios)
+                    .HasForeignKey(d => d.tipIde_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbUsuarios_tbTipoIdentificacion_tipIde_Id");
+
+                entity.HasOne(d => d.ubc)
+                    .WithMany(p => p.tbUsuarios)
+                    .HasForeignKey(d => d.ubc_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbUsuarios_tbUbicacion_ubc_Id");
+
+                entity.HasOne(d => d.usInf)
+                    .WithMany(p => p.tbUsuarios)
+                    .HasForeignKey(d => d.usInf_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbUsuarios_tbInfoUnicaUsuario_usInf_Id");
+            });
+
+            modelBuilder.Entity<tbVacante>(entity =>
+            {
+                entity.HasKey(e => e.vac_Id)
+                    .HasName("PK_Genl_tbVacante_catEd_Id");
+
+                entity.ToTable("tbVacante", "Genl");
+
+                entity.Property(e => e.vac_Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.vac_DescripcionOferta)
+                    .IsRequired()
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.vac_SalarioMax).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.vac_SalarioMinio).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.ariaP)
+                    .WithMany(p => p.tbVacante)
+                    .HasForeignKey(d => d.ariaP_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbVacante_tbAriaPuesto_ariaP_Id");
+
+                entity.HasOne(d => d.gene)
+                    .WithMany(p => p.tbVacante)
+                    .HasForeignKey(d => d.gene_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbVacante_tbGenero_gene_Id");
+
+                entity.HasOne(d => d.puest)
+                    .WithMany(p => p.tbVacante)
+                    .HasForeignKey(d => d.puest_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbVacante_tbPuesto_puest_Id");
+
+                entity.HasOne(d => d.tipC)
+                    .WithMany(p => p.tbVacante)
+                    .HasForeignKey(d => d.tipC_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbVacante_tbTipoContrato_tipC_Id");
+
+                entity.HasOne(d => d.user)
+                    .WithMany(p => p.tbVacante)
+                    .HasForeignKey(d => d.user_Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Genl_tbVacante_tbUsuarios_user_Id");
+            });
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-
-    public AppECOContext(DbContextOptions<AppECOContext> options)
-        : base(options)
-    {
-    }
-
-    public virtual DbSet<tbAriaPuesto> tbAriaPuesto { get; set; }
-
-    public virtual DbSet<tbArrendamientoPor> tbArrendamientoPor { get; set; }
-
-    public virtual DbSet<tbCargo> tbCargo { get; set; }
-
-    public virtual DbSet<tbCatalogo> tbCatalogo { get; set; }
-
-    public virtual DbSet<tbCatalogoOng> tbCatalogoOng { get; set; }
-
-    public virtual DbSet<tbCatalogoPorUsuario> tbCatalogoPorUsuario { get; set; }
-
-    public virtual DbSet<tbCatalogoReaccion> tbCatalogoReaccion { get; set; }
-
-    public virtual DbSet<tbCategoria> tbCategoria { get; set; }
-
-    public virtual DbSet<tbCategoriaItem> tbCategoriaItem { get; set; }
-
-    public virtual DbSet<tbCategoriaLugar> tbCategoriaLugar { get; set; }
-
-    public virtual DbSet<tbCategoriaSubdivicion> tbCategoriaSubdivicion { get; set; }
-
-    public virtual DbSet<tbConfiguracion> tbConfiguracion { get; set; }
-
-    public virtual DbSet<tbContribuyente> tbContribuyente { get; set; }
-
-    public virtual DbSet<tbDepartamento> tbDepartamento { get; set; }
-
-    public virtual DbSet<tbEducacion> tbEducacion { get; set; }
-
-    public virtual DbSet<tbExperiencia> tbExperiencia { get; set; }
-
-    public virtual DbSet<tbFiltroCategoriaTipo> tbFiltroCategoriaTipo { get; set; }
-
-    public virtual DbSet<tbGenero> tbGenero { get; set; }
-
-    public virtual DbSet<tbGuardar> tbGuardar { get; set; }
-
-    public virtual DbSet<tbHorario> tbHorario { get; set; }
-
-    public virtual DbSet<tbIdioma> tbIdioma { get; set; }
-
-    public virtual DbSet<tbIdiomaItem> tbIdiomaItem { get; set; }
-
-    public virtual DbSet<tbInfoUnicaUsuario> tbInfoUnicaUsuario { get; set; }
-
-    public virtual DbSet<tbLogroEventoCategoria> tbLogroEventoCategoria { get; set; }
-
-    public virtual DbSet<tbLugar> tbLugar { get; set; }
-
-    public virtual DbSet<tbMunicipio> tbMunicipio { get; set; }
-
-    public virtual DbSet<tbNivelEducativo> tbNivelEducativo { get; set; }
-
-    public virtual DbSet<tbOrigenImagen> tbOrigenImagen { get; set; }
-
-    public virtual DbSet<tbOtrosConocimientos> tbOtrosConocimientos { get; set; }
-
-    public virtual DbSet<tbPais> tbPais { get; set; }
-
-    public virtual DbSet<tbPrecio> tbPrecio { get; set; }
-
-    public virtual DbSet<tbProceso> tbProceso { get; set; }
-
-    public virtual DbSet<tbPuesto> tbPuesto { get; set; }
-
-    public virtual DbSet<tbSubdivicionLugar> tbSubdivicionLugar { get; set; }
-
-    public virtual DbSet<tbTipoCatalogo> tbTipoCatalogo { get; set; }
-
-    public virtual DbSet<tbTipoContrato> tbTipoContrato { get; set; }
-
-    public virtual DbSet<tbTipoIdentificacion> tbTipoIdentificacion { get; set; }
-
-    public virtual DbSet<tbTipoImagen> tbTipoImagen { get; set; }
-
-    public virtual DbSet<tbTipoPago> tbTipoPago { get; set; }
-
-    public virtual DbSet<tbTipoReaccion> tbTipoReaccion { get; set; }
-
-    public virtual DbSet<tbTipoTelefono> tbTipoTelefono { get; set; }
-
-    public virtual DbSet<tbTipoUsuario> tbTipoUsuario { get; set; }
-
-    public virtual DbSet<tbTitulo> tbTitulo { get; set; }
-
-    public virtual DbSet<tbTituloProc> tbTituloProc { get; set; }
-
-    public virtual DbSet<tbUbicacion> tbUbicacion { get; set; }
-
-    public virtual DbSet<tbUsuarioTelefono> tbUsuarioTelefono { get; set; }
-
-    public virtual DbSet<tbUsuarios> tbUsuarios { get; set; }
-
-    public virtual DbSet<tbVacante> tbVacante { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-
-        modelBuilder.Entity<tbAriaPuesto>(entity =>
-        {
-            entity.HasKey(e => e.ariaP_Id).HasName("PK_Genl_tbAriaPuesto_ariaP_Id");
-
-            entity.ToTable("tbAriaPuesto", "Genl");
-
-            entity.Property(e => e.ariaP_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbArrendamientoPor>(entity =>
-        {
-            entity.HasKey(e => e.arr_Id).HasName("PK_Genl_tbArrendamientoPor_arr_Id");
-
-            entity.ToTable("tbArrendamientoPor", "Genl");
-
-            entity.Property(e => e.arr_Descripcion)
-                .IsRequired()
-                .HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<tbCargo>(entity =>
-        {
-            entity.HasKey(e => e.carg_Id).HasName("PK_Genl_tbCargo_carg_Id");
-
-            entity.ToTable("tbCargo", "Genl");
-
-            entity.Property(e => e.carg_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            entity.HasOne(d => d.vac).WithMany(p => p.tbCargo)
-                .HasForeignKey(d => d.vac_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCargo_tbVacante_vac_Id");
-        });
-
-        modelBuilder.Entity<tbCatalogo>(entity =>
-        {
-            entity.HasKey(e => e.catg_Id).HasName("PK_Genl_tbCatalogo_catg_Id");
-
-            entity.ToTable("tbCatalogo", "Genl");
-
-            entity.Property(e => e.catg_Descripcion)
-                .IsRequired()
-                .HasMaxLength(1000)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.catg_FechaCreacion).HasColumnType("date");
-            entity.Property(e => e.catg_JsonReaccion)
-                .IsRequired()
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.catg_Nombre)
-                .IsRequired()
-                .HasMaxLength(300)
-                .HasDefaultValueSql("('')");
-
-            entity.HasOne(d => d.categ).WithMany(p => p.tbCatalogo)
-                .HasForeignKey(d => d.categ_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogo_tbCategoria_catg_Id");
-
-            entity.HasOne(d => d.catg_IdDesperdicioNavigation).WithMany(p => p.Inversecatg_IdDesperdicioNavigation)
-                .HasForeignKey(d => d.catg_IdDesperdicio)
-                .HasConstraintName("FK_Genl_tbCatalogo_tbCatalogo_catg_IdDesperdicio");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbCatalogo)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogo_tbUsuarios_user_Id");
-        });
-
-        modelBuilder.Entity<tbCatalogoOng>(entity =>
-        {
-            entity.HasKey(e => e.ctgOng_Id).HasName("PK_Genl_tbCatalogoOng_ctgOng_Id");
-
-            entity.ToTable("tbCatalogoOng", "Genl");
-
-            entity.Property(e => e.ctgOng_Fecha).HasColumnType("date");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbCatalogoOng)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogoOng_tbCatalogo_catg_Id");
-
-            entity.HasOne(d => d.ubc).WithMany(p => p.tbCatalogoOng)
-                .HasForeignKey(d => d.ubc_Id)
-                .HasConstraintName("FK_Genl_tbCatalogoOng_tbUbicacion_ubc_Id");
-        });
-
-        modelBuilder.Entity<tbCatalogoPorUsuario>(entity =>
-        {
-            entity.HasKey(e => e.catUsua_Id).HasName("PK_Genl_tbCatalogoUsuario_catUsua_Id");
-
-            entity.ToTable("tbCatalogoPorUsuario", "Genl");
-
-            entity.HasOne(d => d.tipCatg).WithMany(p => p.tbCatalogoPorUsuario)
-                .HasForeignKey(d => d.tipCatg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogoUsuario_tbTipoCatalogo_tipCatg_Id");
-
-            entity.HasOne(d => d.tipUs).WithMany(p => p.tbCatalogoPorUsuario)
-                .HasForeignKey(d => d.tipUs_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogoUsuario_tbTipoUsuario_tipUs_Id");
-        });
-
-        modelBuilder.Entity<tbCatalogoReaccion>(entity =>
-        {
-            entity.HasKey(e => e.catRea_Id).HasName("PK_Genl_tbCatalogoReaccion_catRea_Id");
-
-            entity.ToTable("tbCatalogoReaccion", "Genl");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbCatalogoReaccion)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogoReaccion_tbCatalogo_catg_Id");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbCatalogoReaccion)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogoReaccion_tbUsuarios_user_Id");
-        });
-
-        modelBuilder.Entity<tbCategoria>(entity =>
-        {
-            entity.HasKey(e => e.catg_Id).HasName("PK_Genl_tbCategoria_catg_Id");
-
-            entity.ToTable("tbCategoria", "Genl");
-
-            entity.Property(e => e.catg_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-        });
-
-        modelBuilder.Entity<tbCategoriaItem>(entity =>
-        {
-            entity.HasKey(e => e.catgItem_Id).HasName("PK_Genl_tbCategoriaItem_catgItem_Id");
-
-            entity.ToTable("tbCategoriaItem", "Genl");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbCategoriaItem)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCategoriaItem_tbCategoria_catg_Id");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbCategoriaItem)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCategoriaItem_tbUsuarios_user_Id");
-        });
-
-        modelBuilder.Entity<tbCategoriaLugar>(entity =>
-        {
-            entity.HasKey(e => e.catLug_Id).HasName("PK_Genl_tbCategoriaLugar_catLug_Id");
-
-            entity.ToTable("tbCategoriaLugar", "Genl");
-
-            entity.Property(e => e.catLug_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-        });
-
-        modelBuilder.Entity<tbCategoriaSubdivicion>(entity =>
-        {
-            entity.HasKey(e => e.catSub_Id).HasName("PK_Genl_tbCategoriaSubdivicion_catSub_Id");
-
-            entity.ToTable("tbCategoriaSubdivicion", "Genl");
-
-            entity.Property(e => e.catSub_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-        });
-
-        modelBuilder.Entity<tbConfiguracion>(entity =>
-        {
-            entity.HasKey(e => e.conf_Id).HasName("PK_Genl_tbConfiguracion_conf_Id");
-
-            entity.ToTable("tbConfiguracion", "Genl");
-
-            entity.HasIndex(e => e.conf_Nombre, "UQ_Genl_tbConfiguracion_conf_Nombre").IsUnique();
-
-            entity.Property(e => e.conf_Descripcion)
-                .IsRequired()
-                .HasMaxLength(500);
-            entity.Property(e => e.conf_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-            entity.Property(e => e.conf_Valor)
-                .IsRequired()
-                .HasMaxLength(500);
-        });
-
-        modelBuilder.Entity<tbContribuyente>(entity =>
-        {
-            entity.HasKey(e => e.contr_Id).HasName("PK_Genl_tbContribuyente_contr_Id");
-
-            entity.ToTable("tbContribuyente", "Genl");
-
-            entity.Property(e => e.contr_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300)
-                .HasDefaultValueSql("('')");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbContribuyente)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbContribuyente_tbCatalogo_catg_Id");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbContribuyente)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbContribuyente_tbUsuarios_user_Id");
-        });
-
-        modelBuilder.Entity<tbDepartamento>(entity =>
-        {
-            entity.HasKey(e => e.dept_Id).HasName("PK_Genl_tbDepartamento_dept_Id");
-
-            entity.ToTable("tbDepartamento", "Genl");
-
-            entity.Property(e => e.dept_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-
-            entity.HasOne(d => d.pais).WithMany(p => p.tbDepartamento)
-                .HasForeignKey(d => d.pais_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbDepartamento_tbPais_pai_Id");
-        });
-
-        modelBuilder.Entity<tbEducacion>(entity =>
-        {
-            entity.HasKey(e => e.ed_Id).HasName("PK_Genl_tbEducacion_catEd_Id");
-
-            entity.ToTable("tbEducacion", "Genl");
-
-            entity.HasOne(d => d.titu).WithMany(p => p.tbEducacion)
-                .HasForeignKey(d => d.titu_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbEducacion_tbTitulo_titu_Id");
-
-            entity.HasOne(d => d.vac).WithMany(p => p.tbEducacion)
-                .HasForeignKey(d => d.vac_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbEducacion_tbVacante_vac_Id");
-        });
-
-        modelBuilder.Entity<tbExperiencia>(entity =>
-        {
-            entity.HasKey(e => e.exp_Id).HasName("PK_Genl_tbExperiencia_exp_Id");
-
-            entity.ToTable("tbExperiencia", "Genl");
-
-            entity.HasOne(d => d.ariaP).WithMany(p => p.tbExperiencia)
-                .HasForeignKey(d => d.ariaP_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbExperiencia_tbAriaPuesto_ariaP_Id");
-
-            entity.HasOne(d => d.vac).WithMany(p => p.tbExperiencia)
-                .HasForeignKey(d => d.vac_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbExperiencia_tbVacante_vac_Id");
-        });
-
-        modelBuilder.Entity<tbFiltroCategoriaTipo>(entity =>
-        {
-            entity.HasKey(e => e.fiCg_Id).HasName("PK_Genl_tbFiltroCategoriaTipo_fiCg_Id");
-
-            entity.ToTable("tbFiltroCategoriaTipo", "Genl");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbFiltroCategoriaTipo)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbFiltroCategoriaTipo_tbCategoria_catg_Id");
-
-            entity.HasOne(d => d.tipCatg).WithMany(p => p.tbFiltroCategoriaTipo)
-                .HasForeignKey(d => d.tipCatg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbFiltroCategoriaTipo_tbTipoCatalogo_tipCatg_Id");
-        });
-
-        modelBuilder.Entity<tbGenero>(entity =>
-        {
-            entity.HasKey(e => e.gene_Id).HasName("PK_Genl_tbGenero_gene_Id");
-
-            entity.ToTable("tbGenero", "Genl");
-
-            entity.Property(e => e.gene_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbGuardar>(entity =>
-        {
-            entity.HasKey(e => e.guard_Id).HasName("PK_Genl_tbGuardar_guard_Id");
-
-            entity.ToTable("tbGuardar", "Genl");
-
-            entity.Property(e => e.guard_RutaPublicacion)
-                .IsRequired()
-                .HasMaxLength(2000)
-                .HasDefaultValueSql("('')");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbGuardar)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbGuardar_tbCatalogo_catg_Id");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbGuardar)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbGuardar_tbUsuarios_user_Id");
-        });
-
-        modelBuilder.Entity<tbHorario>(entity =>
-        {
-            entity.HasKey(e => e.hor_Id).HasName("PK_Genl_tbHorario_hor_Id");
-
-            entity.ToTable("tbHorario", "Genl");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbHorario)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbHorario_tbUsuarios_User_Id");
-        });
-
-        modelBuilder.Entity<tbIdioma>(entity =>
-        {
-            entity.HasKey(e => e.idio_Id).HasName("PK_Genl_tbIdioma_idio_Id");
-
-            entity.ToTable("tbIdioma", "Genl");
-
-            entity.Property(e => e.idio_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbIdiomaItem>(entity =>
-        {
-            entity.HasKey(e => e.idItm_Id).HasName("PK_Genl_tbIdiomaItem_idItm_Id");
-
-            entity.ToTable("tbIdiomaItem", "Genl");
-
-            entity.HasOne(d => d.vac).WithMany(p => p.tbIdiomaItem)
-                .HasForeignKey(d => d.vac_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbIdiomaItem_tbVacante_vac_Id");
-        });
-
-        modelBuilder.Entity<tbInfoUnicaUsuario>(entity =>
-        {
-            entity.HasKey(e => e.usInf_Id).HasName("PK_Genl_tbInfoUnicaUsuario_usInf_Id");
-
-            entity.ToTable("tbInfoUnicaUsuario", "Genl");
-
-            entity.Property(e => e.usInf_IgualSubInfo)
-                .IsRequired()
-                .HasDefaultValueSql("((1))");
-            entity.Property(e => e.usInf_Nombre)
-                .IsRequired()
-                .HasMaxLength(300);
-            entity.Property(e => e.usInf_RutaLogo)
-                .IsRequired()
-                .HasMaxLength(2000)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.usInf_RutaPaginaWed)
-                .IsRequired()
-                .HasMaxLength(2000)
-                .HasDefaultValueSql("('')");
-
-            entity.HasOne(d => d.tipUs).WithMany(p => p.tbInfoUnicaUsuario)
-                .HasForeignKey(d => d.tipUs_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbInfoUnicaUsuario_tbTipoUsuario_tipUs_Id");
-        });
-
-        modelBuilder.Entity<tbLogroEventoCategoria>(entity =>
-        {
-            entity.HasKey(e => e.logCa_Id).HasName("PK_Genl_tbLogroEventoCategoria_logCa_Id");
-
-            entity.ToTable("tbLogroEventoCategoria", "Genl");
-
-            entity.Property(e => e.logCa_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbLugar>(entity =>
-        {
-            entity.HasKey(e => e.lug_Id).HasName("PK_Genl_tbLugar_lug_Id");
-
-            entity.ToTable("tbLugar", "Genl");
-
-            entity.Property(e => e.lug_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-
-            entity.HasOne(d => d.catLug).WithMany(p => p.tbLugar)
-                .HasForeignKey(d => d.catLug_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbLugar_tbCategoriaLugar_catLug_Id");
-
-            entity.HasOne(d => d.muni).WithMany(p => p.tbLugar)
-                .HasForeignKey(d => d.muni_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbLugar_tbMunicipio_muni_Id");
-        });
-
-        modelBuilder.Entity<tbMunicipio>(entity =>
-        {
-            entity.HasKey(e => e.muni_Id).HasName("PK_Genl_tbMunicipio_muni_Id");
-
-            entity.ToTable("tbMunicipio", "Genl");
-
-            entity.Property(e => e.muni_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-            entity.Property(e => e.muni_ValidaciosTelefono)
-                .IsRequired()
-                .HasMaxLength(1000)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.muni_ValidaciosTelefonoFijo)
-                .IsRequired()
-                .HasMaxLength(1000)
-                .HasDefaultValueSql("('')");
-
-            entity.HasOne(d => d.dept).WithMany(p => p.tbMunicipio)
-                .HasForeignKey(d => d.dept_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbMunicipio_tbDepartamento_dept_Id");
-        });
-
-        modelBuilder.Entity<tbNivelEducativo>(entity =>
-        {
-            entity.HasKey(e => e.nivEd_Id).HasName("PK_Genl_tbNivelEducativo_nivEd_Id");
-
-            entity.ToTable("tbNivelEducativo", "Genl");
-
-            entity.Property(e => e.nivEd_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbOrigenImagen>(entity =>
-        {
-            entity.HasKey(e => e.catImg_Id).HasName("PK_Genl_tbCatalogoImagen_catImg_Id");
-
-            entity.ToTable("tbOrigenImagen", "Genl");
-
-            entity.Property(e => e.catImg_RutaImagen)
-                .IsRequired()
-                .HasMaxLength(2000);
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbOrigenImagen)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbCatalogoImagen_tbCatalogo_catg_Id");
-        });
-
-        modelBuilder.Entity<tbOtrosConocimientos>(entity =>
-        {
-            entity.HasKey(e => e.otrCo_Id).HasName("PK_Genl_tbOtrosConocimientos_otrCo_Id");
-
-            entity.ToTable("tbOtrosConocimientos", "Genl");
-
-            entity.Property(e => e.otrCo_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            entity.HasOne(d => d.vac).WithMany(p => p.tbOtrosConocimientos)
-                .HasForeignKey(d => d.vac_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbOtrosConocimientos_tbVacante_vac_Id");
-        });
-
-        modelBuilder.Entity<tbPais>(entity =>
-        {
-            entity.HasKey(e => e.pais_Id).HasName("PK_Genl_tbPais_pais_Id");
-
-            entity.ToTable("tbPais", "Genl");
-
-            entity.Property(e => e.pais_Abrebiatura)
-                .IsRequired()
-                .HasMaxLength(10)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.pais_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-        });
-
-        modelBuilder.Entity<tbPrecio>(entity =>
-        {
-            entity.HasKey(e => e.prec_Id).HasName("PK_Genl_tbPrecio_prec_Id");
-
-            entity.ToTable("tbPrecio", "Genl");
-
-            entity.Property(e => e.prec_Final).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.prec_Inicial).HasColumnType("decimal(18, 2)");
-
-            entity.HasOne(d => d.arr).WithMany(p => p.tbPrecio)
-                .HasForeignKey(d => d.arr_Id)
-                .HasConstraintName("FK_Genl_tbPrecio_tbArrendamientoPor_arr_Id");
-
-            entity.HasOne(d => d.catg).WithMany(p => p.tbPrecio)
-                .HasForeignKey(d => d.catg_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbPrecio_tbCatalogo_catg_Id");
-
-            entity.HasOne(d => d.tipPag).WithMany(p => p.tbPrecio)
-                .HasForeignKey(d => d.tipPag_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbPrecio_tbTipoPago_user_Id");
-        });
-
-        modelBuilder.Entity<tbProceso>(entity =>
-        {
-            entity.HasKey(e => e.proc_Id).HasName("PK_Genl_tbProceso_proc");
-
-            entity.ToTable("tbProceso", "Genl");
-
-            entity.Property(e => e.proc_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbPuesto>(entity =>
-        {
-            entity.HasKey(e => e.puest_Id).HasName("PK_Genl_tbPuesto_puest_Id");
-
-            entity.ToTable("tbPuesto", "Genl");
-
-            entity.Property(e => e.puest_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            entity.HasOne(d => d.ariaP).WithMany(p => p.tbPuesto)
-                .HasForeignKey(d => d.ariaP_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbPuesto_tbAriaPuesto_ariaP_Id");
-        });
-
-        modelBuilder.Entity<tbSubdivicionLugar>(entity =>
-        {
-            entity.HasKey(e => e.subLug_Id).HasName("PK_Genl_tbSubdivicionLugar_subLug_Id");
-
-            entity.ToTable("tbSubdivicionLugar", "Genl");
-
-            entity.Property(e => e.subLug_Nombre)
-                .IsRequired()
-                .HasMaxLength(500);
-
-            entity.HasOne(d => d.catSub).WithMany(p => p.tbSubdivicionLugar)
-                .HasForeignKey(d => d.catSub_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbSubdivicionLugar_tbCategoriaSubdivicion_catSub_Id");
-
-            entity.HasOne(d => d.lug).WithMany(p => p.tbSubdivicionLugar)
-                .HasForeignKey(d => d.lug_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbSubdivicionLugar_tbLugar_lug_Id");
-        });
-
-        modelBuilder.Entity<tbTipoCatalogo>(entity =>
-        {
-            entity.HasKey(e => e.tipCatg_Id).HasName("PK_Genl_tbTipoCatalogo_tipCatg_Id");
-
-            entity.ToTable("tbTipoCatalogo", "Genl");
-
-            entity.Property(e => e.tipCatg_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbTipoContrato>(entity =>
-        {
-            entity.HasKey(e => e.tipC_Id).HasName("PK_Genl_tbTipoContrato_tipC_Id");
-
-            entity.ToTable("tbTipoContrato", "Genl");
-
-            entity.Property(e => e.tipC_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbTipoIdentificacion>(entity =>
-        {
-            entity.HasKey(e => e.tipIde_Id).HasName("PK_Genl_tbTipoIdentificacion_tipIde_Id");
-
-            entity.ToTable("tbTipoIdentificacion", "Genl");
-
-            entity.Property(e => e.tipIde_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbTipoImagen>(entity =>
-        {
-            entity.HasKey(e => e.tipImg_Id).HasName("PK_Genl_tbTipoImagen_tipImg_Id");
-
-            entity.ToTable("tbTipoImagen", "Genl");
-
-            entity.Property(e => e.tipImg_Descripcion)
-                .IsRequired()
-                .HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<tbTipoPago>(entity =>
-        {
-            entity.HasKey(e => e.tipPag_Id).HasName("PK_Genl_tbTipoPago_tipPag_Id");
-
-            entity.ToTable("tbTipoPago", "Genl");
-
-            entity.Property(e => e.tipPag_Descripcion)
-                .IsRequired()
-                .HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<tbTipoReaccion>(entity =>
-        {
-            entity.HasKey(e => e.tipRea_Id).HasName("PK_Genl_tbTipoReaccion_tipRea_Id");
-
-            entity.ToTable("tbTipoReaccion", "Genl");
-
-            entity.Property(e => e.tipRea_Descripcion)
-                .IsRequired()
-                .HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<tbTipoTelefono>(entity =>
-        {
-            entity.HasKey(e => e.tipTel_Id).HasName("PK_Genl_tbTipoTelefono_tipTel_Id");
-
-            entity.ToTable("tbTipoTelefono", "Genl");
-
-            entity.Property(e => e.tipTel_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbTipoUsuario>(entity =>
-        {
-            entity.HasKey(e => e.tipUs_Id).HasName("PK_Genl_tbTipoUsuario_tipUs_Id");
-
-            entity.ToTable("tbTipoUsuario", "Genl");
-
-            entity.Property(e => e.tipUs_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-        });
-
-        modelBuilder.Entity<tbTitulo>(entity =>
-        {
-            entity.HasKey(e => e.titu_Id).HasName("PK_Genl_tbTitulo_titu_Id");
-
-            entity.ToTable("tbTitulo", "Genl");
-
-            entity.Property(e => e.titu_Descripcion)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            entity.HasOne(d => d.ariaP).WithMany(p => p.tbTitulo)
-                .HasForeignKey(d => d.ariaP_Id)
-                .HasConstraintName("FK_Genl_tbTitulo_tbAriaPuesto_nesCa_Id");
-
-            entity.HasOne(d => d.nivEd).WithMany(p => p.tbTitulo)
-                .HasForeignKey(d => d.nivEd_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbTitulo_tbNivelEducativo_nivEd_Id");
-        });
-
-        modelBuilder.Entity<tbTituloProc>(entity =>
-        {
-            entity.HasKey(e => e.tiProc_Id).HasName("PK_Genl_tbTituloProc_tiProc_Id");
-
-            entity.ToTable("tbTituloProc", "Genl");
-
-            entity.HasOne(d => d.proc).WithMany(p => p.tbTituloProc)
-                .HasForeignKey(d => d.proc_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbTituloProc_tbProceso_proc_Id");
-
-            entity.HasOne(d => d.titu).WithMany(p => p.tbTituloProc)
-                .HasForeignKey(d => d.titu_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbTituloProc_tbTitulo_titu_Id");
-        });
-
-        modelBuilder.Entity<tbUbicacion>(entity =>
-        {
-            entity.HasKey(e => e.ubc_Id).HasName("PK_Genl_tbUbicacion_ubc_Id");
-
-            entity.ToTable("tbUbicacion", "Genl");
-
-            entity.Property(e => e.ubc_Latitud)
-                .IsRequired()
-                .HasMaxLength(200);
-            entity.Property(e => e.ubc_Longitub)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            entity.HasOne(d => d.subLug).WithMany(p => p.tbUbicacion)
-                .HasForeignKey(d => d.subLug_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbUbicacion_tbSubdivicionLugar_subLug_Id");
-        });
-
-        modelBuilder.Entity<tbUsuarioTelefono>(entity =>
-        {
-            entity.HasKey(e => e.usTel_Id).HasName("PK_Genl_tbUsuarioTelefono_usTel_Id");
-
-            entity.ToTable("tbUsuarioTelefono", "Genl");
-
-            entity.Property(e => e.usTel_Numero)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            entity.HasOne(d => d.tipTel).WithMany(p => p.tbUsuarioTelefono)
-                .HasForeignKey(d => d.tipTel_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbUsuarioTelefono_tbTipoTelefono_tipTel_Id");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbUsuarioTelefono)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbUsuarioTelefono_tbUsuarios_user_Id");
-        });
-
-        modelBuilder.Entity<tbUsuarios>(entity =>
-        {
-            entity.HasKey(e => e.user_Id).HasName("PK_Genl_tbUsuarios_User_Id");
-
-            entity.ToTable("tbUsuarios", "Genl");
-
-            entity.Property(e => e.tipIde_Id).HasDefaultValueSql("((1))");
-            entity.Property(e => e.user_Correo)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.user_Descripcion)
-                .IsRequired()
-                .HasMaxLength(500);
-            entity.Property(e => e.user_Facebook)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.user_FechaCreacion).HasColumnType("date");
-            entity.Property(e => e.user_Identificacion)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.user_Intagram)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.user_NombreUsuario)
-                .IsRequired()
-                .HasMaxLength(150)
-                .HasDefaultValueSql("('')");
-            entity.Property(e => e.user_Password)
-                .IsRequired()
-                .HasMaxLength(1000);
-            entity.Property(e => e.user_PasswordSal)
-                .IsRequired()
-                .HasMaxLength(1000);
-
-            entity.HasOne(d => d.ubc).WithMany(p => p.tbUsuarios)
-                .HasForeignKey(d => d.ubc_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbUsuarios_tbUbicacion_ubc_Id");
-
-            entity.HasOne(d => d.usInf).WithMany(p => p.tbUsuarios)
-                .HasForeignKey(d => d.usInf_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbUsuarios_tbInfoUnicaUsuario_usInf_Id");
-        });
-
-        modelBuilder.Entity<tbVacante>(entity =>
-        {
-            entity.HasKey(e => e.vac_Id).HasName("PK_Genl_tbVacante_catEd_Id");
-
-            entity.ToTable("tbVacante", "Genl");
-
-            entity.Property(e => e.vac_DescripcionOferta)
-                .IsRequired()
-                .HasMaxLength(2000);
-            entity.Property(e => e.vac_Edad).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.vac_SalarioMax).HasColumnType("decimal(18, 2)");
-
-            entity.HasOne(d => d.ariaP).WithMany(p => p.tbVacante)
-                .HasForeignKey(d => d.ariaP_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbVacante_tbAriaPuesto_ariaP_Id");
-
-            entity.HasOne(d => d.gene).WithMany(p => p.tbVacante)
-                .HasForeignKey(d => d.gene_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbVacante_tbGenero_gene_Id");
-
-            entity.HasOne(d => d.puest).WithMany(p => p.tbVacante)
-                .HasForeignKey(d => d.puest_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbVacante_tbPuesto_puest_Id");
-
-            entity.HasOne(d => d.tipC).WithMany(p => p.tbVacante)
-                .HasForeignKey(d => d.tipC_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbVacante_tbTipoContrato_tipC_Id");
-
-            entity.HasOne(d => d.user).WithMany(p => p.tbVacante)
-                .HasForeignKey(d => d.user_Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Genl_tbVacante_tbUsuarios_user_Id");
-        });
-
-        OnModelCreatingPartial(modelBuilder);
-    }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

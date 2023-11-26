@@ -18,12 +18,12 @@ namespace AppCircular.DataAccess.Repositories
     {
         private static string nombre = "Usuario";
 
-        public async Task<ResultadoModel<bool>> ActualizarLogo(int idUsuario, string RutaImagen)
+        public async Task<ResultadoModel<bool>> ActualizarLogo(Guid idUsuario, string RutaImagen)
         {
             try
             {
                 string vali = RutaImagen.Replace(" ", "");
-                if (vali != "" && idUsuario > 0)
+                if (vali != "" && idUsuario != Guid.Empty)
                 {
                     using var db = new AppCircularContext();
                     var usuaurio = await db.tbUsuarios
@@ -43,9 +43,9 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<int>> CrearUsuario(UsuarioCrearModel usuario)
+        public async Task<ResultadoModel<Guid>> CrearUsuario(UsuarioCrearModel usuario)
         {
-            ResultadoModel<int> resultado = new();
+            ResultadoModel<Guid> resultado = new();
             try
             {
                 using (SqlConnection connection = new SqlConnection(AppCircularContext.ConnectionString))
@@ -107,7 +107,7 @@ namespace AppCircular.DataAccess.Repositories
 
                         if (command.Parameters.Contains("@IdUsuario") && command.Parameters["@IdUsuario"].Value != DBNull.Value)
                         {
-                            resultado.Value = (int)command.Parameters["@IdUsuario"].Value;
+                            resultado.Value = (Guid)command.Parameters["@IdUsuario"].Value;
                         }
                     }
                 }
@@ -137,7 +137,7 @@ namespace AppCircular.DataAccess.Repositories
                         command.CommandTimeout = 0;
                         // Agrega parámetros si es necesario
                         command.Parameters.AddWithValue("@Correo", correo);
-                        command.Parameters.AddWithValue("@Login", login);
+                        //command.Parameters.AddWithValue("@Login", login);
 
                         SqlParameter successParameter = new SqlParameter("@Success", SqlDbType.Bit);
                         successParameter.Direction = ParameterDirection.Output;
@@ -147,7 +147,7 @@ namespace AppCircular.DataAccess.Repositories
                         messageParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(messageParameter);
 
-                        SqlParameter idUsuarioParameter = new SqlParameter("@IdUsuario", SqlDbType.Int);
+                        SqlParameter idUsuarioParameter = new SqlParameter("@IdUsuario", SqlDbType.UniqueIdentifier);
                         idUsuarioParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(idUsuarioParameter);
 
@@ -173,7 +173,7 @@ namespace AppCircular.DataAccess.Repositories
                         }
                         if (command.Parameters.Contains("@IdUsuario") && command.Parameters["@IdUsuario"].Value != DBNull.Value)
                         {
-                            us.user_Id = (int)command.Parameters["@IdUsuario"].Value;
+                            us.user_Id = (Guid)command.Parameters["@IdUsuario"].Value;
                         }
                         else return new ResultadoModel<tbUsuarios>() { Message = "El Id del usuario no pudo ser octenido", Success = false };
                         if (command.Parameters.Contains("@PasswordSal") && command.Parameters["@PasswordSal"].Value != DBNull.Value)
@@ -198,11 +198,11 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ResultadoModel<bool>> UsuarioVarificado(int Id)
+        public async Task<ResultadoModel<bool>> UsuarioVarificado(Guid Id)
         {
             try
             {
-                if (Id < 1) return new ResultadoModel<bool>() { Message = "El Id no complio con lo necesario", Success = false, Type = ServiceResultType.BadRecuest, Value = false };
+                if (Id != Guid.Empty) return new ResultadoModel<bool>() { Message = "El Id no complio con lo necesario", Success = false, Type = ServiceResultType.BadRecuest, Value = false };
                 using var db = new AppCircularContext();
                 var data = await db.tbUsuarios.Where(a => a.user_Id == Id).FirstOrDefaultAsync();
                 if (data == null) return new ResultadoModel<bool>() { Message = "No se encontro lo que se buscaba", Success = false, Type = ServiceResultType.BadRecuest, Value = false };

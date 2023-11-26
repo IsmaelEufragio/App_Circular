@@ -3,19 +3,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbExperiencia
+namespace AppCircular.Entities.Entities
 {
-    public int exp_Id { get; set; }
+    public partial class tbExperiencia
+    {
+        public Guid exp_Id { get; set; }
+        public Guid ariaP_Id { get; set; }
+        public bool exp_Opcional { get; set; }
+        public Guid vac_Id { get; set; }
 
-    public int ariaP_Id { get; set; }
-
-    public bool exp_Opcional { get; set; }
-
-    public int vac_Id { get; set; }
-
-    public virtual tbAriaPuesto ariaP { get; set; }
-
-    public virtual tbVacante vac { get; set; }
+        public virtual tbAriaPuesto ariaP { get; set; }
+        public virtual tbVacante vac { get; set; }
+    }
 }

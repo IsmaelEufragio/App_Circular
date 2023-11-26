@@ -35,7 +35,7 @@ namespace AppCircular.Controllers
         }
 
         [HttpPut, Authorize, Route("TipoReaccionUpdate/{Id}")]
-        public async Task<IActionResult> ActulizarTipoReaccion(int Id, TipoReaccionModel model)
+        public async Task<IActionResult> ActulizarTipoReaccion(Guid Id, TipoReaccionModel model)
         {
             var resul = new ServiceResult();
             if (model != null)

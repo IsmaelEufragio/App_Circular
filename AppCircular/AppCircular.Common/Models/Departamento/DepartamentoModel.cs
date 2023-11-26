@@ -10,6 +10,6 @@ namespace AppCircular.Common.Models.Departamento
     {
         public string Nombre { get; set; }
         public int NuIdentidad { get; set; }
-        public int pais_Id { get; set; }
+        public Guid pais_Id { get; set; }
     }
 }

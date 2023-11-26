@@ -8,11 +8,11 @@ namespace AppCircular.Common.Models.Usuario
 {
     public class InfoUnicaUsuarioViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Nombre { get; set; }
         public string RutaLogo { get; set; }
         public string RutaPaginaWed { get; set; }
         public bool? IgualSubInfo { get; set; }
-        public int tipUs_Id { get; set; }
+        public Guid tipUs_Id { get; set; }
     }
 }

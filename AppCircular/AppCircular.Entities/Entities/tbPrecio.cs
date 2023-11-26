@@ -3,27 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbPrecio
+namespace AppCircular.Entities.Entities
 {
-    public int prec_Id { get; set; }
+    public partial class tbPrecio
+    {
+        public Guid prec_Id { get; set; }
+        public decimal prec_Inicial { get; set; }
+        public decimal prec_Final { get; set; }
+        public int prec_Cantidad { get; set; }
+        public Guid tipPag_Id { get; set; }
+        public Guid catg_Id { get; set; }
 
-    public decimal prec_Inicial { get; set; }
-
-    public decimal prec_Final { get; set; }
-
-    public int prec_Cantidad { get; set; }
-
-    public int tipPag_Id { get; set; }
-
-    public int? arr_Id { get; set; }
-
-    public int catg_Id { get; set; }
-
-    public virtual tbArrendamientoPor arr { get; set; }
-
-    public virtual tbCatalogo catg { get; set; }
-
-    public virtual tbTipoPago tipPag { get; set; }
+        public virtual tbCatalogo catg { get; set; }
+        public virtual tbTipoPago tipPag { get; set; }
+    }
 }

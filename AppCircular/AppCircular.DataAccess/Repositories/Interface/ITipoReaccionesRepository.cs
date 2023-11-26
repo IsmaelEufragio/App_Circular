@@ -14,6 +14,6 @@ namespace AppCircular.DataAccess.Repositories.Interface
     {
         public Task<ResultadoModel<TipoReaccionViewModel>> ListAsync();
         public Task<ResultadoModel<TipoReaccionViewModel>> InsertAsync(T item);
-        public Task<ResultadoModel<TipoReaccionViewModel>> UpdateAsync(int id, TipoReaccionModel item);
+        public Task<ResultadoModel<TipoReaccionViewModel>> UpdateAsync(Guid id, TipoReaccionModel item);
     }
 }

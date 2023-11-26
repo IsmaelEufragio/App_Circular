@@ -71,7 +71,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTipoUser(int id, TipoUsuarioModel model)
+        public async Task<ServiceResult> ActualizarTipoUser(Guid id, TipoUsuarioModel model)
         {
 
             var listado = await _tipoUsuarioRepository.UpdateAsync(id, model);
@@ -113,7 +113,7 @@ namespace AppCircular.BusinessLogic.Services
             return result.Ok(listado);
         }
 
-        public async Task<ServiceResult> ActualizarInfoUser(int id, InfoUnicaUsuarioViewModel model)
+        public async Task<ServiceResult> ActualizarInfoUser(Guid id, InfoUnicaUsuarioViewModel model)
         {
             var result = new ServiceResult();
             var listado = await _infoUnicaUsuarioRepository.UpdateAsync(id, model);
@@ -213,7 +213,7 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TipoUsuarioViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarCategoria(int id, CategoriaModel model)
+        public async Task<ServiceResult> ActualizarCategoria(Guid id, CategoriaModel model)
         {
 
             var listado = await _categoriaRepository.UpdateAsync(id, model);
@@ -232,7 +232,7 @@ namespace AppCircular.BusinessLogic.Services
                 ServiceResult result = new();
                 //string confi = _iConfiguration.GetConnectionString("DefaultConnection");
                 var cong = await _configuracionRepository.WhereAsync("IdTipoUsuarioParticular");
-                if (cong.Success && (int.TryParse(cong.Value, out int idParticualar)))
+                if (cong.Success && (Guid.TryParse(cong.Value, out Guid idParticualar)))
                 {
                     if (idParticualar != model.tipUs_Id)
                     {
@@ -347,7 +347,7 @@ namespace AppCircular.BusinessLogic.Services
             }
         }
 
-        public async Task<ServiceResult> SubirArchivoAsync(IFormFile fichero, int idUsuario)
+        public async Task<ServiceResult> SubirArchivoAsync(IFormFile fichero, Guid idUsuario)
         {
             ServiceResult resul = new();
             try
@@ -388,8 +388,8 @@ namespace AppCircular.BusinessLogic.Services
                 }
                 else modelo.RutaLogo = string.Empty;
 
-                modelo.tipUs_Id = form.TryGetValue("tipUs_Id", out var tipUs_Id) ? int.TryParse(tipUs_Id, out int idTipoUs) ? idTipoUs : 0 : 0;
-                modelo.tipIde_Id = form.TryGetValue("tipIde_Id", out var tipIde_Id) ? int.TryParse(tipIde_Id, out int idTipoIde) ? idTipoIde : 0 : 0;
+                modelo.tipUs_Id = form.TryGetValue("tipUs_Id", out var tipUs_Id) ? Guid.TryParse(tipUs_Id, out Guid idTipoUs) ? idTipoUs : Guid.Empty : Guid.Empty;
+                modelo.tipIde_Id = form.TryGetValue("tipIde_Id", out var tipIde_Id) ? Guid.TryParse(tipIde_Id, out Guid idTipoIde) ? idTipoIde : Guid.Empty : Guid.Empty;
                 modelo.Identidad = form.TryGetValue("Identidad", out var Identidad) ? Identidad.ToString() : string.Empty;
                 modelo.Nombre = form.TryGetValue("Nombre", out var nombreValue) ? nombreValue.ToString() : string.Empty;
                 modelo.PaginaWed = form.TryGetValue("PaginaWed", out var PaginaWed) ? PaginaWed.ToString() : string.Empty;
@@ -401,7 +401,7 @@ namespace AppCircular.BusinessLogic.Services
                 modelo.WhatsApp = form.TryGetValue("WhatsApp", out var WhatsApp) ? bool.TryParse(WhatsApp, out bool whats) ? whats : null : null;
                 modelo.Envio = form.TryGetValue("Envio", out var Envio) ? bool.TryParse(Envio, out bool envi) ? envi : null : null;
                 modelo.Correo = form.TryGetValue("Correo", out var Correo) ? Correo.ToString() : string.Empty;
-                modelo.subLug_Id = form.TryGetValue("subLug_Id", out var subLug_Id) ? int.TryParse(subLug_Id, out int idSubLug) ? idSubLug : 0 : 0;
+                modelo.subLug_Id = form.TryGetValue("subLug_Id", out var subLug_Id) ? Guid.TryParse(subLug_Id, out Guid idSubLug) ? idSubLug : Guid.Empty : Guid.Empty;
                 modelo.Latitud = form.TryGetValue("Latitud", out var Latitud) ? Latitud.ToString() : string.Empty;
                 modelo.Longitub = form.TryGetValue("Longitub", out var Longitub) ? Longitub.ToString() : string.Empty;
                 int idexHora = 0;
@@ -438,7 +438,7 @@ namespace AppCircular.BusinessLogic.Services
                 {
                     var idCategoria = $"Categoria[{indexCat}].catg_Id";
                     if (!form.ContainsKey(idCategoria)) break;
-                    int id = form.TryGetValue(idCategoria, out var catg_Id) ? int.TryParse(catg_Id, out int idC) ? idC : 0 : 0;
+                    Guid id = form.TryGetValue(idCategoria, out var catg_Id) ? Guid.TryParse(catg_Id, out Guid idC) ? idC : Guid.Empty : Guid.Empty;
                     categorias.Add(new CategoriaItemModel { catg_Id = id });
                     indexCat++;
                 }
@@ -449,7 +449,7 @@ namespace AppCircular.BusinessLogic.Services
                     var idTipoTelefono = $"Telefono[{indexTel}].idTipoTelefono";
                     var Nutelefono = $"Telefono[{indexTel}].Telefono";
                     if (!form.ContainsKey(idTipoTelefono) || !form.ContainsKey(Nutelefono)) break;
-                    int id = form.TryGetValue(idTipoTelefono, out var idTipo) ? int.TryParse(idTipo, out int idT) ? idT : 0 : 0;
+                    Guid id = form.TryGetValue(idTipoTelefono, out var idTipo) ? Guid.TryParse(idTipo, out Guid idT) ? idT : Guid.Empty : Guid.Empty;
                     string numero = form.TryGetValue(Nutelefono, out var NumeTele) ? NumeTele.ToString() : string.Empty;
 
                     telefono.Add(new TelefonoViewModel { idTipoTelefono = id, Telefono = numero });
@@ -494,13 +494,13 @@ namespace AppCircular.BusinessLogic.Services
             return new Convertidor<TelefonoViewModel>().mape(repositorio);
         }
 
-        public async Task<ServiceResult> ActualizarTelefonoUsuario(int id, TelefonoModel model)
+        public async Task<ServiceResult> ActualizarTelefonoUsuario(Guid id, TelefonoModel model)
         {
             var listado = await _telefonoRepository.UpdateAsync(id, model);
             return new Convertidor<TelefonoViewModel>().mape(listado);
         }
 
-        public async Task<ServiceResult> UsuarioVarificado(int id)
+        public async Task<ServiceResult> UsuarioVarificado(Guid id)
         {
             var verificado = await _usuarioRepository.UsuarioVarificado(id);
             return new Convertidor<bool>().mape(verificado);

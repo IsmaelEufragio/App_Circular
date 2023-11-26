@@ -3,11 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTipoImagen
+namespace AppCircular.Entities.Entities
 {
-    public int tipImg_Id { get; set; }
+    public partial class tbTipoImagen
+    {
+        public tbTipoImagen()
+        {
+            tbCatalogoImagen = new HashSet<tbCatalogoImagen>();
+        }
 
-    public string tipImg_Descripcion { get; set; }
+        public Guid tipImg_Id { get; set; }
+        public string tipImg_Descripcion { get; set; }
+
+        public virtual ICollection<tbCatalogoImagen> tbCatalogoImagen { get; set; }
+    }
 }

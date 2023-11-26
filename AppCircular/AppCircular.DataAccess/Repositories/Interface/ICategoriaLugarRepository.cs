@@ -14,6 +14,6 @@ namespace AppCircular.DataAccess.Repositories.Interface
     {
         public Task<ServiceResult> ListAsync();
         public Task<ServiceResult> InsertAsync(T item);
-        public Task<ServiceResult> UpdateAsync(int Id, CategoriaLugarModel item);
+        public Task<ServiceResult> UpdateAsync(Guid Id, CategoriaLugarModel item);
     }
 }

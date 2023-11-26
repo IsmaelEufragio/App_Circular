@@ -72,14 +72,14 @@ namespace AppCircular.DataAccess.Repositories
             }
         }
 
-        public async Task<ServiceResult> UpdateAsync(int Id, PaisModel item)
+        public async Task<ServiceResult> UpdateAsync(Guid Id, PaisModel item)
         {
             try
             {
                 using var db = new AppCircularContext();
                 ServiceResult relt = new ServiceResult();
                 var pais = await db.tbPais.SingleOrDefaultAsync(a => a.pais_Id == Id);
-                if (Id > 0 && pais != null)
+                if (Id != Guid.Empty && pais != null)
                 {
                     pais.pais_Nombre = item.Nombre;
                     pais.pais_Abrebiatura = item.Abrebiatura;

@@ -42,7 +42,7 @@ namespace AppCircular.Controllers
         [HttpPut]
         [Authorize]
         [Route("UpdateSubdivicionLugar/{Id}")]
-        public async Task<IActionResult> ActulizarSubdivicionLugar(int Id, SubdivicionLugarModel model)
+        public async Task<IActionResult> ActulizarSubdivicionLugar(Guid Id, SubdivicionLugarModel model)
         {
             var resul = new ServiceResult();
             if (model != null)

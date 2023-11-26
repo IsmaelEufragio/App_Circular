@@ -3,11 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbTipoIdentificacion
+namespace AppCircular.Entities.Entities
 {
-    public int tipIde_Id { get; set; }
+    public partial class tbTipoIdentificacion
+    {
+        public tbTipoIdentificacion()
+        {
+            tbUsuarios = new HashSet<tbUsuarios>();
+        }
 
-    public string tipIde_Descripcion { get; set; }
+        public Guid tipIde_Id { get; set; }
+        public string tipIde_Descripcion { get; set; }
+
+        public virtual ICollection<tbUsuarios> tbUsuarios { get; set; }
+    }
 }

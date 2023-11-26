@@ -3,13 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCircular.Entities.Entities;
-
-public partial class tbCategoriaSubdivicion
+namespace AppCircular.Entities.Entities
 {
-    public int catSub_Id { get; set; }
+    public partial class tbCategoriaSubdivicion
+    {
+        public tbCategoriaSubdivicion()
+        {
+            tbSubdivicionLugar = new HashSet<tbSubdivicionLugar>();
+        }
 
-    public string catSub_Nombre { get; set; }
+        public Guid catSub_Id { get; set; }
+        public string catSub_Nombre { get; set; }
 
-    public virtual ICollection<tbSubdivicionLugar> tbSubdivicionLugar { get; set; } = new List<tbSubdivicionLugar>();
+        public virtual ICollection<tbSubdivicionLugar> tbSubdivicionLugar { get; set; }
+    }
 }
