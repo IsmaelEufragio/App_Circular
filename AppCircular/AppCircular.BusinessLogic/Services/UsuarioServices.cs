@@ -256,7 +256,7 @@ namespace AppCircular.BusinessLogic.Services
                         if (model.Categoria.Count > 0)
                         {
                             DataTable categoriaData = new DataTable();
-                            categoriaData.Columns.Add("aria_Id", typeof(int));
+                            categoriaData.Columns.Add("aria_Id", typeof(Guid));
 
                             var cateoriaRep = await _categoriaRepository.ListAsync();
                             if (cateoriaRep.Success)
@@ -278,7 +278,7 @@ namespace AppCircular.BusinessLogic.Services
                         if (model.Telefono.Count > 0)
                         {
                             DataTable telefonoData = new DataTable();
-                            telefonoData.Columns.Add("tipTel_Id", typeof(int));
+                            telefonoData.Columns.Add("tipTel_Id", typeof(Guid));
                             telefonoData.Columns.Add("tipTel_Descripcion", typeof(string));
                             foreach (var item in model.Telefono)
                             {

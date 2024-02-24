@@ -88,7 +88,7 @@ namespace AppCircular.DataAccess.Repositories
                         messageParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(messageParameter);
 
-                        SqlParameter idUsuarioParameter = new SqlParameter("@IdUsuario", SqlDbType.Int);
+                        SqlParameter idUsuarioParameter = new SqlParameter("@IdUsuario", SqlDbType.UniqueIdentifier);
                         idUsuarioParameter.Direction = ParameterDirection.Output;
                         command.Parameters.Add(idUsuarioParameter);
                         // Ejecuta el procedimiento almacenado
