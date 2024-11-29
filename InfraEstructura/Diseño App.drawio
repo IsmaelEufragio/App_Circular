@@ -1,0 +1,71 @@
+<mxfile host="app.diagrams.net" modified="2023-12-10T23:39:33.789Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0" etag="PZrJ6-QQS40s-Oukuvi6" version="22.1.7" type="device">
+  <diagram name="Página-1" id="BrS814rBEuWaHLLg5mTT">
+    <mxGraphModel dx="832" dy="481" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="GaymdPqiJADcpPsXNfy4-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="GaymdPqiJADcpPsXNfy4-2" target="GaymdPqiJADcpPsXNfy4-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="190" />
+              <mxPoint x="180" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-2" value="Movil&lt;br&gt;flutter" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="10" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="GaymdPqiJADcpPsXNfy4-3" target="GaymdPqiJADcpPsXNfy4-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="270" />
+              <mxPoint x="180" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-3" value="Web&lt;br&gt;flutter" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="10" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="GaymdPqiJADcpPsXNfy4-4" target="GaymdPqiJADcpPsXNfy4-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="GaymdPqiJADcpPsXNfy4-4" target="GaymdPqiJADcpPsXNfy4-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-4" value="Api&amp;nbsp;&lt;br&gt;gateway&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="280" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-9" value="Movil&lt;br&gt;backend C#" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="540" y="121" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="GaymdPqiJADcpPsXNfy4-12" value="Web&lt;br&gt;backend C#" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="540" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-1" value="GraphQL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="196" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-2" value="GRPC" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="408" y="200" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-3" value="Servicio&lt;br&gt;Usuario C#" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-4" value="Servicio&lt;br&gt;GO" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="205" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-5" value="Servicio&lt;br&gt;GO" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="346" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-6" value="SQL Sever" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="70" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-7" value="Mongo DB" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="205" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0Kfu3daw9iUcjEiS-Ktn-8" value="SQL Server" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="346" width="60" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
