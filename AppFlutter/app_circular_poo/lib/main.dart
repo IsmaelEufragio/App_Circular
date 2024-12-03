@@ -15,13 +15,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ScannerScreen(),
+      home: const ScannerScreen(),
     );
   }
 }
 
-
 class ScannerScreen extends StatefulWidget {
+  const ScannerScreen({super.key});
+
   @override
   _ScannerScreenState createState() => _ScannerScreenState();
 }
@@ -33,7 +34,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
   void _getScanResult() {
     setState(() {
       // Actualiza el estado con el último resultado de escaneo
-      _scanResult = _scannerService.lastScanResult ?? "No se ha escaneado nada aún";
+      _scanResult =
+          _scannerService.lastScanResult ?? "No se ha escaneado nada aún";
     });
   }
 
@@ -41,7 +43,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scanner Service'),
+        title: const Text('Scanner Service'),
       ),
       body: Center(
         child: Column(
@@ -49,25 +51,24 @@ class _ScannerScreenState extends State<ScannerScreen> {
           children: [
             Text(
               _scanResult,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _getScanResult, // Llama al método cuando se presiona el botón
-              child: Text('Obtener resultado de escaneo'),
-            ),
-            ElevatedButton(
-              onPressed: ()async {
-                _scannerService.triggerScan();
-              }, 
-              child: const Text('Inicial Escaneo')
+              onPressed:
+                  _getScanResult, // Llama al método cuando se presiona el botón
+              child: const Text('Obtener resultado de escaneo'),
             ),
             ElevatedButton(
-              onPressed: ()async {
-                _scannerService.getPantallaLCD(1);
-              }, 
-              child: const Text('Invernar la pantalla')
-            ),
+                onPressed: () async {
+                  _scannerService.triggerScan();
+                },
+                child: const Text('Inicial Escaneo')),
+            ElevatedButton(
+                onPressed: () async {
+                  _scannerService.getPantallaLCD(1);
+                },
+                child: const Text('Invernar la pantalla')),
           ],
         ),
       ),
@@ -78,7 +79,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
 class ScannerService {
   static const platform = MethodChannel('com.example.device/infrared');
   String? _lastScanResult;
-
 
   ScannerService() {
     platform.setMethodCallHandler(_handleScanResult);
@@ -114,7 +114,8 @@ class ScannerService {
 
   Future<Map<String, dynamic>?> getPantallaLCD(int stadoLCD) async {
     try {
-      final result = await platform.invokeMethod('configLcd', {'parametro': stadoLCD});
+      final result =
+          await platform.invokeMethod('configLcd', {'parametro': stadoLCD});
       print(result);
       // Cast explícito al tipo esperado
       return Map<String, dynamic>.from(result as Map);
