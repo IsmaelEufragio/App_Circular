@@ -1,0 +1,1 @@
+enum Preference { darkMode }
