@@ -971,3 +971,25 @@ BEGIN
         INNER JOIN inserted AS i ON u.usInf_Id = i.usInf_Id
     END
 END;
+
+GO
+CREATE LOGIN ApiCircularNet
+WITH PASSWORD = 'aws20056·654&&2ss',
+    CHECK_EXPIRATION = OFF,
+    CHECK_POLICY = OFF;
+GO
+
+USE AppECO
+CREATE USER ApiCircularNetBD
+FOR LOGIN ApiCircularNet;
+
+GO
+-- Permitir que el usuario lea datos
+EXEC sp_addrolemember 'db_datareader', 'ApiCircularNetBD';
+GO
+-- Permitir que el usuario escriba datos
+EXEC sp_addrolemember 'db_datawriter', 'ApiCircularNetBD';
+GO
+-- Asignar más roles si es necesario
+EXEC sp_addrolemember 'db_ddladmin', 'ApiCircularNetBD';
+
