@@ -634,7 +634,7 @@ INSERT INTO [Genl].[tbConfiguracion] VALUES ('67468F30-E755-461C-8759-9F6168296A
 GO
 
 /*Sección #50*/
-CREATE TYPE dbo.tbHorarioTableType AS TABLE
+CREATE TYPE Genl.tbHorarioTableType AS TABLE
 (
 	hor_DiaNumero INT,
     hor_HoraInicio TINYINT,
@@ -646,25 +646,25 @@ CREATE TYPE dbo.tbHorarioTableType AS TABLE
 GO
 
 /*Sección #51*/
-CREATE TYPE dbo.tbCategoriaItemType AS TABLE(
+CREATE TYPE Genl.tbCategoriaItemType AS TABLE(
 	catg_Id UNIQUEIDENTIFIER
 );
 GO
 
 /*Sección #38*/
-CREATE TYPE dbo.tbUsuarioTelefonoType AS TABLE(
+CREATE TYPE Genl.tbUsuarioTelefonoType AS TABLE(
 	tipTel_Id UNIQUEIDENTIFIER,
 	tipTel_Descripcion NVARCHAR(100)
 );
 GO
 /*Sección #38*/
-CREATE TYPE dbo.tbCatalogoImagen AS TABLE(
+CREATE TYPE Genl.tbCatalogoImagen AS TABLE(
 	catg_Id UNIQUEIDENTIFIER,
 	catImg_Ruta NVARCHAR(2000)
 );
 GO
 
-CREATE PROCEDURE [dbo].[sp_CrearUsuario]
+CREATE PROCEDURE [Genl].[sp_CrearUsuario]
 	@tipUs_Id UNIQUEIDENTIFIER,
 	@Nombre NVARCHAR(300),
 	@RutaLogo NVARCHAR(2000),
@@ -867,7 +867,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [dbo].[sp_Login]
+CREATE PROCEDURE [Genl].[sp_Login]
 	@Correo NVARCHAR(100),
 	--Paramatros de salida
 	@Success BIT OUTPUT,
@@ -901,7 +901,7 @@ BEGIN
 		BEGIN
 		--Falta validar que si el usuario creo otra cuanta con el mismo correo.  
 			SET @Success = 0;
-			SET @Message = 'Parece que existen dos usuarios unicos con el mismi correo';
+			SET @Message = 'Parece que existen dos usuarios unicos con el mismo correo';
 			RETURN;
 		END
 		IF @TotalInfUsuariosUnico = 0
@@ -993,3 +993,13 @@ GO
 -- Asignar más roles si es necesario
 EXEC sp_addrolemember 'db_ddladmin', 'ApiCircularNetBD';
 
+GRANT EXECUTE ON SCHEMA::Genl TO ApiCircularNetBD;
+
+/*
+GO
+GRANT EXECUTE ON TYPE::Genl.tbHorarioTableType TO ApiCircularNetBD;
+GO
+GRANT EXECUTE ON TYPE::Genl.tbCategoriaItemType TO ApiCircularNetBD;
+GO
+GRANT EXECUTE ON TYPE::Genl.tbUsuarioTelefonoType TO ApiCircularNetBD;
+*/

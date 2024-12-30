@@ -52,7 +52,7 @@ namespace AppCircular.DataAccess.Repositories
                 {
                     await connection.OpenAsync();
 
-                    using (SqlCommand command = new SqlCommand("dbo.sp_CrearUsuario", connection))
+                    using (SqlCommand command = new SqlCommand("Genl.sp_CrearUsuario", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.CommandTimeout = 0;
@@ -131,7 +131,7 @@ namespace AppCircular.DataAccess.Repositories
                 using (SqlConnection connection = new SqlConnection(AppCircularContext.ConnectionString))
                 {
                     await connection.OpenAsync();
-                    using (SqlCommand command = new SqlCommand("dbo.sp_Login", connection))
+                    using (SqlCommand command = new SqlCommand("Genl.sp_Login", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.CommandTimeout = 0;
