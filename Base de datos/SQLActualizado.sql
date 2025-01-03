@@ -240,6 +240,15 @@ INSERT INTO [Genl].[tbCategoria] VALUES ('5B997BC8-ED7B-4FB3-AA57-7B2EBF71B83E',
 GO
 
 /*Sección #17*/
+CREATE TABLE [Genl].tbSubCategoria(
+	[subCat_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
+	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	[catg_Nombre]					NVARCHAR(500)		NOT NULL,
+	CONSTRAINT  PK_Genl_tbSubCategoria_subCat_Id		PRIMARY KEY(subCat_Id),
+	CONSTRAINT  FK_Genl_tbSubCategoria_tbCategoria_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCategoria(catg_Id),
+)
+
+/*Sección #18*/
 CREATE TABLE [Genl].tbCategoriaItem(
 	[catgItem_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
@@ -250,7 +259,7 @@ CREATE TABLE [Genl].tbCategoriaItem(
 )  
 GO
 
-/*Sección #18*/
+/*Sección #19*/
 CREATE TABLE [Genl].tbHorario( 
 	[hor_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[hor_DiaNumero]					INT					NOT NULL,
@@ -264,7 +273,7 @@ CREATE TABLE [Genl].tbHorario(
 )  
 GO
 
-/*Sección #19*/
+/*Sección #20*/
 CREATE TABLE [Genl].tbTipoCatalogo(
 	[tipCatg_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[tipCatg_Descripcion]				NVARCHAR(300)	NOT NULL,
@@ -284,7 +293,7 @@ INSERT INTO [Genl].[tbTipoCatalogo] VALUES ('68101492-50ED-4B3E-B0EB-E29A20552BB
 INSERT INTO [Genl].[tbTipoCatalogo] VALUES ('7793B005-F565-4411-A9A3-CAD02B3502DC','Alquila')
 GO
 
-/*Sección #20*/
+/*Sección #21*/
 CREATE TABLE [Genl].tbCatalogoPorUsuario(
 	[catUsua_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[tipCatg_Id]						UNIQUEIDENTIFIER	NOT NULL,
@@ -295,7 +304,7 @@ CREATE TABLE [Genl].tbCatalogoPorUsuario(
 ) 
 GO
 
-/*Sección #21*/
+/*Sección #22*/
 CREATE TABLE [Genl].tbFiltroCategoriaTipo(
 	[fiCg_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
@@ -306,14 +315,14 @@ CREATE TABLE [Genl].tbFiltroCategoriaTipo(
 )
 GO
 
-/*Sección #22*/
+/*Sección #23*/
 CREATE TABLE [Genl].tbTipoTransaccion(
     [tipTran_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
     [tipTran_Nombre]				NVARCHAR(300)		NOT NULL DEFAULT '',
     CONSTRAINT  PK_Genl_tbTipoTransaccion_tipTran_Id	PRIMARY KEY(tipTran_Id),
 )
 
-/*Sección #23*/
+/*Sección #24*/
 CREATE TABLE [Genl].tbTransaccion(
     [tran_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
     [tipTran_Id]				UNIQUEIDENTIFIER	NOT NULL,
@@ -321,7 +330,69 @@ CREATE TABLE [Genl].tbTransaccion(
     CONSTRAINT  FK_Genl_tbTransaccion_tbTipoTransaccion_tipCatg_Id	FOREIGN KEY(tipTran_Id) REFERENCES Genl.tbTipoTransaccion(tipTran_Id),
 )
 
-/*Sección #24*/
+/*Sección #25*/
+CREATE TABLE [Genl].tbTipoImagen(
+    [tipImg_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [tipImg_Descripcion]		NVARCHAR(300)		NOT NULL DEFAULT '',
+    CONSTRAINT  PK_Genl_tbTipoImagen_tipImg_Id	PRIMARY KEY(tipImg_Id),
+)
+
+/*Sección #26*/
+CREATE TABLE [Genl].tbCatalogoImagen(
+    [catImg_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+	[tipImg_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    [catImg_Ruta]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    CONSTRAINT  PK_Genl_tbCatalogoImagen_catImg_Id	PRIMARY KEY(catImg_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTransaccion_tran_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+)
+
+/*Sección #27*/
+CREATE TABLE [Genl].tbCategoriaReaccion(
+    [catReac_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [catReac_Descripcion]			NVARCHAR(300)		NOT NULL DEFAULT '',
+    CONSTRAINT  PK_Genl_tbCategoriaReaccion_catReac_Id	PRIMARY KEY(catReac_Id),
+)
+
+/*Sección #28*/
+CREATE TABLE [Genl].tbTipoReaccion(
+    [tipReac_Id]				UNIQUEIDENTIFIER DEFAULT NEWID(),
+	[catReac_Id]				UNIQUEIDENTIFIER	NOT NULL,
+    [tipReac_Descripcion]		NVARCHAR(300)		NOT NULL DEFAULT '',
+    CONSTRAINT  PK_Genl_tbTipoReaccion_tipReac_Id				PRIMARY KEY(tipReac_Id),
+	CONSTRAINT  FK_Genl_tbTipoReaccion_tbTransaccion_catReac_Id	FOREIGN KEY(catReac_Id) REFERENCES Genl.tbCategoriaReaccion(catReac_Id),
+)
+
+/*Sección #29*/
+CREATE TABLE [Genl].tbReaccion(
+    [reac_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+	[tipReac_Id]				UNIQUEIDENTIFIER	NOT NULL,
+    [tran_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbReaccion_reac_Id						PRIMARY KEY(reac_Id),
+	CONSTRAINT  FK_Genl_tbReaccion_tbTipoReaccion_tipReac_Id	FOREIGN KEY(tipReac_Id) REFERENCES Genl.tbTipoReaccion(tipReac_Id),
+	CONSTRAINT  FK_Genl_tbReaccion_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbReaccion_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)
+
+/*Sección #30*/
+CREATE TABLE [Genl].tbTipoImagen(
+    [tipImg_Id]				UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [tipImg_Descripcion]		NVARCHAR(300)		NOT NULL DEFAULT '',
+    CONSTRAINT  PK_Genl_tbTipoImagen_tipImg_Id	PRIMARY KEY(tipImg_Id)
+)
+
+/*Sección #31*/
+CREATE TABLE [Genl].tbCatalogoImagen(
+    [catgImg_Id]				UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [catgImg_Ruta]				NVARCHAR(2000)		NOT NULL,
+	[tipImg_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbCatalogoImagen_catgImg_Id					PRIMARY KEY(catgImg_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+)
+
+/*Sección #32*/
 CREATE TABLE [Genl].tbProducto(
     [prod_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
     [prod_Nombre]				NVARCHAR(300)		NOT NULL DEFAULT '',
@@ -335,39 +406,54 @@ CREATE TABLE [Genl].tbProducto(
     [prod_FechaVencimiento]     DATE                    NULL,
     CONSTRAINT  PK_Genl_tbProducto_prod_Id				    PRIMARY KEY(prod_Id),
     CONSTRAINT  FK_Genl_tbProducto_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
-    CONSTRAINT  FK_Genl_tbProducto_tbTransaccion_tipCatg_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),   
+    CONSTRAINT  FK_Genl_tbProducto_tbTransaccion_tipCatg_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
 )
 
-/*Sección #25*/
+/*Sección #33*/
 CREATE TABLE [Genl].tbPrecioProducto(
     [prodPrec_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+	[prod_Id]                       UNIQUEIDENTIFIER	NOT NULL,
     [prodPrec_Precio]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
     [prodPrec_CantidadInicio]		INT		            NOT NULL DEFAULT 0,
     [prodPrec_CantidadFin]		    INT		                NULL,
     [prodPrec_FechaInicioDescuento] DATETIME                NULL,
     [prodPrec_FechaFinDescuento]    DATETIME                NULL,
     [prodPrec_Descuento]			DECIMAL(18,2)		    NULL,
-    [prod_Id]                       UNIQUEIDENTIFIER	NOT NULL,
     CONSTRAINT  PK_Genl_tbPrecioProducto_prodPrec_Id				PRIMARY KEY(prodPrec_Id),
     CONSTRAINT  FK_Genl_tbPrecioProducto_tbProducto_prod_Id	        FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
 )
 
-/*Sección #25*/
-CREATE TABLE [Genl].tbPrecioProducto(
-    [prodPrec_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
-    [prodPrec_Precio]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
-    [prodPrec_CantidadInicio]		INT		            NOT NULL DEFAULT 0,
-    [prodPrec_CantidadFin]		    INT		                NULL,
-    [prodPrec_FechaInicioDescuento] DATETIME                NULL,
-    [prodPrec_FechaFinDescuento]    DATETIME                NULL,
-    [prodPrec_Descuento]			DECIMAL(18,2)		    NULL,
-    [prod_Id]                       UNIQUEIDENTIFIER	NOT NULL,
-    CONSTRAINT  PK_Genl_tbPrecioProducto_prodPrec_Id				PRIMARY KEY(prodPrec_Id),
-    CONSTRAINT  FK_Genl_tbPrecioProducto_tbProducto_prod_Id	        FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+/*Sección #34*/
+CREATE TABLE [Genl].tbCategoriaPorProducto(
+    [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [prod_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [principal]						BIT 				NOT NULL DEFAULT 0,
+    CONSTRAINT  PK_Genl_tbCategoriaPorProducto_subCat_Id_prod_Id		PRIMARY KEY(subCat_Id,prod_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorProducto_tbProducto_prod_Id	    FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorProducto_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
 )
 
+/*Sección #35*/
+CREATE TABLE [Genl].tbOrigen(
+    [origen_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [origen_Descripcion]		NVARCHAR(1000)		NOT NULL DEFAULT '',
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+	[prod_Id]					UNIQUEIDENTIFIER 	NOT NULL,
+    CONSTRAINT  PK_Genl_tbOrigen_origen_Id					PRIMARY KEY(origen_Id),
+	CONSTRAINT  FK_Genl_tbOrigen_tbTransaccion_tipCatg_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbOrigen_tbProducto_prod_Id	    	FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+)
 
-/*Sección #22*/
+/*Sección #36*/
+CREATE TABLE [Genl].tbContribuyente(
+	[origen_Id]                  UNIQUEIDENTIFIER	NOT NULL,
+	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbContribuyente_origen_Id_user_Id			PRIMARY KEY(user_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbOrigen_origen_Id			FOREIGN KEY(origen_Id) REFERENCES Genl.tbTransaccion(origen_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbProducto_prod_Id	    	FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+)
+
+/*Sección #35*/
 CREATE TABLE [Genl].tbCatalogo(
 	[catg_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[catg_Nombre]					NVARCHAR(300)		NOT NULL DEFAULT '',
