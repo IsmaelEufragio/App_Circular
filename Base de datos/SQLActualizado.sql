@@ -446,12 +446,193 @@ CREATE TABLE [Genl].tbOrigen(
 
 /*Sección #36*/
 CREATE TABLE [Genl].tbContribuyente(
-	[origen_Id]                  UNIQUEIDENTIFIER	NOT NULL,
+	[origen_Id]                 UNIQUEIDENTIFIER	NOT NULL,
 	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
-    CONSTRAINT  PK_Genl_tbContribuyente_origen_Id_user_Id			PRIMARY KEY(user_Id),
+    CONSTRAINT  PK_Genl_tbContribuyente_origen_Id_user_Id			PRIMARY KEY(origen_Id,user_Id),
 	CONSTRAINT  FK_Genl_tbContribuyente_tbOrigen_origen_Id			FOREIGN KEY(origen_Id) REFERENCES Genl.tbTransaccion(origen_Id),
 	CONSTRAINT  FK_Genl_tbContribuyente_tbProducto_prod_Id	    	FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
 )
+
+/*Sección #37*/
+CREATE TABLE [Genl].tbServicio(
+    [serv_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [serv_Nombre]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    [serv_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
+    [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    [serv_Codigo]               INT                 NOT NULL,
+    [tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+    [serv_FechaCreacion]        DATE                NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT  PK_Genl_tbServicio_serv_Id				    PRIMARY KEY(serv_Id),
+    CONSTRAINT  FK_Genl_tbServicio_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbServicio_tbTransaccion_tipCatg_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
+)
+
+
+/*Sección #38*/
+CREATE TABLE [Genl].tbCategoriaPorServicio(
+    [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [serv_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [principal]						BIT 				NOT NULL DEFAULT 0,
+    CONSTRAINT  PK_Genl_tbCategoriaPorServicio_subCat_Id_serv_Id		PRIMARY KEY(subCat_Id,serv_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorServicio_tbServicio_serv_Id	    FOREIGN KEY(serv_Id) REFERENCES Genl.tbServicio(serv_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorServicio_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
+)
+
+/*Sección #39*/
+CREATE TABLE [Genl].tbDesperdicio(
+    [desp_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [desp_Nombre]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    [desp_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
+    [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    [desp_Codigo]               INT                 NOT NULL,
+    [tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+    [serv_FechaCreacion]        DATE                NOT NULL DEFAULT GETDATE(),
+	[desp_Gratis]				BIT 				NOT NULL DEFAULT 1,
+    CONSTRAINT  PK_Genl_tbDesperdicio_desp_Id				    PRIMARY KEY(desp_Id),
+    CONSTRAINT  FK_Genl_tbDesperdicio_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbDesperdicio_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
+)
+
+/*Sección #40*/
+CREATE TABLE [Genl].tbDesperdicioServicio(
+	[desp_Id]               UNIQUEIDENTIFIER	NOT NULL,
+	[serv_Id]				UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbDesperdicioServicio_desp_Id_serv_Id			PRIMARY KEY(desp_Id,serv_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicioServicio_tbDesperdicio_desp_Id		FOREIGN KEY(desp_Id) REFERENCES Genl.tbDesperdicio(desp_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicioServicio_tbServicio_serv_Id	    FOREIGN KEY(serv_Id) REFERENCES Genl.tbServicio(serv_Id),
+)
+
+/*Sección #41*/
+CREATE TABLE [Genl].tbDesperdicioProducto(
+	[desp_Id]               UNIQUEIDENTIFIER	NOT NULL,
+	[prod_Id]				UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbDesperdicioProducto_desp_Id_prod_Id			PRIMARY KEY(desp_Id,prod_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicioProducto_tbDesperdicio_desp_Id		FOREIGN KEY(desp_Id) REFERENCES Genl.tbDesperdicio(desp_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicioProducto_tbProducto_prod_Id	    FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+)
+
+
+/*Sección #42*/
+CREATE TABLE [Genl].tbNecesitan(
+	[necs_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [necs_Nombre]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    [necs_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
+    [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbNecesitan_necs_Id					PRIMARY KEY(necs_Id),
+	CONSTRAINT  FK_Genl_tbNecesitan_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbNecesitan_tbTransaccion_tran_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
+)
+
+/*Sección #43*/
+CREATE TABLE [Genl].tbCategoriaPorNecesidad(
+    [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [necs_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [principal]						BIT 				NOT NULL DEFAULT 0,
+    CONSTRAINT  PK_Genl_tbCategoriaPorNecesidad_subCat_Id_necs_Id		PRIMARY KEY(subCat_Id,necs_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorNecesidad_tbNecesitan_necs_Id	    FOREIGN KEY(necs_Id) REFERENCES Genl.tbNecesitan(necs_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorNecesidad_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
+)
+
+/*Sección #44*/
+CREATE TABLE [Genl].tbHabilidad(
+	[hab_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [hab_Titulo]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    [hab_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
+	[hab_Precio]				DECIMAL(18,2)			NULL DEFAULT 0,
+    [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbHabilidad_hab_Id					PRIMARY KEY(hab_Id),
+	CONSTRAINT  FK_Genl_tbHabilidad_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbHabilidad_tbTransaccion_tran_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
+)
+
+/*Sección #45*/
+CREATE TABLE [Genl].tbCategoriaPorHabilidad(
+    [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [hab_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [principal]						BIT 				NOT NULL DEFAULT 0,
+    CONSTRAINT  PK_Genl_tbCategoriaPorHabilidad_subCat_Id_hab_Id		PRIMARY KEY(subCat_Id,hab_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorHabilidad_tbHabilidad_hab_Id	    FOREIGN KEY(hab_Id) REFERENCES Genl.tbHabilidad(hab_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorHabilidad_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
+)
+
+/*Sección #44*/
+CREATE TABLE [Genl].tbEstadoEvento(
+	[EstEven_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [EstEven_Descripcion]			NVARCHAR(300)		NOT NULL DEFAULT '',
+    CONSTRAINT  PK_Genl_tbEstadoEvento_hab_Id			PRIMARY KEY(EstEven_Id),
+)
+
+/*Sección #45*/
+CREATE TABLE [Genl].tbEvento(
+	[even_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [even_Titulo]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    [even_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
+	[even_FechaInicio]			DATETIME			NOT NULL,
+	[even_FechaInicio]			DATETIME			NULL,
+    [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+	[EstEven_Id]                UNIQUEIDENTIFIER	NOT NULL,
+	[ubc_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbEvento_even_Id					PRIMARY KEY(even_Id),
+	CONSTRAINT  FK_Genl_tbEvento_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbEvento_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
+	CONSTRAINT  FK_Genl_tbEvento_tbEstadoEvento_EstEven_Id	FOREIGN KEY(EstEven_Id) REFERENCES Genl.tbEstadoEvento(EstEven_Id), 
+	CONSTRAINT  FK_Genl_tbEvento_tbUbicacion_ubc_Id			FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id),
+)
+
+/*Sección #46*/
+CREATE TABLE [Genl].tbPosiblePor(
+    [user_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [even_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    CONSTRAINT  PK_Genl_tbPosiblePor_user_Id_even_Id		PRIMARY KEY(user_Id,even_Id),
+    CONSTRAINT  FK_Genl_tbPosiblePor_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+	CONSTRAINT  FK_Genl_tbPosiblePor_tbEvento_even_Id		FOREIGN KEY(even_Id) REFERENCES Genl.tbEvento(even_Id)
+)
+
+/*Sección #45*/
+CREATE TABLE [Genl].tbVentaRelampago(
+	[ventR_Id]					UNIQUEIDENTIFIER DEFAULT NEWID(),
+    [ventR_Titulo]				NVARCHAR(300)		NOT NULL DEFAULT '',
+    [ventR_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
+	[ventR_Fecha]				DATETIME			NOT NULL,
+	[ventR_Precio]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[ventR_Agotado]				BIT 				NOT NULL DEFAULT 0,
+    [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+	[ubc_Id]					UNIQUEIDENTIFIER	NOT NULL,
+    CONSTRAINT  PK_Genl_tbVentaRelampago_ventR_Id					PRIMARY KEY(ventR_Id),
+	CONSTRAINT  FK_Genl_tbVentaRelampago_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbVentaRelampago_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id), 
+	CONSTRAINT  FK_Genl_tbVentaRelampago_tbUbicacion_ubc_Id			FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id),
+)
+
+
+/*Sección #46*/
+CREATE TABLE [Genl].tbCategoriaPorVenta(
+    [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [ventR_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [principal]						BIT 				NOT NULL DEFAULT 0,
+    CONSTRAINT  PK_Genl_tbCategoriaPorVenta_subCat_Id_ventR_Id			PRIMARY KEY(subCat_Id,ventR_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorVenta_tbVentaRelampago_ventR_Id	FOREIGN KEY(ventR_Id) REFERENCES Genl.tbVentaRelampago(ventR_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorVenta_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
+)
+
+/*Sección #47*/
+CREATE TABLE [Genl].tbTiempo(
+    [tiemp_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [tiemp_Descripcion]				NVARCHAR(300) 		NOT NULL,
+    CONSTRAINT  PK_Genl_tbTiempo_tiemp_Id			PRIMARY KEY(tiemp_Id)
+)
+
+/*Sección #48*/
+CREATE TABLE [Genl].tbEstadoAlquiler(
+    [estAlq_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [estAlq_Descripcion]				NVARCHAR(300) 		NOT NULL,
+    CONSTRAINT  PK_Genl_tbEstadoAlquiler_estAlq_Id			PRIMARY KEY(estAlq_Id)
+)
+
 
 /*Sección #35*/
 CREATE TABLE [Genl].tbCatalogo(
