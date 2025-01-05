@@ -336,6 +336,9 @@ CREATE TABLE [Genl].tbTipoImagen(
     [tipImg_Descripcion]		NVARCHAR(300)		NOT NULL DEFAULT '',
     CONSTRAINT  PK_Genl_tbTipoImagen_tipImg_Id	PRIMARY KEY(tipImg_Id),
 )
+GO
+INSERT INTO [Genl].[tbTipoImagen] VALUES ('514EAF59-038F-498B-BF7C-636E749906C4','Portada')
+
 
 /*Sección #26*/
 CREATE TABLE [Genl].tbCatalogoImagen(
@@ -345,6 +348,7 @@ CREATE TABLE [Genl].tbCatalogoImagen(
     [catImg_Ruta]				NVARCHAR(300)		NOT NULL DEFAULT '',
     CONSTRAINT  PK_Genl_tbCatalogoImagen_catImg_Id	PRIMARY KEY(catImg_Id),
 	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTransaccion_tran_Id	FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTipoImagen_tipImg_Id	FOREIGN KEY(tipImg_Id) REFERENCES Genl.tbTipoImagen(tipImg_Id),
 )
 
 /*Sección #27*/
@@ -373,23 +377,6 @@ CREATE TABLE [Genl].tbReaccion(
 	CONSTRAINT  FK_Genl_tbReaccion_tbTipoReaccion_tipReac_Id	FOREIGN KEY(tipReac_Id) REFERENCES Genl.tbTipoReaccion(tipReac_Id),
 	CONSTRAINT  FK_Genl_tbReaccion_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
 	CONSTRAINT  FK_Genl_tbReaccion_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
-)
-
-/*Sección #30*/
-CREATE TABLE [Genl].tbTipoImagen(
-    [tipImg_Id]				UNIQUEIDENTIFIER DEFAULT NEWID(),
-    [tipImg_Descripcion]		NVARCHAR(300)		NOT NULL DEFAULT '',
-    CONSTRAINT  PK_Genl_tbTipoImagen_tipImg_Id	PRIMARY KEY(tipImg_Id)
-)
-
-/*Sección #31*/
-CREATE TABLE [Genl].tbCatalogoImagen(
-    [catgImg_Id]				UNIQUEIDENTIFIER DEFAULT NEWID(),
-    [catgImg_Ruta]				NVARCHAR(2000)		NOT NULL,
-	[tipImg_Id]					UNIQUEIDENTIFIER	NOT NULL,
-	[tran_Id]					UNIQUEIDENTIFIER	NOT NULL,
-    CONSTRAINT  PK_Genl_tbCatalogoImagen_catgImg_Id					PRIMARY KEY(catgImg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
 )
 
 /*Sección #32*/
@@ -629,72 +616,36 @@ CREATE TABLE [Genl].tbTiempo(
 /*Sección #48*/
 CREATE TABLE [Genl].tbEstadoAlquiler(
     [estAlq_Id]						UNIQUEIDENTIFIER 	NOT NULL,
-    [estAlq_Descripcion]				NVARCHAR(300) 		NOT NULL,
+    [estAlq_Descripcion]			NVARCHAR(300) 		NOT NULL,
     CONSTRAINT  PK_Genl_tbEstadoAlquiler_estAlq_Id			PRIMARY KEY(estAlq_Id)
 )
 
-
-/*Sección #35*/
-CREATE TABLE [Genl].tbCatalogo(
-	[catg_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[catg_Nombre]					NVARCHAR(300)		NOT NULL DEFAULT '',
-	[catg_Descripcion]				NVARCHAR(1000)		NOT NULL DEFAULT '',
-	[catg_JsonReaccion]				NVARCHAR(MAX)		NOT NULL DEFAULT '',
-	[catg_IdDesperdicio]			UNIQUEIDENTIFIER	    NULL,
-	[categ_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[user_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[catg_EdadActaParaVer]			TINYINT				NOT NULL DEFAULT 0,
-	[catg_FechaCreacion]			DATETIME 			NOT NULL ,
-	[catag_EsGratis]				BIT 				NOT NULL DEFAULT 0,
-	CONSTRAINT  PK_Genl_tbCatalogo_catg_Id				PRIMARY KEY(catg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogo_tbCatalogo_catg_IdDesperdicio	FOREIGN KEY(catg_IdDesperdicio) REFERENCES Genl.tbCatalogo(catg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogo_tbCategoria_catg_Id	FOREIGN KEY(categ_Id) REFERENCES Genl.tbCategoria(catg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogo_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
-)  
-GO
-
-/*Sección #23*/
-CREATE TABLE [Genl].tbTipoImagen(
-	[tipImg_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[tipImg_Descripcion]			NVARCHAR(200)	NOT NULL,
-	CONSTRAINT  PK_Genl_tbTipoImagen_tipImg_Id	PRIMARY KEY(tipImg_Id)
+/*Sección #49*/
+CREATE TABLE [Genl].tbAlquilar(
+    [alq_Id]					UNIQUEIDENTIFIER 	NOT NULL,
+	[alq_Titulo]				NVARCHAR(100) 		NOT NULL,
+    [alq_Descripcion]			NVARCHAR(300) 		NOT NULL,
+	[alq_Precio]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+	[tiemp_Id]					UNIQUEIDENTIFIER 	NOT NULL,
+	[estAlq_Id]					UNIQUEIDENTIFIER 	NOT NULL,
+    CONSTRAINT  PK_Genl_tbAlquilar_alq_Id						PRIMARY KEY(alq_Id),
+	CONSTRAINT  FK_Genl_tbAlquilar_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbAlquilar_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbAlquilar_tbTiempo_tiemp_Id			FOREIGN KEY(tiemp_Id) REFERENCES Genl.tbTiempo(tiemp_Id),
+	CONSTRAINT  FK_Genl_tbAlquilar_tbEstadoAlquiler_estAlq_Id	FOREIGN KEY(estAlq_Id) REFERENCES Genl.tbEstadoAlquiler(estAlq_Id),
 )
-GO
-INSERT INTO [Genl].[tbTipoImagen] VALUES ('514EAF59-038F-498B-BF7C-636E749906C4','Portada')
 
-
-/*Sección #24*/
-CREATE TABLE [Genl].tbCatalogoImagen(
-	[catImg_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[tipImg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[catImg_RutaImagen]				NVARCHAR(2000)		NOT NULL,
-	CONSTRAINT  PK_Genl_tbCatalogoImagen_catImg_Id					PRIMARY KEY(catImg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbCatalogo_catg_Id			FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoImagen_tbTipoImagen_tipImg_Id		FOREIGN KEY(tipImg_Id) REFERENCES Genl.tbTipoImagen(tipImg_Id)
-)  
-GO
-/*Sección #25*/
-CREATE TABLE [Genl].tbTipoReaccion(
-	[tipRea_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[tipRea_Descripcion]			NVARCHAR(200)	NOT NULL,
-	CONSTRAINT  PK_Genl_tbTipoReaccion_tipRea_Id	PRIMARY KEY(tipRea_Id)
+/*Sección #50*/
+CREATE TABLE [Genl].tbCategoriaPorAlquilar(
+    [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [alq_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+    [principal]						BIT 				NOT NULL DEFAULT 0,
+    CONSTRAINT  PK_Genl_tbCategoriaPorVenta_subCat_Id_alq_Id			PRIMARY KEY(subCat_Id,alq_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorVenta_tbAlquilar_alq_Id			FOREIGN KEY(alq_Id) REFERENCES Genl.tbAlquilar(alq_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorVenta_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
 )
-GO
-INSERT INTO [Genl].[tbTipoReaccion] VALUES ('002FDB82-2093-4300-922D-092BE5420B7F','Me Encanta')
-INSERT INTO [Genl].[tbTipoReaccion] VALUES ('1475A29A-01CE-4554-9780-8AC80CE5D227','No me gusta')
-GO
-
-/*Sección #26*/
-CREATE TABLE [Genl].tbCatalogoReaccion(
-	[catRea_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[user_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	CONSTRAINT  PK_Genl_tbCatalogoReaccion_catRea_Id				PRIMARY KEY(catRea_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoReaccion_tbCatalogo_catg_Id		FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoReaccion_tbUsuarios_user_Id		FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
-)  
-GO
 
 /*Sección #27*/
 CREATE TABLE [Genl].tbTipoPago(
@@ -709,59 +660,6 @@ INSERT INTO [Genl].[tbTipoPago] VALUES ('58CEC735-1E7A-4AA9-BCD6-4E1459CFA665','
 INSERT INTO [Genl].[tbTipoPago] VALUES ('3EAB41B6-9025-450B-A4F7-EAEA337543F2','por Dia')
 INSERT INTO [Genl].[tbTipoPago] VALUES ('5D384CD3-4791-43DF-88F0-D9FACD805A38','por Quincena')
 INSERT INTO [Genl].[tbTipoPago] VALUES ('696C51EA-F453-4112-BB15-B3959232AAA8','Por Año')
-GO
-
-/*Sección #29*/
-CREATE TABLE [Genl].tbPrecio(
-	[prec_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[prec_Inicial]					DECIMAL(18,2)		NOT NULL DEFAULT 0,
-	[prec_Final]					DECIMAL(18,2)		NOT NULL DEFAULT 0,
-	[prec_Cantidad]					INT					NOT NULL DEFAULT 0,
-	[tipPag_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	CONSTRAINT  PK_Genl_tbPrecio_prec_Id			PRIMARY KEY(prec_Id),
-	CONSTRAINT  FK_Genl_tbPrecio_tbTipoPago_user_Id	FOREIGN KEY(tipPag_Id) REFERENCES Genl.tbTipoPago(tipPag_Id),
-	CONSTRAINT  FK_Genl_tbPrecio_tbCatalogo_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
-)  
-GO
-
-/*Sección #30*/
-CREATE TABLE [Genl].tbContribuyente(
-	[contr_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[contr_Descripcion]				NVARCHAR(300)		NOT NULL DEFAULT '',
-	[contr_Varificado]				BIT					NOT NULL DEFAULT 0,
-	[user_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	CONSTRAINT  PK_Genl_tbContribuyente_contr_Id			PRIMARY KEY(contr_Id),
-	CONSTRAINT  FK_Genl_tbContribuyente_tbCatalogo_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
-	CONSTRAINT  FK_Genl_tbContribuyente_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
-)  
-GO
-
-/*Sección #31*/
-CREATE TABLE [Genl].tbCatalogoOng(
-	[ctgOng_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[ctgOng_Fecha]					DATETIME			NULL,
-	[ctgOng_HoraInicio]				TINYINT				NOT NULL DEFAULT 0,
-	[ctgOng_HoraFin]				TINYINT				NOT NULL DEFAULT 0,
-	[ubc_Id]						UNIQUEIDENTIFIER	NULL,
-	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	CONSTRAINT  PK_Genl_tbCatalogoOng_ctgOng_Id				PRIMARY KEY(ctgOng_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoOng_tbCatalogo_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
-	CONSTRAINT  FK_Genl_tbCatalogoOng_tbUbicacion_ubc_Id	FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id)
-)  
-GO
-
-/*Sección #32*/
-CREATE TABLE [Genl].tbGuardar(
-	[guard_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
-	[user_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[guard_RutaPublicacion]			NVARCHAR(2000)		NOT NULL DEFAULT '',
-	[catg_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	CONSTRAINT  PK_Genl_tbGuardar_guard_Id				PRIMARY KEY(guard_Id),
-	CONSTRAINT  FK_Genl_tbGuardar_tbCatalogo_catg_Id	FOREIGN KEY(catg_Id) REFERENCES Genl.tbCatalogo(catg_Id),
-	CONSTRAINT  FK_Genl_tbGuardar_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
-)  
 GO
 
 --Vacante---------
