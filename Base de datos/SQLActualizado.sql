@@ -436,8 +436,8 @@ CREATE TABLE [Genl].tbContribuyente(
 	[origen_Id]                 UNIQUEIDENTIFIER	NOT NULL,
 	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
     CONSTRAINT  PK_Genl_tbContribuyente_origen_Id_user_Id			PRIMARY KEY(origen_Id,user_Id),
-	CONSTRAINT  FK_Genl_tbContribuyente_tbOrigen_origen_Id			FOREIGN KEY(origen_Id) REFERENCES Genl.tbTransaccion(origen_Id),
-	CONSTRAINT  FK_Genl_tbContribuyente_tbProducto_prod_Id	    	FOREIGN KEY(prod_Id) REFERENCES Genl.tbProducto(prod_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbOrigen_origen_Id			FOREIGN KEY(origen_Id) REFERENCES Genl.tbOrigen(origen_Id),
+	CONSTRAINT  FK_Genl_tbContribuyente_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
 )
 
 /*Sección #37*/
@@ -557,7 +557,7 @@ CREATE TABLE [Genl].tbEvento(
     [even_Titulo]				NVARCHAR(300)		NOT NULL DEFAULT '',
     [even_Descripcion]			NVARCHAR(1000)		NOT NULL DEFAULT '',
 	[even_FechaInicio]			DATETIME			NOT NULL,
-	[even_FechaInicio]			DATETIME			NULL,
+	[even_FechaFin]				DATETIME			NULL,
     [user_Id]					UNIQUEIDENTIFIER	NOT NULL,
 	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
 	[EstEven_Id]                UNIQUEIDENTIFIER	NOT NULL,
@@ -614,14 +614,14 @@ CREATE TABLE [Genl].tbTiempo(
 )
 
 /*Sección #48*/
-CREATE TABLE [Genl].tbEstadoAlquiler(
+CREATE TABLE [Genl].tbEstadoAlquilerServicios(
     [estAlq_Id]						UNIQUEIDENTIFIER 	NOT NULL,
     [estAlq_Descripcion]			NVARCHAR(300) 		NOT NULL,
-    CONSTRAINT  PK_Genl_tbEstadoAlquiler_estAlq_Id			PRIMARY KEY(estAlq_Id)
+    CONSTRAINT  PK_Genl_tbEstadoAlquilerServicios_estAlq_Id			PRIMARY KEY(estAlq_Id)
 )
 
 /*Sección #49*/
-CREATE TABLE [Genl].tbAlquilar(
+CREATE TABLE [Genl].tbAlquilerServicios(
     [alq_Id]					UNIQUEIDENTIFIER 	NOT NULL,
 	[alq_Titulo]				NVARCHAR(100) 		NOT NULL,
     [alq_Descripcion]			NVARCHAR(300) 		NOT NULL,
@@ -630,11 +630,11 @@ CREATE TABLE [Genl].tbAlquilar(
 	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
 	[tiemp_Id]					UNIQUEIDENTIFIER 	NOT NULL,
 	[estAlq_Id]					UNIQUEIDENTIFIER 	NOT NULL,
-    CONSTRAINT  PK_Genl_tbAlquilar_alq_Id						PRIMARY KEY(alq_Id),
-	CONSTRAINT  FK_Genl_tbAlquilar_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
-    CONSTRAINT  FK_Genl_tbAlquilar_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
-	CONSTRAINT  FK_Genl_tbAlquilar_tbTiempo_tiemp_Id			FOREIGN KEY(tiemp_Id) REFERENCES Genl.tbTiempo(tiemp_Id),
-	CONSTRAINT  FK_Genl_tbAlquilar_tbEstadoAlquiler_estAlq_Id	FOREIGN KEY(estAlq_Id) REFERENCES Genl.tbEstadoAlquiler(estAlq_Id),
+    CONSTRAINT  PK_Genl_tbAlquilerServicios_alq_Id						PRIMARY KEY(alq_Id),
+	CONSTRAINT  FK_Genl_tbAlquilerServicios_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbAlquilerServicios_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbAlquilerServicios_tbTiempo_tiemp_Id			FOREIGN KEY(tiemp_Id) REFERENCES Genl.tbTiempo(tiemp_Id),
+	CONSTRAINT  FK_Genl_tbAlquilerServicios_tbEstadoAlquilerServicios_estAlq_Id	FOREIGN KEY(estAlq_Id) REFERENCES Genl.tbEstadoAlquilerServicios(estAlq_Id),
 )
 
 /*Sección #50*/
@@ -642,27 +642,173 @@ CREATE TABLE [Genl].tbCategoriaPorAlquilar(
     [subCat_Id]						UNIQUEIDENTIFIER 	NOT NULL,
     [alq_Id]						UNIQUEIDENTIFIER 	NOT NULL,
     [principal]						BIT 				NOT NULL DEFAULT 0,
-    CONSTRAINT  PK_Genl_tbCategoriaPorVenta_subCat_Id_alq_Id			PRIMARY KEY(subCat_Id,alq_Id),
-    CONSTRAINT  FK_Genl_tbCategoriaPorVenta_tbAlquilar_alq_Id			FOREIGN KEY(alq_Id) REFERENCES Genl.tbAlquilar(alq_Id),
-	CONSTRAINT  FK_Genl_tbCategoriaPorVenta_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
+    CONSTRAINT  PK_Genl_tbCategoriaPorAlquilar_subCat_Id_alq_Id			PRIMARY KEY(subCat_Id,alq_Id),
+    CONSTRAINT  FK_Genl_tbCategoriaPorAlquilar_tbAlquilerServicios_alq_Id			FOREIGN KEY(alq_Id) REFERENCES Genl.tbAlquilerServicios(alq_Id),
+	CONSTRAINT  FK_Genl_tbCategoriaPorAlquilar_tbSubCategoria_subCat_Id	FOREIGN KEY(subCat_Id) REFERENCES Genl.tbSubCategoria(subCat_Id)
 )
 
-/*Sección #27*/
+
+---------Pedidos---------
+/*Sección #51*/
+CREATE TABLE [Genl].tbPedido(
+	[ped_Id]					UNIQUEIDENTIFIER 	NOT NULL DEFAULT NEWID(),
+	[ped_NombreCliente]			NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[ped_FechaCreacio]			DATETIME			NOT NULL DEFAULT GETDATE(),
+	[ped_Fecha]					DATETIME			NOT NULL DEFAULT GETDATE(),
+	[ped_SubTotal]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[ped_Descuento]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[ped_Impuesto]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[ped_PorcentajeImpuestos]	DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[ped_TotalPagar]			DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[ped_RTN]					NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+	[user_IdCliente]			UNIQUEIDENTIFIER	NULL,
+	CONSTRAINT  PK_Genl_tbPedido_ped_Id						PRIMARY KEY(ped_Id),
+	CONSTRAINT  FK_Genl_tbPedido_tbUsuarios_user_Id	    	FOREIGN KEY(user_Id) 		REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbPedido_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) 		REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbPedido_tbUsuarios_user_IdCliente	FOREIGN KEY(user_IdCliente) REFERENCES Genl.tbUsuarios(user_Id),
+)
+
+/*Sección #52*/
+CREATE TABLE [Genl].tbPedidoDetalle(
+	[pedDet_Id]						UNIQUEIDENTIFIER 	NOT NULL DEFAULT NEWID(),
+	[ped_Id]                   		UNIQUEIDENTIFIER	NOT NULL,
+	[pedDet_Codigo]					NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[pedDet_Cantidad]				INT					NOT NULL DEFAULT 1,
+	[pedDet_Descripcion]			NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[pedDet_PrecioUnitario]			DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[pedDet_Descuento]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[pedDet_Impuesto]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[pedDet_PorcentajeImpuestos]	DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[pedDet_TotalPagar]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[tipCatg_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbPedidoDetalle_pedDet_Id					PRIMARY KEY(pedDet_Id),
+	CONSTRAINT  FK_Genl_tbPedidoDetalle_tbPedido_ped_Id	    		FOREIGN KEY(ped_Id) REFERENCES Genl.tbPedido(ped_Id),
+    CONSTRAINT  FK_Genl_tbPedidoDetalle_tbTipoCatalogo_tipCatg_Id	FOREIGN KEY(tipCatg_Id) REFERENCES Genl.tbTipoCatalogo(tipCatg_Id),
+)
+
+/*Sección #53*/
+CREATE TABLE [Genl].tbProductoPorPedido(
+	[pedDet_Id]						UNIQUEIDENTIFIER,
+	[prod_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbProductoPorPedido_pedDet_Id				PRIMARY KEY(pedDet_Id),
+	CONSTRAINT  FK_Genl_tbPedidoDetalle_tbPedidoDetalle_pedDet_Id	FOREIGN KEY(pedDet_Id) 	REFERENCES Genl.tbPedidoDetalle(pedDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbPedidoDetalle_tbProducto_prod_Id	    	FOREIGN KEY(prod_Id) 	REFERENCES Genl.tbProducto(prod_Id),
+)
+
+/*Sección #54*/
+CREATE TABLE [Genl].tbServicioPorPedido(
+	[pedDet_Id]						UNIQUEIDENTIFIER,
+	[serv_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbServicioPorPedido_pedDet_Id					PRIMARY KEY(pedDet_Id),
+	CONSTRAINT  FK_Genl_tbServicioPorPedido_tbPedidoDetalle_pedDet_Id	FOREIGN KEY(pedDet_Id) 	REFERENCES Genl.tbPedidoDetalle(pedDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbServicioPorPedido_tbServicio_serv_Id	    	FOREIGN KEY(serv_Id) 	REFERENCES Genl.tbServicio(serv_Id),
+)
+GO
+--------------FACTURA---------------
+
+
+/*Sección #55*/
 CREATE TABLE [Genl].tbTipoPago(
 	[tipPag_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[tipPag_Descripcion]			NVARCHAR(200)	NOT NULL,
 	CONSTRAINT  PK_Genl_tbTipoPago_tipPag_Id	PRIMARY KEY(tipPag_Id)
 )
 GO
-INSERT INTO [Genl].[tbTipoPago] VALUES ('FEE6AE63-1C1E-43FD-AA4B-2AF2B0F081EB','Precio Fijo')
-INSERT INTO [Genl].[tbTipoPago] VALUES ('6FF34116-62F0-45D8-B550-593C145BA037','Negociable')
-INSERT INTO [Genl].[tbTipoPago] VALUES ('58CEC735-1E7A-4AA9-BCD6-4E1459CFA665','Por Mes')
-INSERT INTO [Genl].[tbTipoPago] VALUES ('3EAB41B6-9025-450B-A4F7-EAEA337543F2','por Dia')
-INSERT INTO [Genl].[tbTipoPago] VALUES ('5D384CD3-4791-43DF-88F0-D9FACD805A38','por Quincena')
-INSERT INTO [Genl].[tbTipoPago] VALUES ('696C51EA-F453-4112-BB15-B3959232AAA8','Por Año')
+INSERT INTO [Genl].[tbTipoPago] VALUES ('FEE6AE63-1C1E-43FD-AA4B-2AF2B0F081EB','Efectivo')
+INSERT INTO [Genl].[tbTipoPago] VALUES ('6FF34116-62F0-45D8-B550-593C145BA037','Tarjeta')
+INSERT INTO [Genl].[tbTipoPago] VALUES ('58CEC735-1E7A-4AA9-BCD6-4E1459CFA665','Transferencia')
 GO
 
---Vacante---------
+/*Sección #56*/
+CREATE TABLE [Genl].tbFactura(
+	[fac_Id]					UNIQUEIDENTIFIER 	DEFAULT NEWID(),
+	[fac_NombreCliente]			NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[fac_FacturaCAI]			NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[fac_FechaCreacio]			DATETIME			NOT NULL DEFAULT GETDATE(),
+	[fac_Fecha]					DATETIME			NOT NULL DEFAULT GETDATE(),
+	[fac_SubTotal]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[fac_Descuento]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[fac_Impuesto]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[fac_PorcentajeImpuestos]	DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[fac_TotalPagar]			DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[fac_RTN]					NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[user_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[tran_Id]                   UNIQUEIDENTIFIER	NOT NULL,
+	[user_IdCliente]			UNIQUEIDENTIFIER	NULL,
+	[tipPag_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbFactura_fac_Id					PRIMARY KEY(fac_Id),
+	CONSTRAINT  FK_Genl_tbFactura_tbUsuarios_user_Id	    FOREIGN KEY(user_Id) 		REFERENCES Genl.tbUsuarios(user_Id),
+    CONSTRAINT  FK_Genl_tbFactura_tbTransaccion_tran_Id		FOREIGN KEY(tran_Id) 		REFERENCES Genl.tbTransaccion(tran_Id),
+	CONSTRAINT  FK_Genl_tbFactura_tbUsuarios_user_IdCliente	FOREIGN KEY(user_IdCliente) REFERENCES Genl.tbUsuarios(user_Id),
+	CONSTRAINT  FK_Genl_tbFactura_tbTipoPago_tipPag_Id		FOREIGN KEY(tipPag_Id) 		REFERENCES Genl.tbTipoPago(tipPag_Id),
+)
+
+/*Sección #57*/
+CREATE TABLE [Genl].tbFacturaDetalle(
+	[facDet_Id]						UNIQUEIDENTIFIER 	NOT NULL,
+	[fac_Id]                   		UNIQUEIDENTIFIER	NOT NULL,
+	[tipCatg_Id]					UNIQUEIDENTIFIER	NOT NULL,
+	[facDet_Codigo]					NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[facDet_Cantidad]				INT					NOT NULL DEFAULT 1,
+	[facDet_Descripcion]			NVARCHAR(350) 		NOT NULL DEFAULT (''),
+	[facDet_PrecioUnitario]			DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[facDet_Descuento]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[facDet_Impuesto]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[facDet_PorcentajeImpuestos]	DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	[facDet_TotalPagar]				DECIMAL(18,2)		NOT NULL DEFAULT 0,
+	CONSTRAINT  PK_Genl_tbFacturaDetalle_facDet_Id					PRIMARY KEY(facDet_Id),
+	CONSTRAINT  FK_Genl_tbFacturaDetalle_tbFactura_fac_Id	    	FOREIGN KEY(fac_Id) REFERENCES Genl.tbFactura(fac_Id),
+    CONSTRAINT  FK_Genl_tbFacturaDetalle_tbTipoCatalogo_tipCatg_Id	FOREIGN KEY(tipCatg_Id) REFERENCES Genl.tbTipoCatalogo(tipCatg_Id),
+)
+
+/*Sección #58*/
+CREATE TABLE [Genl].tbProductoPorFactura(
+	[facDet_Id]						UNIQUEIDENTIFIER,
+	[prod_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbProductoPorFactura_facDet_Id					PRIMARY KEY(facDet_Id),
+	CONSTRAINT  FK_Genl_tbProductoPorFactura_tbFacturaDetalle_facDet_Id	FOREIGN KEY(facDet_Id) 	REFERENCES Genl.tbFacturaDetalle(facDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbProductoPorFactura_tbProducto_prod_Id	    	FOREIGN KEY(prod_Id) 	REFERENCES Genl.tbProducto(prod_Id),
+)
+
+/*Sección #59*/
+CREATE TABLE [Genl].tbServicioPorFactura(
+	[facDet_Id]						UNIQUEIDENTIFIER,
+	[serv_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbServicioPorFactura_facDet_Id					PRIMARY KEY(facDet_Id),
+	CONSTRAINT  FK_Genl_tbServicioPorFactura_tbFacturaDetalle_facDet_Id	FOREIGN KEY(facDet_Id) 	REFERENCES Genl.tbFacturaDetalle(facDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbServicioPorFactura_tbServicio_serv_Id	    	FOREIGN KEY(serv_Id) 	REFERENCES Genl.tbServicio(serv_Id),
+)
+
+/*Sección #60*/
+CREATE TABLE [Genl].tbDesperdicioPorFactura(
+	[facDet_Id]						UNIQUEIDENTIFIER,
+	[desp_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbDesperdicioPorFactura_facDet_Id					PRIMARY KEY(facDet_Id),
+	CONSTRAINT  FK_Genl_tbDesperdicioPorFactura_tbFacturaDetalle_facDet_Id	FOREIGN KEY(facDet_Id) 	REFERENCES Genl.tbFacturaDetalle(facDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbDesperdicioPorFactura_tbDesperdicio_desp_Id	    FOREIGN KEY(desp_Id) 	REFERENCES Genl.tbDesperdicio(desp_Id),
+)
+
+/*Sección #61*/
+CREATE TABLE [Genl].tbHabilidadPorFactura(
+	[facDet_Id]						UNIQUEIDENTIFIER,
+	[hab_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbHabilidadPorFactura_facDet_Id						PRIMARY KEY(facDet_Id),
+	CONSTRAINT  FK_Genl_tbHabilidadPorFactura_tbFacturaDetalle_facDet_Id	FOREIGN KEY(facDet_Id) 	REFERENCES Genl.tbFacturaDetalle(facDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbHabilidadPorFactura_tbHabilidad_hab_Id	    	FOREIGN KEY(hab_Id) 	REFERENCES Genl.tbHabilidad(hab_Id),
+)
+
+/*Sección #62*/
+CREATE TABLE [Genl].tbAlquilerServiciosPorFactura(
+	[facDet_Id]						UNIQUEIDENTIFIER,
+	[alq_Id]						UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT  PK_Genl_tbAlquilerServiciosPorFactura_facDet_Id						PRIMARY KEY(facDet_Id),
+	CONSTRAINT  FK_Genl_tbAlquilerServiciosPorFactura_tbFacturaDetalle_facDet_Id	FOREIGN KEY(facDet_Id) 	REFERENCES Genl.tbFacturaDetalle(facDet_Id) ON DELETE CASCADE,
+	CONSTRAINT  FK_Genl_tbAlquilerServiciosPorFactura_tbAlquilerServicios_alq_Id	FOREIGN KEY(alq_Id) 	REFERENCES Genl.tbAlquilerServicios(alq_Id),
+)
+
+-----------Vacante---------
 
 /*Sección #33*/
 CREATE TABLE [Genl].tbAriaPuesto(
