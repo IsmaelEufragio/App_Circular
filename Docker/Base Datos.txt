@@ -1,0 +1,8 @@
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=`,LhOS|!GK|4[$$('*" -p 1433:1433 --name sqlAppCircular -d mcr.microsoft.com/mssql/server:2022-latest
+
+
+localhost,1433
+
+SA
+
+`,LhOS|!GK|4[$$('*
