@@ -1,0 +1,364 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "AppECOContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Entities",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "ApiCircularGraphQL.Domain",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 2,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[Genl].[tbAlquilerServicios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbAlquilerServiciosPorFactura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbAriaPuesto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCargo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCatalogoImagen]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCatalogoPorUsuario]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaLugar]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaPorAlquilar]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaPorHabilidad]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaPorNecesidad]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaPorProducto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaPorServicio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaPorVenta]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaReaccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbCategoriaSubdivicion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbConfiguracion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbContribuyente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbDepartamento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbDesperdicio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbDesperdicioPorFactura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbDesperdicioProducto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbDesperdicioServicio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbEducacion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbEstadoAlquilerServicios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbEstadoEvento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbEvento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbExperiencia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbFactura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbFacturaDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbFiltroCategoriaTipo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbGenero]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbHabilidad]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbHabilidadPorFactura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbHorario]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbIdioma]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbIdiomaItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbInfoUnicaUsuario]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbLogroEventoCategoria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbLugar]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbMunicipio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbNecesitan]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbNivelEducativo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbOrigen]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbOtrosConocimientos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbPais]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbPedido]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbPedidoDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbPosiblePor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbPrecioProducto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbProceso]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbProducto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbProductoPorFactura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbProductoPorPedido]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbPuesto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbReaccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbServicio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbServicioPorFactura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbServicioPorPedido]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbSubCategoria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbSubdivicionLugar]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTiempo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoCatalogo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoContrato]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoIdentificacion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoImagen]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoPago]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoReaccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoTelefono]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoTransaccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTipoUsuario]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTitulo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTituloProc]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbTransaccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbUbicacion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbUsuarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbUsuarioTelefono]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbVacante]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbVentaRelampago]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false
+}
