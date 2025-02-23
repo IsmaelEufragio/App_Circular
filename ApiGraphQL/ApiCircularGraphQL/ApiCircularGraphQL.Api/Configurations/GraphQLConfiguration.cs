@@ -1,5 +1,6 @@
 ﻿using ApiCircularGraphQL.Api.GraphQL;
 using ApiCircularGraphQL.Api.GraphQL.Queries;
+using ApiCircularGraphQL.Infrastructure.Persistence;
 using HotChocolate.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,11 @@ namespace ApiCircularGraphQL.Api.Configurations
                 .AddGraphQLServer()
                 .AddQueryType()
                 .AddTypeExtension<PaisQuery>()
-                ;
+                .AddProjections()
+                .AddFiltering()
+                .AddSorting()
+                .RegisterDbContextFactory<AppECOContext>()
+            ;
 
             return services;
         }

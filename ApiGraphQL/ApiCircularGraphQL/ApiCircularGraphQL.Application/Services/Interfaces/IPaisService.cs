@@ -1,4 +1,5 @@
-﻿using ApiCircularGraphQL.Domain.Entities;
+﻿using ApiCircularGraphQL.Application.DTOs;
+using ApiCircularGraphQL.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace ApiCircularGraphQL.Application.Services.Interfaces
 {
     public interface IPaisService
     {
-        Task<IEnumerable<tbPais>> GetPaisAsync();
-        Task<tbPais> GetPaisByIdAsync(Guid id);
+        Task<IEnumerable<PaisDTO>> GetPaisAsync();
+        Task<PaisDTO> GetPaisByIdAsync(Guid id);
+        IEnumerable<PaisDTO> GetPaisData();
     }
 }

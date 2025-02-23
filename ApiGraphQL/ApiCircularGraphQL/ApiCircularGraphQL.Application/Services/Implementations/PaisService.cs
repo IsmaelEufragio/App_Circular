@@ -1,7 +1,9 @@
-﻿using ApiCircularGraphQL.Application.Services.Interfaces;
+﻿using ApiCircularGraphQL.Application.DTOs;
+using ApiCircularGraphQL.Application.Services.Interfaces;
 using ApiCircularGraphQL.Domain.Entities;
 using ApiCircularGraphQL.Domain.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +18,29 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
         {
             _paisRepository = paisRepository;
         }
-        public async Task<IEnumerable<tbPais>> GetPaisAsync()
+        public async Task<IEnumerable<PaisDTO>> GetPaisAsync()
         {
-            return await _paisRepository.GetAllAsync();
+            var paises = await _paisRepository.GetAllAsync();
+            return paises.Select(pais => new PaisDTO { 
+                Id = pais.pais_Id,
+                Name = pais.pais_Nombre
+            }).ToList();
         }
 
-        public async Task<tbPais?> GetPaisByIdAsync(Guid id)
+        public async Task<PaisDTO?> GetPaisByIdAsync(Guid id)
         {
-            return await _paisRepository.GetByIdAsync(id);
+            var pais = await _paisRepository.GetByIdAsync(id);
+            
+            return pais == null ? null : new PaisDTO { Id = id, Name =pais.pais_Nombre };
+        }
+
+        public IEnumerable<PaisDTO> GetPaisData()
+        {
+            return _paisRepository.GetAllQuery().Select(a=> new PaisDTO
+            {
+                Id = a.pais_Id,
+                Name = a.pais_Nombre
+            }).AsQueryable();
         }
     }
 }

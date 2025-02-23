@@ -11,14 +11,17 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
 {
     public class PaisRepository : Repository<tbPais>, IPaisRepository
     {
-        private readonly AppECOContext _context;
-        public PaisRepository( AppECOContext context): base(context)
+        private readonly IDbContextFactory<AppECOContext> _contextFactory;
+
+        public PaisRepository(IDbContextFactory<AppECOContext> contextFactory) : base(contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
+
         public async Task<List<tbPais>> GetPedidosByPaisIdAsync(Guid idPais)
         {
-            return await _context.tbPais.Where(a=> a.pais_Id == idPais).ToListAsync();
+            using var context = _contextFactory.CreateDbContext(); // ✅ Crear contexto correctamente
+            return await context.tbPais.Where(a => a.pais_Id == idPais).ToListAsync();
         }
     }
 }

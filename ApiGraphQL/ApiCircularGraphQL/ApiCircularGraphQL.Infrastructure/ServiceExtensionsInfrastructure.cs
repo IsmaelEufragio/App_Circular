@@ -11,10 +11,12 @@ namespace ApiCircularGraphQL.Infrastructure
     {
         public static IServiceCollection AddServiceExtensionsInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<AppECOContext>(options =>
+            
+            services.AddPooledDbContextFactory<AppECOContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IPaisRepository, PaisRepository>();
+
 
             return services;
         }

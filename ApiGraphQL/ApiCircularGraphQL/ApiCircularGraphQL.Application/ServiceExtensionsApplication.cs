@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ApiCircularGraphQL.Application.Services.Implementations;
+using ApiCircularGraphQL.Application.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiCircularGraphQL.Application
 {
@@ -6,6 +8,7 @@ namespace ApiCircularGraphQL.Application
     {
         public static IServiceCollection AddServiceExtensionsApplication(this IServiceCollection services)
         {
+            services.AddScoped<IPaisService, PaisService>();
             return services;
         }
     }

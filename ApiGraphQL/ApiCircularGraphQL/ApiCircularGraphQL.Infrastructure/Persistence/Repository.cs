@@ -10,45 +10,54 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly AppECOContext _context;
-        private readonly DbSet<T> _dbSet;
+        private readonly IDbContextFactory<AppECOContext> _contextFactory;
 
-        public Repository(AppECOContext context)
+        public Repository(IDbContextFactory<AppECOContext> contextFactory)
         {
-            _context = context;
-            _dbSet = context.Set<T>();
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Set<T>().ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Set<T>().FindAsync(id);
         }
 
         public async Task AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            using var context = _contextFactory.CreateDbContext();
+            await context.Set<T>().AddAsync(entity);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(T entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            using var context = _contextFactory.CreateDbContext();
+            context.Set<T>().Update(entity);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var entity = await GetByIdAsync(id);
+            using var context = _contextFactory.CreateDbContext();
+            var entity = await context.Set<T>().FindAsync(id);
             if (entity != null)
             {
-                _dbSet.Remove(entity);
-                await _context.SaveChangesAsync();
+                context.Set<T>().Remove(entity);
+                await context.SaveChangesAsync();
             }
+        }
+
+        public IQueryable<T> GetAllQuery()
+        {
+            var context = _contextFactory.CreateDbContext();
+            return context.Set<T>();
         }
     }
 }
