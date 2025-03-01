@@ -16,6 +16,7 @@ namespace ApiCircularGraphQL.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IPaisRepository, PaisRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
 
             return services;

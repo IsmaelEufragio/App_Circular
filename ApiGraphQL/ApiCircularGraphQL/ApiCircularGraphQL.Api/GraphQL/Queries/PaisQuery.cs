@@ -8,13 +8,6 @@ namespace ApiCircularGraphQL.Api.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class PaisQuery
     {
-        public string getHolaMundoDesdePais => "Hola mundo XD";
-
-
-        //public async Task<IEnumerable<tbPais>> getPaisAll()
-        //{
-        //    return await _paisService.GetPaisAsync();
-        //}
         [UsePaging(IncludeTotalCount = true, DefaultPageSize = 10)]
         [UseFiltering]
         [UseSorting]

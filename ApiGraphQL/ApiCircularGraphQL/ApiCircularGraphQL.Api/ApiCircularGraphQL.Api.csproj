@@ -10,10 +10,12 @@
   <ItemGroup>
     <PackageReference Include="HotChocolate" Version="15.0.3" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="15.0.3" />
+    <PackageReference Include="HotChocolate.Authorization" Version="15.0.3" />
     <PackageReference Include="HotChocolate.Data" Version="15.0.3" />
     <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.0.3" />
     <PackageReference Include="HotChocolate.Types" Version="15.0.3" />
     <PackageReference Include="HotChocolate.Utilities" Version="15.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
   </ItemGroup>
@@ -24,11 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GraphQL\Mutations\" />
     <Folder Include="GraphQL\Filters\" />
     <Folder Include="GraphQL\Sorters\" />
     <Folder Include="GraphQL\Types\" />
-    <Folder Include="Middlewares\" />
   </ItemGroup>
 
 </Project>
