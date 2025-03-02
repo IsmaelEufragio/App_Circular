@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using ApiCircularGraphQL.Api.Middlewares;
+using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -16,15 +18,18 @@ namespace ApiCircularGraphQL.Api.Configurations
                 options.TokenValidationParameters =
                     new TokenValidationParameters
                     {
-                        ValidIssuer = "https://auth.chillicream.com",
-                        ValidAudience = "https://graphql.chillicream.com",
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings["Issuer"],
+                        ValidAudience = jwtSettings["Audience"],
                         IssuerSigningKey = key
                     };
             });
-
             services.AddAuthorization();
 
+            services.AddSingleton<IAuthorizationHandler, CustomAuthorizationHandler>();
 
             return services;
         }

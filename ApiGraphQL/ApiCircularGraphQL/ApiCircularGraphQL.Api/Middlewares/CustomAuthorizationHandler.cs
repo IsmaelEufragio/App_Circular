@@ -14,29 +14,18 @@ namespace ApiCircularGraphQL.Api.Middlewares
                 // Obtén el encabezado "Authorization"
                 if (httpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
                 {
-                    var token = authHeader.ToString().Replace("Bearer ", ""); // Extrae el token JWT
-                    Console.WriteLine($"Token recibido: {token}"); // Imprime el token en la consola (para depuración)
+                    var token = authHeader.ToString().Replace("Bearer ", ""); // Validar el token menual mente
+                    return new ValueTask<AuthorizeResult>(AuthorizeResult.Allowed);
                 }
                 else
                 {
-                    Console.WriteLine("No se encontró el encabezado Authorization.");
+                    return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAuthenticated);
                 }
             }
             else
             {
-                Console.WriteLine("No se pudo acceder al HttpContext.");
+                return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
             }
-
-            // Lógica personalizada de autorización
-            if (context.ContextData.TryGetValue("User", out var user) && user is ClaimsPrincipal principal)
-            {
-                if (principal.IsInRole("Admin"))
-                {
-                    return new ValueTask<AuthorizeResult>(AuthorizeResult.Allowed);
-                }
-            }
-
-            return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
         }
 
         public ValueTask<AuthorizeResult> AuthorizeAsync(AuthorizationContext context, IReadOnlyList<AuthorizeDirective> directives, CancellationToken cancellationToken = default)
