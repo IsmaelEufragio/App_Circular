@@ -25,7 +25,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
         {
             if (username == "Josue" || password == "123") // ¡Usa hashing en producción!
             {
-                var roles = new[] { "User" }; // Obtén los roles del usuario desde la base de datos
+                var roles = new[] { "Admin" }; // Obtén los roles del usuario desde la base de datos
                 _authLogger.LogAuthenticationAttempt("Josue", true);
                 return JwtHelper.GenerateToken("1", "Josue", roles, _configuration);
             }

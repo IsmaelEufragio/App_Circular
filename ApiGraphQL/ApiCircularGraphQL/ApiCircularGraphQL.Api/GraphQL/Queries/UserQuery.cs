@@ -15,7 +15,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Queries
             return paisService.GetUserData();
         }
 
-        [Authorize]
+        [Authorize(Roles = ["Admin"])]
         public string MessaUser() => "Esto es necesario autenticacion";
     }
 }

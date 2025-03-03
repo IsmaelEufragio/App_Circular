@@ -28,7 +28,6 @@
   <ItemGroup>
     <Folder Include="GraphQL\Filters\" />
     <Folder Include="GraphQL\Sorters\" />
-    <Folder Include="GraphQL\Types\" />
   </ItemGroup>
 
 </Project>

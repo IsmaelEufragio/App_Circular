@@ -1,20 +1,42 @@
 ﻿using HotChocolate.Authorization;
 using HotChocolate.Resolvers;
+using Security.Helpers;
 using System.Security.Claims;
 
 namespace ApiCircularGraphQL.Api.Middlewares
 {
     public class CustomAuthorizationHandler : IAuthorizationHandler
     {
+        private readonly IConfiguration _configuration;
+
+        public CustomAuthorizationHandler(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public ValueTask<AuthorizeResult> AuthorizeAsync(IMiddlewareContext context, AuthorizeDirective directive, CancellationToken cancellationToken = default)
         {
             if (context.ContextData.TryGetValue("HttpContext", out var httpContextObj) && httpContextObj is HttpContext httpContext)
             {
-                // Obtén el encabezado "Authorization"
                 if (httpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
                 {
                     var token = authHeader.ToString().Replace("Bearer ", ""); // Validar el token menual mente
+                    bool isTokenValid = JwtHelper.ValidateToken(token, _configuration);
+                    if (!isTokenValid)
+                    {
+                        return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
+                    }
+                    if (directive.Roles.Count > 0)
+                    {
+                        var userRoles = JwtHelper.GetRolesFromToken(token);
+                        bool hasRequiredRole = directive.Roles.Any(role => userRoles.Contains(role));
+
+                        if (!hasRequiredRole)
+                        {
+                            return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
+                        }
+                    }
+
                     return new ValueTask<AuthorizeResult>(AuthorizeResult.Allowed);
                 }
                 else
