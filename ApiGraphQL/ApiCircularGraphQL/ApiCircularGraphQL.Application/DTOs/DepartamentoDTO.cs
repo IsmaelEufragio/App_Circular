@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ApiCircularGraphQL.Application.DTOs
 {
-    public class PaisDTO
+    public class DepartamentoDTO
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public List<DepartamentoDTO> Departamentos { get; set; }
+        public string Nombre { get; set; }
     }
 }

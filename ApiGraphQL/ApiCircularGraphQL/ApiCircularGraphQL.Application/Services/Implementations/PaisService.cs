@@ -39,7 +39,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             return _paisRepository.GetAllQuery().Select(a=> new PaisDTO
             {
                 Id = a.pais_Id,
-                Name = a.pais_Nombre
+                Name = a.pais_Nombre,
+                Departamentos = a.tbDepartamento.Select(d=> new DepartamentoDTO { Id = d.dept_Id, Nombre = d.dept_Nombre}).ToList(),
             }).AsQueryable();
         }
     }
