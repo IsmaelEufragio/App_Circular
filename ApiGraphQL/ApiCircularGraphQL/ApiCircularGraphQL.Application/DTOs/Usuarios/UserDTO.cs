@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiCircularGraphQL.Application.DTOs
+namespace ApiCircularGraphQL.Application.DTOs.Usuarios
 {
     public class UserDTO
     {
         public Guid Id { get; set; }
+        public Guid IdUserPrincipal { get; set; }
         public string NombreUsuario { get; set; }
         public string Despcripcion { get; set; }
         public string Correo { get; set; }

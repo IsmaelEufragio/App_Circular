@@ -1,5 +1,4 @@
 using ApiCircularGraphQL.Api.Configurations;
-using ApiCircularGraphQL.Api.GraphQL.Queries;
 using ApiCircularGraphQL.Application;
 using ApiCircularGraphQL.Application.Services.Implementations;
 using ApiCircularGraphQL.Application.Services.Interfaces;
@@ -21,9 +20,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints => endpoints.MapGraphQL());
+//app.UseEndpoints(endpoints => endpoints.MapGraphQL());
 
 //app.MapGraphQL();
 app.UseWebSockets();
-app.Run();
+app.MapGraphQL();
+await app.RunWithGraphQLCommandsAsync(args);
+//app.Run();
 

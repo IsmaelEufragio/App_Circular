@@ -264,12 +264,11 @@ CREATE TABLE [Genl].tbHorario(
 	[hor_Id]						UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[hor_DiaNumero]					INT					NOT NULL,
 	[user_Id]						UNIQUEIDENTIFIER	NOT NULL,
-	[hor_HoraInicio]				TINYINT				NOT NULL,
-	[hor_MinutoInicio]				TINYINT				NOT NULL,
-	[hor_HoraFin]					TINYINT				NOT NULL,
-	[hor_MinutoFin]					TINYINT				NOT NULL,
+	[hor_HoraInicio]				TIME				NOT NULL,
+	[hor_HoraFin]					TIME				NOT NULL,
 	CONSTRAINT  PK_Genl_tbHorario_hor_Id				PRIMARY KEY(hor_Id),
-	CONSTRAINT  FK_Genl_tbHorario_tbUsuarios_User_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id)
+	CONSTRAINT  FK_Genl_tbHorario_tbUsuarios_User_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+	CONSTRAINT CK_Horario_HoraFin_Mayor_Que_Inicio CHECK (hor_HoraFin > hor_HoraInicio)
 )  
 GO
 

@@ -13,13 +13,9 @@ public partial class tbHorario
 
     public Guid user_Id { get; set; }
 
-    public byte hor_HoraInicio { get; set; }
+    public TimeOnly hor_HoraInicio { get; set; }
 
-    public byte hor_MinutoInicio { get; set; }
-
-    public byte hor_HoraFin { get; set; }
-
-    public byte hor_MinutoFin { get; set; }
+    public TimeOnly hor_HoraFin { get; set; }
 
     public virtual tbUsuarios user { get; set; }
 }
