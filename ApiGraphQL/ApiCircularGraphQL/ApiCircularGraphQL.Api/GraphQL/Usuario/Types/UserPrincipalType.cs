@@ -1,46 +1,46 @@
 ﻿using ApiCircularGraphQL.Application.DTOs;
+using ApiCircularGraphQL.Application.DTOs.Usuarios;
 using ApiCircularGraphQL.Application.Services.Interfaces;
+using GreenDonut.Data;
+using HotChocolate.Types.Pagination;
+using Microsoft.Identity.Client;
 using System.Threading.Tasks;
 
 namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
 {
-    public class UserPrincipalType
+    [ObjectType<UserPrincipalDTO>]
+    public static partial class UserPrincipalType
     {
-        public Guid Id { get; set; }
-        public bool UnicoUsuario { get; set; }
-        public string Nombre { get; set; }
-        public string RutaDelLogo { get; set; }
-        public string RutaDeLaPaginaWeb { get; set; }
-        public Guid IdTipoUsuario { get; set; }
-        [GraphQLNonNullType]
-        public  async Task<TipoUserType> TipoUsuario([Service] ITipoUsuarioByIdDataLoader tipoUsuarioByIdDataLoader) {
-            var data = await tipoUsuarioByIdDataLoader.LoadAsync(IdTipoUsuario,CancellationToken.None);
-            if (data is null)
-                throw new GraphQLException($"No se encontró el tipo de usuario con ID {IdTipoUsuario}");
-            
-            return new TipoUserType() { 
-                Descripcion = data.Descripcion
-            };
-        }
-        [GraphQLNonNullType]
-        public async Task<IEnumerable<UserType>> Usuarios([Service] IUsuarioByUserPrincipalIdDataLoader usuarioByUserPrincipalIdDataLoader)
+        /*static partial void Configure(IObjectTypeDescriptor<UserPrincipalDTO> descriptor)
         {
-            var data = await usuarioByUserPrincipalIdDataLoader.LoadAsync(Id, CancellationToken.None);
-            if (data is null)
-                throw new GraphQLException($"No se encontraron Usuarios con Id {Id}");
+            descriptor.Field(a => a.Usuarios)
+                .UsePaging()
+                .UseFiltering()
+                .Cost(2000);
+        }*/
 
-            return data.Select(a => new UserType { 
-                Id = a.Id,
-                NombreUsuario = a.NombreUsuario,
-                Despcripcion = a.Despcripcion,
-                Correo = a.Correo,
-                Identidad = a.Identidad,
-                Envio = a.Envio,
-                Fecebook = a.Fecebook,
-                FechaCreacion = a.FechaCreacion,
-                UsuarioPrincipal = a.UsuarioPrincipal,
-                IdTipoIdentidad = a.IdTipoIdentidad
-            });
+        public static async Task<TipoUsuarioDTO> GetTipoUsuario( //Tiene que ser el mismo Nombre de la Propiedad agregando el Get.
+            [Parent] UserPrincipalDTO usuarioPricipal,
+            ITipoUsuarioByIdDataLoader tipoUsuarioByIdDataLoader,
+            CancellationToken cancellationToken
+        )
+        {
+            var data = await tipoUsuarioByIdDataLoader.LoadAsync(usuarioPricipal.IdTipoUsuario, CancellationToken.None);
+            if (data is null)
+                throw new GraphQLException($"No se encontró el tipo de usuario con ID {usuarioPricipal.IdTipoUsuario}");
+
+            return data;
+        }
+        [UsePaging]
+        [UseFiltering]
+        public static async Task<Connection<UserDTO>> GetUsuarios( //Tiene que ser el mismo Nombre de la Propiedad agregando el Get.
+            [Parent] UserPrincipalDTO usuarioPricipal,
+            IUsuarioPorUsuarioPrincipalDataLoader usuarioPorUsuarioPrincipalDataLoader,
+            PagingArguments pagingArguments,
+            CancellationToken cancellationToken
+        )
+        {
+            return await usuarioPorUsuarioPrincipalDataLoader.With(pagingArguments).LoadAsync(usuarioPricipal.Id, CancellationToken.None).ToConnectionAsync();
         }
     }
 }

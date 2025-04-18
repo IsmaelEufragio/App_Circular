@@ -19,25 +19,18 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
         [UseSorting]
         public static IQueryable<UserDTO> GetUsuarios([Service] IUserService UsuarioService)
         {
-            return UsuarioService.GetUsuarioQuery().OrderBy(a=> a.Id);
+            return UsuarioService.GetUsuarioQuery().OrderBy(a => a.Id);
         }
-        
-        public static async Task<IEnumerable<UserPrincipalType>> GetUserAll(
-            [Service] IUserService UsuarioService
-            //PagingArguments pagingArguments,
-            //ISelection selection
+
+        [UsePaging]
+        [UseFiltering]
+        [UseSorting]
+        public static IQueryable<UserPrincipalDTO> GetUsuariosPrincipalesAll(
+            [Service] IUserService usuarioService
         )
         {
-            var data = await UsuarioService.GetUsuarioAll();
-            return data.Select(a => new UserPrincipalType
-            {
-                Id = a.Id,
-                Nombre = a.Nombre,
-                RutaDelLogo = a.RutaDelLogo,
-                RutaDeLaPaginaWeb = a.RutaDeLaPaginaWeb,
-                UnicoUsuario = a.UnicoUsuario,
-                IdTipoUsuario = a.IdTipoUsuario 
-            });
+            return usuarioService.GetUsuarioPrincipalQuery()
+                .OrderBy(u => u.Id);
         }
     }
 }

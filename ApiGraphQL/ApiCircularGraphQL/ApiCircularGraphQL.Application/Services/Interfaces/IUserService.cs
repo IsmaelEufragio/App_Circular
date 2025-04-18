@@ -18,6 +18,7 @@ namespace ApiCircularGraphQL.Application.Services.Interfaces
         Task<TipoUsuarioDTO> GetTipoUsuarioId(Guid id);
         IEnumerable<UserDTO> GetUserData();
         Task<List<UserPrincipalDTO>> GetUsuarioAll();
+        IQueryable<UserPrincipalDTO> GetUsuarioPrincipalQuery();
         IQueryable<UserDTO> GetUsuarioQuery();
         Task<IEnumerable<UserDTO>> GetUsuariosByPrincipals(IReadOnlyList<Guid> idUsuarioPrincipal);
     }

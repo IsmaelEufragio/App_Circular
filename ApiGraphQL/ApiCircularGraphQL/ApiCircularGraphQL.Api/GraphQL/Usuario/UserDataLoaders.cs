@@ -2,6 +2,7 @@
 using ApiCircularGraphQL.Application.DTOs.Usuarios;
 using ApiCircularGraphQL.Application.Services.Interfaces;
 using GreenDonut.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiCircularGraphQL.Api.GraphQL.Usuario
 {
@@ -47,7 +48,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
                 .ToDictionary(g => g.Key, g => g.First());
         }
 
-        [DataLoader]
+        [DataLoader]//Los Telefonos Por Usuarios
         public static async Task<IReadOnlyDictionary<Guid, TelefonosUsuarioDTO[]>> TelefonosPorUsuariosAsync(
             IReadOnlyList<Guid> ids,
             CancellationToken cancellationToken,
@@ -60,7 +61,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
                 .ToDictionary(g => g.Key, g => g.ToArray());
         }
 
-        [DataLoader]
+        [DataLoader]//Horario por usuario.
         public static async Task<IReadOnlyDictionary<Guid, HorarioDTO[]>> HorarioPorUsuario(
             IReadOnlyList<Guid> ids,
             CancellationToken cancellationToken,
@@ -72,5 +73,21 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
                 .GroupBy(g => g.IdUsuario)
                 .ToDictionary(g => g.Key, g => g.ToArray());
         }
+
+        [DataLoader]//Usuarios Por UsuarioUnico
+        public static async Task<IReadOnlyDictionary<Guid, Page<UserDTO>>> UsuarioPorUsuarioPrincipal(
+            IReadOnlyList<Guid> idsUsuario,
+            PagingArguments pagingArguments,
+            IUserService userService,
+            CancellationToken cancellationToken
+        )
+        {
+            return await userService.GetUsuarioQuery()
+                        .AsNoTracking()
+                        .Where(a=> idsUsuario.Contains(a.IdUserPrincipal))
+                        .OrderBy(o=> o.Id)
+                        .ToBatchPageAsync(p=> p.IdUserPrincipal, pagingArguments, cancellationToken);
+        }
+
     }
 }

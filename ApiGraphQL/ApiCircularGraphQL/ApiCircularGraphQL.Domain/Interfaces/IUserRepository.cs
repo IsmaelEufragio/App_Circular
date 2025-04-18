@@ -13,7 +13,7 @@ namespace ApiCircularGraphQL.Domain.Interfaces
         Task<List<tbTipoUsuario>> GetTipoAllAsync();
         Task<tbTipoUsuario?> GetTipoIdAsync(Guid id);
         Task<IEnumerable<tbTipoUsuario>> GetManyByIds(IReadOnlyList<Guid> tiposUsuarioIds);
-        Task<IQueryable<tbInfoUnicaUsuario>> GetUserAllQueryableAsync();
+        IQueryable<tbInfoUnicaUsuario> GetUserAllQueryableAsync();
         Task<IEnumerable<tbUsuarios>> GetUsuariosByPrincipals(IReadOnlyList<Guid> idUsuarioPrincipal);
         Task<IEnumerable<tbTipoIdentificacion>> GetIdentidadPorByIds(IReadOnlyList<Guid> ids);
         Task<IEnumerable<tbUsuarioTelefono>> GetTelefonosPorUsuario(IReadOnlyList<Guid> ids);

@@ -70,10 +70,10 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             return await context.tbHorario.Where(a => ids.Contains(a.user_Id)).ToListAsync();
         }
 
-        public async Task<IQueryable<tbInfoUnicaUsuario>> GetUserAllQueryableAsync()
+        public IQueryable<tbInfoUnicaUsuario> GetUserAllQueryableAsync()
         {
             var context = _contextFactory.CreateDbContext();
-            return context.tbInfoUnicaUsuario.OrderBy(a => a.usInf_Id);
+            return context.tbInfoUnicaUsuario;
         }
     }
 }

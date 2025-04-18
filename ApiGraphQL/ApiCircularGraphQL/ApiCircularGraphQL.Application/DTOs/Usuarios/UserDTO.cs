@@ -21,10 +21,12 @@ namespace ApiCircularGraphQL.Application.DTOs.Usuarios
         public DateTime? FechaCreacion { get; set; }
         public string Identidad { get; set; }
         public Guid IdTipoIdentidad { get; set; }
-        public string TipoIdentidad { get; set; }
         public bool Verificado { get; set; }
         public UbicacionUsuarioDTO Ubicacion { get; set; }
         public InformacionUnicaUsuario InformacionUnica { get; set; }
         public List<TelefonosUsuarioDTO> Telefonos { get; set; }
+        public TipoIdentidadDTO TipoIdentidad { get; set; }
+        public List<HorarioDTO> Horarios { get; set; }
+
     }
 }

@@ -34,7 +34,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 FechaCreacion = a.user_FechaCreacion,
                 Identidad = a.user_Identificacion,
                 IdTipoIdentidad = a.tipIde.tipIde_Id,
-                TipoIdentidad = a.tipIde.tipIde_Descripcion,
+                //TipoIdentidad = a.tipIde.tipIde_Descripcion,
                 Verificado = a.user_Verificado,
                 Ubicacion = new UbicacionUsuarioDTO()
                 {
@@ -73,7 +73,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             return _userRepository.GetAllQuery()
                 .Select( u=> new UserDTO
                 {
-                    Id = u.usInf_Id,
+                    Id = u.user_Id,
+                    IdUserPrincipal = u.usInf_Id,
                     NombreUsuario = u.user_NombreUsuario,
                     Despcripcion = u.user_Descripcion,
                     Correo = u.user_Correo,
@@ -84,7 +85,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                     UsuarioPrincipal = u.user_UsuarioPrincipal,
                     FechaCreacion = u.user_FechaCreacion,
                     Identidad = u.user_Identificacion,
-                    TipoIdentidad = u.tipIde.tipIde_Descripcion,
+                    IdTipoIdentidad = u.tipIde_Id,
+                    //TipoIdentidad = u.tipIde.tipIde_Descripcion,
                     Verificado = u.user_Verificado
                 });
         }
@@ -183,6 +185,20 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 HoraFin = a.hor_HoraFin,
             });
             return dataResult;
+        }
+
+        public IQueryable<UserPrincipalDTO> GetUsuarioPrincipalQuery()
+        {
+            return _userRepository.GetUserAllQueryableAsync()
+                .Select(u => new UserPrincipalDTO
+                {
+                    Id = u.usInf_Id,
+                    Nombre = u.usInf_Nombre,
+                    RutaDelLogo = u.usInf_RutaLogo,
+                    RutaDeLaPaginaWeb = u.usInf_RutaPaginaWed,
+                    IdTipoUsuario = u.tipUs_Id,
+                    UnicoUsuario = u.usInf_IgualSubInfo,
+                });
         }
     }
 }
