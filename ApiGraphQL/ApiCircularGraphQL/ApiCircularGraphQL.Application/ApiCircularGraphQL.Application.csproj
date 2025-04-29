@@ -12,12 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="LibreriaClases\" />
     <Folder Include="UseCases\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+    <PackageReference Include="MegaApiClient" Version="1.10.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageReference Include="Mime-Detective" Version="25.4.15" />
   </ItemGroup>
 
 </Project>

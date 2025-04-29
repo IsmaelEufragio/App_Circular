@@ -13,6 +13,12 @@ namespace ApiCircularGraphQL.Api.Configurations
         {
             services
                 .AddGraphQLServer()
+                .AddAuthorization()
+                /*.UseField(next => async context =>
+                {
+                    context.ContextData["HttpContext"] = context.Services.GetRequiredService<IHttpContextAccessor>().HttpContext!;
+                    await next(context);
+                })*/
                 //.AddGlobalObjectIdentification()
                 .AddMutationConventions()
                 .AddDbContextCursorPagingProvider()
@@ -20,6 +26,8 @@ namespace ApiCircularGraphQL.Api.Configurations
                 .AddFiltering()
                 .AddSorting()
                 .AddApiTypes();
+
+            services.AddHttpContextAccessor();
 
             services.AddAuthorization();
 

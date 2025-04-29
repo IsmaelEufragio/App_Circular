@@ -1,7 +1,10 @@
-﻿using ApiCircularGraphQL.Application.Services.Interfaces;
+﻿using ApiCircularGraphQL.Application.Configuracion;
+using ApiCircularGraphQL.Application.Services.Interfaces;
+using ApiCircularGraphQL.CrossCutting.Helpers;
 using ApiCircularGraphQL.CrossCutting.Logging;
+using ApiCircularGraphQL.CrossCutting.Model;
+using ApiCircularGraphQL.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Security.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +17,19 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
     {
         private readonly IConfiguration _configuration;
         private readonly AuthLogger _authLogger;
+        private readonly IUserRepository _userRepository;
+        private readonly IBaseServices _baseServices;
 
-        public AuthService(IConfiguration configuration, AuthLogger authLogger)
-        {
+        public AuthService(
+            IConfiguration configuration, 
+            AuthLogger authLogger, 
+            IUserRepository userRepository, 
+            IBaseServices baseServices
+        ){
             _configuration = configuration;
-            _authLogger = authLogger;   
+            _authLogger = authLogger;
+            _userRepository = userRepository;
+            _baseServices = baseServices;
         }
 
         public string Authenticate(string username, string password)
@@ -27,9 +38,58 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             {
                 var roles = new[] { "Admin" }; // Obtén los roles del usuario desde la base de datos
                 _authLogger.LogAuthenticationAttempt("Josue", true);
-                return JwtHelper.GenerateToken("1", "Josue", roles, _configuration);
+                var tokenModel = new CrearTokenModel
+                {
+                    IdUsuario = "1",
+                    NombreUsuario = "Josue",
+                    Configuration = _configuration,
+                    Roles = roles
+                };
+                return JwtHelper.GenerateToken(tokenModel);
             }
             return null;
+        }
+
+        public async Task<ServiceResult> VarificarUsuario(string token)
+        {
+            try
+            {
+                Guid id = JwtHelper.IdUsuario(token, _configuration);
+                Guid idTipoTokenVerificacion = Guid.Parse(await _baseServices.GetConfiguracion("IdTipoTokenVarificacionCorreo"));
+                var verificarBD = await _userRepository.VerificarToke(id, idTipoTokenVerificacion, token);
+                if (verificarBD)
+                {
+                    var tokenvalido = JwtHelper.ValidateToken(token, _configuration);
+                    if(!tokenvalido) throw new Exception("Ya expiro el Toke.");
+                }
+                else
+                {
+                    throw new Exception("Este token nunca fue enviado al correo.");
+                }
+
+                var tokens = await _userRepository.UsuarioVerificado(id); //Lista de token se guardarn el una lista megra de tokes en redis.
+
+                var usuario = await _userRepository.GetUserIdAsync(id);
+                var crearToken = new CrearTokenModel
+                {
+                    Configuration = _configuration,
+                    IdUsuario = id.ToString(),
+                    NombreUsuario = usuario.user_NombreUsuario,
+                    Roles = []
+                };
+                string tokenLogeo = JwtHelper.GenerateToken(crearToken);
+                return new ServiceResult { 
+                    Success = true, 
+                    Message = "Usuario Verificado", 
+                    Type = ServiceResultType.Success,
+                    Data = new { token = tokenLogeo}
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

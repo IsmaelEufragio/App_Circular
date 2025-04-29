@@ -1,6 +1,6 @@
-﻿using HotChocolate.Authorization;
+﻿using ApiCircularGraphQL.CrossCutting.Helpers;
+using HotChocolate.Authorization;
 using HotChocolate.Resolvers;
-using Security.Helpers;
 using System.Security.Claims;
 
 namespace ApiCircularGraphQL.Api.Middlewares
@@ -26,7 +26,7 @@ namespace ApiCircularGraphQL.Api.Middlewares
                     {
                         return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
                     }
-                    if (directive.Roles.Count > 0)
+                    if (directive.Roles is not null && directive.Roles.Count > 0)
                     {
                         var userRoles = JwtHelper.GetRolesFromToken(token);
                         bool hasRequiredRole = directive.Roles.Any(role => userRoles.Contains(role));
@@ -36,8 +36,14 @@ namespace ApiCircularGraphQL.Api.Middlewares
                             return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
                         }
                     }
+                    else
+                    {
+                        var userRoles = JwtHelper.GetRolesFromToken(token);
+                        if(userRoles is not null && userRoles.Contains("Varificar"))
+                            return new ValueTask<AuthorizeResult>(AuthorizeResult.NotAllowed);
+                    }
 
-                    return new ValueTask<AuthorizeResult>(AuthorizeResult.Allowed);
+                     return new ValueTask<AuthorizeResult>(AuthorizeResult.Allowed);
                 }
                 else
                 {

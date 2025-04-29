@@ -196,7 +196,7 @@ CREATE TABLE [Genl].tbUsuarios(
 	[user_WhatsApp]					BIT					NOT NULL DEFAULT 0,
 	[user_Envio]					BIT					NOT NULL DEFAULT 0,
 	[user_UsuarioPrincipal]			BIT					NOT NULL DEFAULT 0,
-	[user_Verificado]				BIT					NOT NULL DEFAULT 0 
+	[user_Verificado]				BIT					NOT NULL DEFAULT 0,
 	CONSTRAINT  PK_Genl_tbUsuarios_User_Id			PRIMARY KEY(User_Id),
 	CONSTRAINT  FK_Genl_tbUsuarios_tbInfoUnicaUsuario_usInf_Id		FOREIGN KEY(usInf_Id) REFERENCES Genl.tbInfoUnicaUsuario(usInf_Id),
 	CONSTRAINT  FK_Genl_tbUsuarios_tbUbicacion_ubc_Id				FOREIGN KEY(ubc_Id) REFERENCES Genl.tbUbicacion(ubc_Id),
@@ -1008,10 +1008,8 @@ GO
 CREATE TYPE Genl.tbHorarioTableType AS TABLE
 (
 	hor_DiaNumero INT,
-    hor_HoraInicio TINYINT,
-    hor_MinutoInicio TINYINT,
-    hor_HoraFin TINYINT,
-    hor_MinutoFin TINYINT
+    hor_HoraInicio TIME,
+    hor_HoraFin TIME
 );
 
 GO
@@ -1072,10 +1070,8 @@ BEGIN
 	SET @Success = 1;
 	--variables de Cursor De Horario
 	DECLARE @hor_DiaNumero INT,
-            @hor_HoraInicio TINYINT,
-            @hor_MinutoInicio TINYINT,
-            @hor_HoraFin TINYINT,
-            @hor_MinutoFin TINYINT;
+            @hor_HoraInicio TIME,
+            @hor_HoraFin TIME;
 
     DECLARE @ErrorHorarioInsertar BIT = 0;
 	--Variables del Cursor de Categoria
@@ -1091,7 +1087,7 @@ BEGIN
 
 	--///Declaraciones de los cursores INICIO
 	DECLARE curHorarios CURSOR FOR
-			SELECT hor_DiaNumero, hor_HoraInicio, hor_MinutoInicio, hor_HoraFin, hor_MinutoFin
+			SELECT hor_DiaNumero, hor_HoraInicio, hor_HoraFin
 			FROM @tbHorarios;
 
 	DECLARE curCategoriaItem CURSOR FOR
@@ -1125,23 +1121,23 @@ BEGIN
 		
 		---////Inicio Cursor
 		OPEN curHorarios;
-        FETCH NEXT FROM curHorarios INTO @hor_DiaNumero, @hor_HoraInicio, @hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin;
+        FETCH NEXT FROM curHorarios INTO @hor_DiaNumero, @hor_HoraInicio,@hor_HoraFin;
 
         WHILE @@FETCH_STATUS = 0
         BEGIN
             BEGIN TRY
-                INSERT INTO [Genl].[tbHorario] VALUES (NEWID(),@hor_DiaNumero, @user_Id, @hor_HoraInicio,@hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin);
+                INSERT INTO [Genl].[tbHorario] VALUES (NEWID(),@hor_DiaNumero, @user_Id, @hor_HoraInicio, @hor_HoraFin);
 
-                FETCH NEXT FROM curHorarios INTO @hor_DiaNumero, @hor_HoraInicio, @hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin;
+                FETCH NEXT FROM curHorarios INTO @hor_DiaNumero, @hor_HoraInicio, @hor_HoraFin;
             END TRY
             BEGIN CATCH
 				SET @Success = 0;
 					SET @Message = FORMATMESSAGE(
-					'Error Ocurrió Al Guardar El Horario: hor_DiaNumero => %d, user_Id => %s, hor_HoraInicio => %d, hor_MinutoInicio => %d, hor_HoraFin => %d, hor_MinutoFin => %d. Error SQL: %s (Línea: %d)',
-					@hor_DiaNumero, CAST(@user_Id AS NVARCHAR(50)), @hor_HoraInicio, @hor_MinutoInicio, @hor_HoraFin, @hor_MinutoFin, ERROR_MESSAGE(), ERROR_LINE()
+					'Error Ocurrió Al Guardar El Horario: hor_DiaNumero => %d, user_Id => %s, hor_HoraInicio => %d, hor_HoraFin => %d. Error SQL: %s (Línea: %d)',
+					@hor_DiaNumero, CAST(@user_Id AS NVARCHAR(50)), CAST(@hor_HoraInicio AS NVARCHAR(50)),CAST(@hor_HoraFin AS NVARCHAR(50)), ERROR_MESSAGE(), ERROR_LINE()
 				);
 
-
+ 
 				SET @IdUsuario = '';
 
 				BREAK;

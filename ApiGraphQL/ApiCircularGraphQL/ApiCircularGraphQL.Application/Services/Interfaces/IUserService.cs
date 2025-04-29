@@ -1,5 +1,7 @@
-﻿using ApiCircularGraphQL.Application.DTOs.Usuarios;
+﻿using ApiCircularGraphQL.Application.Configuracion;
+using ApiCircularGraphQL.Application.DTOs.Usuarios;
 using ApiCircularGraphQL.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ namespace ApiCircularGraphQL.Application.Services.Interfaces
 {
     public interface IUserService
     {
+        UsuarioCrearDTO ConvertirAUsuario(IFormCollection form);
+        Task<ServiceResult> CrearUsaurio(UsuarioCrearDTO model);
         Task<IEnumerable<HorarioDTO>> GetHorarioPorUsuario(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<TipoIdentidadDTO>> GetIdentidadPorByIds(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<TipoUsuarioDTO>> GetManyByIds(IReadOnlyList<Guid> tiposUsuarioIds);

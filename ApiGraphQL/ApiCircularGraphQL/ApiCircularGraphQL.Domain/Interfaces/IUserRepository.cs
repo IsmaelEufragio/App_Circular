@@ -18,5 +18,14 @@ namespace ApiCircularGraphQL.Domain.Interfaces
         Task<IEnumerable<tbTipoIdentificacion>> GetIdentidadPorByIds(IReadOnlyList<Guid> ids);
         Task<IEnumerable<tbUsuarioTelefono>> GetTelefonosPorUsuario(IReadOnlyList<Guid> ids);
         Task<IEnumerable<tbHorario>> GetHorarioPorUsuario(IReadOnlyList<Guid> ids);
+        Task<bool> ValidarSiExisteCorreo(string correo);
+        Task<bool> ValidarSiExisteLosTelefonos(IEnumerable<string> telefonos);
+        Task<Guid> CrearUsuarioPrincipal(tbInfoUnicaUsuario usuario);
+        Task GuardarToken(Guid idUsuario,Guid idTipoToken, string token);
+        Task<List<string>> UsuarioVerificado(Guid idUsuario);
+        Task<tbUsuarios> GetUserIdAsync(Guid idUser);
+        Task<string[]> RolesUsuario(Guid idUsuario);
+        Task<Dictionary<string, string>> ClaimsUsuario(Guid idUsuario);
+        Task<bool> VerificarToke(Guid idUsuario, Guid idTipoUsuario, string token);
     }
 }

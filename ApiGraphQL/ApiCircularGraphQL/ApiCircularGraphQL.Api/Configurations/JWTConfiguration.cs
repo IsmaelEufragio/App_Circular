@@ -1,4 +1,5 @@
 ﻿using ApiCircularGraphQL.Api.Middlewares;
+using ApiCircularGraphQL.Domain.Interfaces;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +16,7 @@ namespace ApiCircularGraphQL.Api.Configurations
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
+                options.MapInboundClaims = false;
                 options.TokenValidationParameters =
                     new TokenValidationParameters
                     {
@@ -26,10 +28,25 @@ namespace ApiCircularGraphQL.Api.Configurations
                         ValidAudience = jwtSettings["Audience"],
                         IssuerSigningKey = key
                     };
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        var tokenBlacklistService = context.HttpContext.RequestServices.GetRequiredService<ITokenBlacklistRepository>();
+                        var jti = context.Principal?.Claims.FirstOrDefault(c => c.Type == "jti")?.Value;
+                        if (jti != null && await tokenBlacklistService.IsTokenBlacklistedAsync(jti))
+                        {
+                            context.Fail("Token está en la lista negra");
+                        }
+                    }
+                };
             });
-            services.AddAuthorization();
+            services.AddAuthorization(opciones=>
+            {
+                opciones.AddPolicy("EditarCorreo", politica => politica.RequireClaim("Permiso", "EditarCorreo"));
+            });
 
-            services.AddSingleton<IAuthorizationHandler, CustomAuthorizationHandler>();
+            //services.AddSingleton<IAuthorizationHandler, CustomAuthorizationHandler>();
 
             return services;
         }

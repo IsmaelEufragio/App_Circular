@@ -120,6 +120,10 @@ public partial class AppECOContext : DbContext
 
     public virtual DbSet<tbReaccion> tbReaccion { get; set; }
 
+    public virtual DbSet<tbRoles> tbRoles { get; set; }
+
+    public virtual DbSet<tbRolesClaims> tbRolesClaims { get; set; }
+
     public virtual DbSet<tbServicio> tbServicio { get; set; }
 
     public virtual DbSet<tbServicioPorFactura> tbServicioPorFactura { get; set; }
@@ -146,6 +150,8 @@ public partial class AppECOContext : DbContext
 
     public virtual DbSet<tbTipoTelefono> tbTipoTelefono { get; set; }
 
+    public virtual DbSet<tbTipoToken> tbTipoToken { get; set; }
+
     public virtual DbSet<tbTipoTransaccion> tbTipoTransaccion { get; set; }
 
     public virtual DbSet<tbTipoUsuario> tbTipoUsuario { get; set; }
@@ -161,6 +167,10 @@ public partial class AppECOContext : DbContext
     public virtual DbSet<tbUsuarioTelefono> tbUsuarioTelefono { get; set; }
 
     public virtual DbSet<tbUsuarios> tbUsuarios { get; set; }
+
+    public virtual DbSet<tbUsuariosClaims> tbUsuariosClaims { get; set; }
+
+    public virtual DbSet<tbUsuariosTokens> tbUsuariosTokens { get; set; }
 
     public virtual DbSet<tbVacante> tbVacante { get; set; }
 
@@ -1300,6 +1310,41 @@ public partial class AppECOContext : DbContext
                 .HasConstraintName("FK_Genl_tbReaccion_tbUsuarios_user_Id");
         });
 
+        modelBuilder.Entity<tbRoles>(entity =>
+        {
+            entity.HasKey(e => e.rol_Id).HasName("PK_Genl_tbRoles_rol_Id");
+
+            entity.ToTable("tbRoles", "Genl");
+
+            entity.Property(e => e.rol_Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.rol_Nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.rol_NombreNormalizado)
+                .IsRequired()
+                .HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<tbRolesClaims>(entity =>
+        {
+            entity.HasKey(e => e.rolClai_Id).HasName("PK_Genl_tbRolesClaims_rolClai_Id");
+
+            entity.ToTable("tbRolesClaims", "Genl");
+
+            entity.Property(e => e.rolClai_Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.rolClai_Tipo)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.rolClai_Value)
+                .IsRequired()
+                .HasMaxLength(300);
+
+            entity.HasOne(d => d.rol).WithMany(p => p.tbRolesClaims)
+                .HasForeignKey(d => d.rol_Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Genl_tbRolesClaims_tbRoles_rol_Id");
+        });
+
         modelBuilder.Entity<tbServicio>(entity =>
         {
             entity.HasKey(e => e.serv_Id).HasName("PK_Genl_tbServicio_serv_Id");
@@ -1506,6 +1551,18 @@ public partial class AppECOContext : DbContext
                 .HasMaxLength(300);
         });
 
+        modelBuilder.Entity<tbTipoToken>(entity =>
+        {
+            entity.HasKey(e => e.tipToke_Id).HasName("PK_Genl_tbTipoToken_tipToke_Id");
+
+            entity.ToTable("tbTipoToken", "Genl");
+
+            entity.Property(e => e.tipToke_Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.tipToke_Descripcion)
+                .IsRequired()
+                .HasMaxLength(300);
+        });
+
         modelBuilder.Entity<tbTipoTransaccion>(entity =>
         {
             entity.HasKey(e => e.tipTran_Id).HasName("PK_Genl_tbTipoTransaccion_tipTran_Id");
@@ -1696,6 +1753,62 @@ public partial class AppECOContext : DbContext
                         j.HasKey("user_Id", "even_Id").HasName("PK_Genl_tbPosiblePor_user_Id_even_Id");
                         j.ToTable("tbPosiblePor", "Genl");
                     });
+
+            entity.HasMany(d => d.rol).WithMany(p => p.user)
+                .UsingEntity<Dictionary<string, object>>(
+                    "tbUsuariosRoles",
+                    r => r.HasOne<tbRoles>().WithMany()
+                        .HasForeignKey("rol_Id")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Genl_tbUsuariosRoles_tbRoles_rol_Id"),
+                    l => l.HasOne<tbUsuarios>().WithMany()
+                        .HasForeignKey("user_Id")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Genl_tbUsuariosRoles_tbUsuarios_user_Id"),
+                    j =>
+                    {
+                        j.HasKey("user_Id", "rol_Id").HasName("PK_Genl_tbUsuariosRoles_user_Id_rol_Id");
+                        j.ToTable("tbUsuariosRoles", "Genl");
+                    });
+        });
+
+        modelBuilder.Entity<tbUsuariosClaims>(entity =>
+        {
+            entity.HasKey(e => e.userClai_Id).HasName("PK_Genl_tbUsuariosClaims_userClai_Id");
+
+            entity.ToTable("tbUsuariosClaims", "Genl");
+
+            entity.Property(e => e.userClai_Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.userClai_Tipo)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.userClai_Value)
+                .IsRequired()
+                .HasMaxLength(300);
+
+            entity.HasOne(d => d.user).WithMany(p => p.tbUsuariosClaims)
+                .HasForeignKey(d => d.user_Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Genl_tbUsuariosClaims_tbUsuarios_user_Id");
+        });
+
+        modelBuilder.Entity<tbUsuariosTokens>(entity =>
+        {
+            entity.HasKey(e => new { e.user_Id, e.tipToke_Id }).HasName("PK_Genl_tbUsuariosTokens_user_Id_tipToke_Id");
+
+            entity.ToTable("tbUsuariosTokens", "Genl");
+
+            entity.Property(e => e.userToke_Token).IsRequired();
+
+            entity.HasOne(d => d.tipToke).WithMany(p => p.tbUsuariosTokens)
+                .HasForeignKey(d => d.tipToke_Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Genl_tbUsuariosTokens_tbTipoToken_tipToke_Id");
+
+            entity.HasOne(d => d.user).WithMany(p => p.tbUsuariosTokens)
+                .HasForeignKey(d => d.user_Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Genl_tbUsuariosTokens_tbUsuarios_user_Id");
         });
 
         modelBuilder.Entity<tbVacante>(entity =>

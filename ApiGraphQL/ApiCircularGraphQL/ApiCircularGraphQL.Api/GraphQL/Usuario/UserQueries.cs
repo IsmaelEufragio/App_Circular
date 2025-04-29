@@ -4,8 +4,10 @@ using ApiCircularGraphQL.Application.Services.Interfaces;
 using ApiCircularGraphQL.Domain.Entities;
 using ApiCircularGraphQL.Domain.Interfaces;
 using GreenDonut.Data;
+using HotChocolate.Authorization;
 using HotChocolate.Execution.Processing;
 using HotChocolate.Types.Pagination;
+//using Microsoft.AspNetCore.Authorization;
 
 namespace ApiCircularGraphQL.Api.GraphQL.Usuario
 {
@@ -25,6 +27,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
         [UsePaging]
         [UseFiltering]
         [UseSorting]
+        [Authorize(Roles = new[] { "Admin" })]
         public static IQueryable<UserPrincipalDTO> GetUsuariosPrincipalesAll(
             [Service] IUserService usuarioService
         )

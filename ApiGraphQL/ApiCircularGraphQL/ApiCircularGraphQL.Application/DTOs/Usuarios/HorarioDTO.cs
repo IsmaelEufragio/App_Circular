@@ -9,7 +9,7 @@ namespace ApiCircularGraphQL.Application.DTOs.Usuarios
     public class HorarioDTO
     {
         public Guid IdUsuario { get; set; }
-        public Guid IdHorario { get; set; }
+        public Guid Id { get; set; }
         public int Dia { get; set; }
         public TimeOnly HoraInicio { get; set; }
         public TimeOnly HoraFin { get; set; }

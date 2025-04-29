@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
@@ -19,10 +20,11 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             _contextFactory = contextFactory;
         }
 
-        public async Task<List<tbUsuarios>> GetUserIdAsync(Guid idUser)
+        public async Task<tbUsuarios> GetUserIdAsync(Guid idUser)
         {
             using var context = _contextFactory.CreateDbContext();
-            return await context.tbUsuarios.Where(a => a.user_Id == idUser).ToListAsync();
+            return await context.tbUsuarios.FirstOrDefaultAsync(a => a.user_Id == idUser)
+                ?? throw new Exception($"No se Contro informacion del usuario con Id {idUser}");
         }
 
         public async Task<List<tbInfoUnicaUsuario>> GetUserAllAsync()
@@ -36,10 +38,10 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             using var context = _contextFactory.CreateDbContext();
             return await context.tbTipoUsuario.ToListAsync();
         }
-        public async Task<tbTipoUsuario> GetTipoIdAsync(Guid id)
+        public async Task<tbTipoUsuario?> GetTipoIdAsync(Guid id)
         {
             using var context = _contextFactory.CreateDbContext();
-            return await context.tbTipoUsuario.FirstOrDefaultAsync(a=> a.tipUs_Id == id);
+            return await context.tbTipoUsuario.AsNoTracking().FirstOrDefaultAsync(a=> a.tipUs_Id == id);
         }
 
         public async Task<IEnumerable<tbTipoUsuario>> GetManyByIds(IReadOnlyList<Guid> tiposUsuarioIds)
@@ -72,8 +74,148 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
 
         public IQueryable<tbInfoUnicaUsuario> GetUserAllQueryableAsync()
         {
-            var context = _contextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             return context.tbInfoUnicaUsuario;
+        }
+
+        public async Task<bool> ValidarSiExisteLosTelefonos(IEnumerable<string> telefonos)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            if (!telefonos.Any())
+                throw new Exception("Necesita almenos un numero de telefono para validar.");
+
+            foreach (var item in telefonos)
+            {
+                string tel = item.Replace(" ", "");
+                var vali = await context.tbUsuarioTelefono
+                            .Include(e => e.user)
+                            .AsNoTracking()
+                            .AnyAsync(i => i.usTel_Numero == tel);
+
+                if (vali) throw new Exception($"El numero de telefono {tel} ya existe.");
+            }
+            return false;
+        }
+
+        public async Task<bool> ValidarSiExisteCorreo(string correo)
+        {
+            if (string.IsNullOrWhiteSpace(correo))
+                throw new Exception("Es necesario el Correo.");
+
+            bool formatoCorreo = Regex.IsMatch(correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            if (!formatoCorreo)
+                throw new Exception("El Correo a validar no tiene el formato valido");
+
+            using var context = _contextFactory.CreateDbContext();
+            bool result = await context.tbUsuarios.AnyAsync(a => a.user_Correo.Equals(correo, StringComparison.CurrentCultureIgnoreCase));
+            if (result)
+                throw new Exception($"Ya existe el correo {correo}");
+
+            return false;
+        }
+
+        public async Task<Guid> CrearUsuarioPrincipal(tbInfoUnicaUsuario usuario)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.tbInfoUnicaUsuario.Add(usuario);
+            await context.SaveChangesAsync();
+            Guid idRetorno = usuario.tbUsuarios.First().user_Id;
+            return idRetorno;
+        }
+
+        public async Task GuardarToken(Guid idUsuario, Guid idTipoToken, string token)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var usuario = await context.tbUsuarios.AnyAsync(a => a.user_Id == idUsuario);
+            if (!usuario) throw new Exception($"No se pudo obtener el usuario con el id {idUsuario}, Para guardar el Token Verificacion.");
+            var tipoToken = await context.tbTipoToken.AnyAsync(a => a.tipToke_Id == idTipoToken);
+            if (!tipoToken) throw new Exception($"No se pudo obtener el tipo Token con el id {idTipoToken}, para guardar el token.");
+            context.tbUsuariosTokens.Add(new tbUsuariosTokens
+            {
+                user_Id = idUsuario,
+                tipToke_Id = idTipoToken,
+                userToke_Token = token
+            });
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> UsuarioVerificado(Guid idUsuario)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var data = await context.tbUsuarios.Include(a=> a.tbUsuariosTokens).FirstOrDefaultAsync(a => a.user_Id == idUsuario)
+                ?? throw new Exception($"No se pudo obtener el usuario con el id {idUsuario}, Para Cambiar el estado a verificado.");
+            data.user_Verificado = true;
+
+            var listaToken = new List<string>();
+
+            if(data.tbUsuariosTokens.Count> 0)
+            {
+                listaToken = [.. data.tbUsuariosTokens.Select(a => a.userToke_Token)];
+                context.tbUsuariosTokens.RemoveRange(data.tbUsuariosTokens);
+            }
+
+            await context.SaveChangesAsync();
+            return listaToken;
+        }
+
+        public async Task<string[]> RolesUsuario(Guid idUsuario)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var usuario = await context.tbUsuarios
+                    .Include(a=> a.rol)
+                    .FirstOrDefaultAsync(a => a.user_Id == idUsuario)
+                ?? throw new Exception($"No se pudo obtener el usuario con el id {idUsuario}, Para obtener los roles.");
+
+            return usuario.rol.Count > 0 ? [.. usuario.rol.Select(a => a.rol_NombreNormalizado)] : [];
+        }
+
+        public async Task<Dictionary<string, string>> ClaimsUsuario(Guid idUsuario)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var usuario = await context.tbUsuarios
+                            .Include(a => a.rol).ThenInclude(e => e.tbRolesClaims)
+                            .Include(a=> a.tbUsuariosClaims)
+                            .FirstOrDefaultAsync(a => a.user_Id == idUsuario);
+            Dictionary<string, string> Claims;
+            if (usuario is not null)
+            {
+                Claims = usuario.rol?
+                    .SelectMany(a => a.tbRolesClaims ?? [])
+                    .ToDictionary(
+                        a => a.rolClai_Tipo,
+                        a => a.rolClai_Value
+                    ) ?? [];
+
+                var usuarioClaims = usuario.tbUsuariosClaims?.ToDictionary(
+                    a => a.userClai_Tipo,
+                    a => a.userClai_Value) ?? [];
+
+                foreach (var item in usuarioClaims)
+                {
+                    if (!Claims.ContainsKey(item.Key))
+                    {
+                        Claims[item.Key] = item.Value;
+                    }
+                }
+
+                return Claims;
+            }
+            return [];
+        }
+
+        public async Task<bool> VerificarToke(Guid idUsuario, Guid idTipoUsuario, string token)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var usuario = await context.tbUsuarios
+                            .Include(a => a.tbUsuariosTokens)
+                            .FirstOrDefaultAsync(a=> a.user_Id == idUsuario) 
+                        ?? throw new Exception("No se encontro un usuario para validar");
+
+            var tokesDB = usuario.tbUsuariosTokens.FirstOrDefault(a => a.tipToke_Id == idTipoUsuario)?.userToke_Token 
+                        ?? throw new Exception("No se encontro un token verificar");
+
+            return token == tokesDB;
         }
     }
 }

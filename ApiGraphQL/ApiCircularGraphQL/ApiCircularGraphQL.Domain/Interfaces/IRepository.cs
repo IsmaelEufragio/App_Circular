@@ -11,7 +11,7 @@ namespace ApiCircularGraphQL.Domain.Interfaces
     {
         Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(Guid id);
-        Task AddAsync(T entity);
+        Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(Guid id);
         IQueryable<T> GetAllQuery();

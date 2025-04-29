@@ -71,6 +71,10 @@ public partial class tbUsuarios
 
     public virtual ICollection<tbUsuarioTelefono> tbUsuarioTelefono { get; set; } = new List<tbUsuarioTelefono>();
 
+    public virtual ICollection<tbUsuariosClaims> tbUsuariosClaims { get; set; } = new List<tbUsuariosClaims>();
+
+    public virtual ICollection<tbUsuariosTokens> tbUsuariosTokens { get; set; } = new List<tbUsuariosTokens>();
+
     public virtual ICollection<tbVacante> tbVacante { get; set; } = new List<tbVacante>();
 
     public virtual ICollection<tbVentaRelampago> tbVentaRelampago { get; set; } = new List<tbVentaRelampago>();
@@ -84,4 +88,6 @@ public partial class tbUsuarios
     public virtual ICollection<tbEvento> even { get; set; } = new List<tbEvento>();
 
     public virtual ICollection<tbOrigen> origen { get; set; } = new List<tbOrigen>();
+
+    public virtual ICollection<tbRoles> rol { get; set; } = new List<tbRoles>();
 }

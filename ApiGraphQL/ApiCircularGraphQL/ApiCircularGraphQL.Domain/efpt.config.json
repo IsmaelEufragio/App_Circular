@@ -243,6 +243,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Genl].[tbRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbRolesClaims]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Genl].[tbServicio]",
          "ObjectType": 0
       },
@@ -295,6 +303,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Genl].[tbTipoToken]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Genl].[tbTipoTransaccion]",
          "ObjectType": 0
       },
@@ -320,6 +332,18 @@
       },
       {
          "Name": "[Genl].[tbUsuarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbUsuariosClaims]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbUsuariosRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Genl].[tbUsuariosTokens]",
          "ObjectType": 0
       },
       {
