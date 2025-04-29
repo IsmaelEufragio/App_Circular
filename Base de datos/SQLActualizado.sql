@@ -979,6 +979,64 @@ CREATE TABLE [Genl].tbLogroEventoCategoria(
 GO
 
 /*Sección #49*/
+CREATE TABLE [Genl].tbRoles(
+	[rol_Id] 				UNIQUEIDENTIFIER DEFAULT NEWID(),
+	[rol_Nombre]			NVARCHAR(100) 	NOT NULL,
+	[rol_NombreNormalizado] NVARCHAR(100)	NOT NULL
+	CONSTRAINT PK_Genl_tbRoles_rol_Id	PRIMARY KEY(rol_Id)
+)
+GO
+
+/*Sección #50*/
+CREATE TABLE [Genl].tbUsuariosRoles(
+	[user_Id] 			UNIQUEIDENTIFIER NOT NULL,
+	[rol_Id]			UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT PK_Genl_tbUsuariosRoles_user_Id_rol_Id 		PRIMARY KEY(User_Id, rol_Id),
+	CONSTRAINT FK_Genl_tbUsuariosRoles_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+	CONSTRAINT FK_Genl_tbUsuariosRoles_tbRoles_rol_Id		FOREIGN KEY(rol_Id) REFERENCES Genl.tbRoles(rol_Id)
+)
+GO
+/*Sección #51*/
+CREATE TABLE [Genl].tbRolesClaims(
+	[rolClai_Id]			UNIQUEIDENTIFIER 	DEFAULT NEWID(),
+	[rol_Id]				UNIQUEIDENTIFIER 	NOT NULL,
+	[rolClai_Tipo]			NVARCHAR(100) 		NOT NULL,
+	[rolClai_Value]			NVARCHAR(300) 		NOT NULL,
+	CONSTRAINT PK_Genl_tbRolesClaims_rolClai_Id			PRIMARY KEY(rolClai_Id),
+	CONSTRAINT FK_Genl_tbRolesClaims_tbRoles_rol_Id		FOREIGN KEY(rol_Id) REFERENCES Genl.tbRoles(rol_Id)
+)
+GO
+/*Sección #52*/
+CREATE TABLE [Genl].tbUsuariosClaims(
+	[userClai_Id]			UNIQUEIDENTIFIER 	DEFAULT NEWID(),
+	[user_Id]				UNIQUEIDENTIFIER 	NOT NULL,
+	[userClai_Tipo]			NVARCHAR(100) 		NOT NULL,
+	[userClai_Value]		NVARCHAR(300) 		NOT NULL,
+	CONSTRAINT PK_Genl_tbUsuariosClaims_userClai_Id			PRIMARY KEY(userClai_Id),
+	CONSTRAINT FK_Genl_tbUsuariosClaims_tbUsuarios_user_Id	FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+)
+GO
+/*Sección #53*/
+CREATE TABLE [Genl].tbTipoToken(
+	[tipToke_Id]			UNIQUEIDENTIFIER 	DEFAULT NEWID(),
+	[tipToke_Descripcion]	NVARCHAR(300)		NOT NULL,
+	CONSTRAINT PK_Genl_tbTipoToken_tipToke_Id	PRIMARY KEY(tipToke_Id)
+)
+
+GO
+INSERT INTO [Genl].[tbTipoToken] VALUES ('e575e6e8-52ad-4235-b3d6-dadb6c0caa36','Login')
+INSERT INTO [Genl].[tbTipoToken] VALUES ('3736d268-14df-4dd5-b192-b6e3120eba25','Varificacion Correo')
+/*Sección #54*/
+CREATE TABLE [Genl].tbUsuariosTokens(
+	[user_Id]				UNIQUEIDENTIFIER 	NOT NULL,
+	[tipToke_Id]			UNIQUEIDENTIFIER	NOT NULL,
+	[userToke_Token]		NVARCHAR(MAX)		NOT NULL,
+	CONSTRAINT PK_Genl_tbUsuariosTokens_user_Id_tipToke_Id 		PRIMARY KEY(User_Id, tipToke_Id),
+	CONSTRAINT FK_Genl_tbUsuariosTokens_tbUsuarios_user_Id		FOREIGN KEY(user_Id) REFERENCES Genl.tbUsuarios(user_Id),
+	CONSTRAINT FK_Genl_tbUsuariosTokens_tbTipoToken_tipToke_Id	FOREIGN KEY(tipToke_Id) REFERENCES Genl.tbTipoToken(tipToke_Id)
+)
+GO
+/*Sección #49*/
 CREATE TABLE [Genl].tbConfiguracion(
 	[conf_Id]			UNIQUEIDENTIFIER DEFAULT NEWID(),
 	[conf_Nombre]		NVARCHAR(500)	NOT NULL,
@@ -1002,6 +1060,8 @@ INSERT INTO [Genl].[tbConfiguracion] VALUES ('21746053-FCF8-4A11-BD66-859ADBC9DC
 INSERT INTO [Genl].[tbConfiguracion] VALUES ('7B5DE3B8-0AEF-4AB0-963A-ADE19D6AFAAD','IdTipoUsuarioConLocal', '6', 'Son los usarios que tiene un local ')
 INSERT INTO [Genl].[tbConfiguracion] VALUES ('DFDA9864-C809-4885-9E12-8DEC90218E26','SubRutaLogo', 'Img\Logos', 'Es la ruta de la carperta donde se guradaran los logos se le concatenara ala raiz del proyecto')
 INSERT INTO [Genl].[tbConfiguracion] VALUES ('67468F30-E755-461C-8759-9F6168296A63','TamañoLogo', '1', 'Es para validar el tamaño del logo tiene que sere en para pulpilicarlo 1024 * 1024')
+INSERT INTO [Genl].[tbConfiguracion] VALUES ('c21d6c47-b97d-4f34-9160-b4d4f8ba7331','IdTipoTokenVarificacionCorreo', '3736d268-14df-4dd5-b192-b6e3120eba25', 'Es para guardar el token, que se envia al correo')
+INSERT INTO [Genl].[tbConfiguracion] VALUES ('7033b971-286d-47e9-a7b9-91917f3be6c5','IdTipoTokenLogin', 'e575e6e8-52ad-4235-b3d6-dadb6c0caa36', 'Es para guardar el token login')
 GO
 
 /*Sección #50*/
