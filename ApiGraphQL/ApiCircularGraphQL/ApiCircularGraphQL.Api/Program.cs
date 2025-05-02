@@ -3,8 +3,10 @@ using ApiCircularGraphQL.Api.Middlewares;
 using ApiCircularGraphQL.Application;
 using ApiCircularGraphQL.Application.Services.Implementations;
 using ApiCircularGraphQL.Application.Services.Interfaces;
+using ApiCircularGraphQL.CrossCutting.Helpers;
+using ApiCircularGraphQL.Domain.Interfaces;
 using ApiCircularGraphQL.Infrastructure;
-using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using System.Text;
 
@@ -25,6 +27,45 @@ app.UseSwaggerUI(c =>
 
 app.UseRouting();
 
+app.Use(async (context, next) =>
+{
+    var endpoint = context.GetEndpoint();
+    if (endpoint?.Metadata?.GetMetadata<AuthorizeAttribute>() != null)
+    {
+        var tokenBlacklistService = context.RequestServices
+            .GetRequiredService<ITokenBlacklistRepository>();
+
+        var token = context.Request.Headers["Authorization"]
+            .FirstOrDefault()?.Split(" ").Last();
+
+        if (token != null)
+        {
+            var (jti, _) = JwtHelper.GetTokenInfo(token);
+
+            if (await tokenBlacklistService.IsTokenBlacklistedAsync(jti.ToString()))
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("El token ha sido revocado");
+                return;
+            }
+
+            if (!JwtHelper.ValidateToken(token, builder.Configuration))
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Token Invalido");
+                return;
+            }
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Es neceario un token");
+            return;
+        }
+    }
+
+    await next();
+});
 app.UseAuthentication();
 app.UseAuthorization();
 

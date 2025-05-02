@@ -74,7 +74,7 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
 
         public IQueryable<tbInfoUnicaUsuario> GetUserAllQueryableAsync()
         {
-            using var context = _contextFactory.CreateDbContext();
+            var context = _contextFactory.CreateDbContext();
             return context.tbInfoUnicaUsuario;
         }
 

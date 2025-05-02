@@ -8,7 +8,8 @@ namespace ApiCircularGraphQL.Domain.Interfaces
 {
     public interface ITokenBlacklistRepository
     {
-        Task BlacklistTokenAsync(string tokenId);
+        Task AddToBlacklistAsync(string tokenId, DateTimeOffset expiration);
+        void Dispose();
         Task<bool> IsTokenBlacklistedAsync(string tokenId);
     }
 }

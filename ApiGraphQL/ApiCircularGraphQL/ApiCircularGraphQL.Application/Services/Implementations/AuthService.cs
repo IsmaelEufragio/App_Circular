@@ -19,17 +19,20 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
         private readonly AuthLogger _authLogger;
         private readonly IUserRepository _userRepository;
         private readonly IBaseServices _baseServices;
+        private readonly ITokenBlacklistRepository _tokenBlacklistRepository;
 
         public AuthService(
-            IConfiguration configuration, 
-            AuthLogger authLogger, 
-            IUserRepository userRepository, 
-            IBaseServices baseServices
-        ){
+            IConfiguration configuration,
+            AuthLogger authLogger,
+            IUserRepository userRepository,
+            IBaseServices baseServices,
+            ITokenBlacklistRepository tokenBlacklistRepository)
+        {
             _configuration = configuration;
             _authLogger = authLogger;
             _userRepository = userRepository;
             _baseServices = baseServices;
+            _tokenBlacklistRepository = tokenBlacklistRepository;
         }
 
         public string Authenticate(string username, string password)
@@ -69,6 +72,12 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
 
                 var tokens = await _userRepository.UsuarioVerificado(id); //Lista de token se guardarn el una lista megra de tokes en redis.
 
+                foreach (var item in tokens)
+                {
+                    var (Jti, Expiration) = JwtHelper.GetTokenInfo(item);
+                    await _tokenBlacklistRepository.AddToBlacklistAsync(Jti.ToString(), Expiration);
+                }
+
                 var usuario = await _userRepository.GetUserIdAsync(id);
                 var crearToken = new CrearTokenModel
                 {
@@ -78,6 +87,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                     Roles = []
                 };
                 string tokenLogeo = JwtHelper.GenerateToken(crearToken);
+                Guid idTipoTokenLogeo = Guid.Parse(await _baseServices.GetConfiguracion("IdTipoTokenLogin"));
+                await _userRepository.GuardarToken(id, idTipoTokenLogeo, tokenLogeo);
                 return new ServiceResult { 
                     Success = true, 
                     Message = "Usuario Verificado", 
@@ -85,10 +96,9 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                     Data = new { token = tokenLogeo}
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new ServiceResult { Success = false, Message = ex.Message };
             }
         }
     }

@@ -2,8 +2,12 @@
 using ApiCircularGraphQL.Domain.Interfaces;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json;
 
 namespace ApiCircularGraphQL.Api.Configurations
 {
@@ -30,24 +34,36 @@ namespace ApiCircularGraphQL.Api.Configurations
                     };
                 options.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = async context =>
+                    /*OnTokenValidated = async context =>
                     {
-                        var tokenBlacklistService = context.HttpContext.RequestServices.GetRequiredService<ITokenBlacklistRepository>();
-                        var jti = context.Principal?.Claims.FirstOrDefault(c => c.Type == "jti")?.Value;
+                        var tokenBlacklistService = context.HttpContext.RequestServices
+                            .GetRequiredService<ITokenBlacklistRepository>();
+                
+                        var jti = context.Principal?.Claims
+                            .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+                
                         if (jti != null && await tokenBlacklistService.IsTokenBlacklistedAsync(jti))
                         {
-                            context.Fail("Token está en la lista negra");
+                            
+                            context.Fail("Token revocado");
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.NoResult();
+                            await context.Response.WriteAsJsonAsync(new {mesa= "tes"});
+                            await context.Response.WriteAsync("Nada funiona");
+                            await context.Response.CompleteAsync();
+                            //throw new TokenRevokedException("Token Revocado.");
                         }
-                    }
+                    }*/
                 };
             });
-            services.AddAuthorization(opciones=>
+            services.AddAuthorization(opciones =>
             {
                 opciones.AddPolicy("EditarCorreo", politica => politica.RequireClaim("Permiso", "EditarCorreo"));
             });
 
-            //services.AddSingleton<IAuthorizationHandler, CustomAuthorizationHandler>();
 
+            //services.AddSingleton<IAuthorizationHandler, CustomAuthorizationHandler>();
+            services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TokenValidationRequerementHandler>();
             return services;
         }
     }

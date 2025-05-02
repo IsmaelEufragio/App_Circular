@@ -27,7 +27,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
         [UsePaging]
         [UseFiltering]
         [UseSorting]
-        [Authorize(Roles = new[] { "Admin" })]
+        [Authorize(Policy = "TokenValido")]
         public static IQueryable<UserPrincipalDTO> GetUsuariosPrincipalesAll(
             [Service] IUserService usuarioService
         )

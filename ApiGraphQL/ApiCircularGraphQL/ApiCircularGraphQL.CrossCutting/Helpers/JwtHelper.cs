@@ -134,5 +134,47 @@ namespace ApiCircularGraphQL.CrossCutting.Helpers
                 return null;
             }
         }
+
+        public static (Guid Jti, DateTime Expiration) GetTokenInfo(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new ArgumentException("Token cannot be null or empty", nameof(token));
+            }
+
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+
+                // Leer el token sin validar (solo para extraer información)
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extraer el JTI (ID único del token)
+                var jtiClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti);
+                if (jtiClaim == null || !Guid.TryParse(jtiClaim.Value, out var jti))
+                {
+                    throw new SecurityTokenException("Invalid JTI claim in token");
+                }
+
+                // Extraer la fecha de expiración
+                var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp);
+                if (expClaim == null || !long.TryParse(expClaim.Value, out var expUnixTime))
+                {
+                    throw new SecurityTokenException("Invalid expiration claim in token");
+                }
+
+                var expiration = DateTimeOffset.FromUnixTimeSeconds(expUnixTime).UtcDateTime;
+
+                return (jti, expiration);
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is SecurityTokenException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new SecurityTokenException("Failed to parse token", ex);
+            }
+        }
     }
 }

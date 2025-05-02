@@ -1,7 +1,5 @@
 ﻿using ApiCircularGraphQL.Application.Services.Interfaces;
-using HotChocolate.Authorization;
-
-//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 

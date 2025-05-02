@@ -122,7 +122,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 Id = a.usInf_Id,
                 Nombre = a.usInf_Nombre,
                 RutaDelLogo = a.usInf_RutaLogo,
-                RutaDeLaPaginaWeb = a.usInf_RutaPaginaWed,
+                //RutaDeLaPaginaWeb = a.usInf_RutaPaginaWed,
                 UnicoUsuario = a.usInf_IgualSubInfo,
                 IdTipoUsuario = a.tipUs_Id
             }).ToList();
@@ -218,7 +218,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                     Id = u.usInf_Id,
                     Nombre = u.usInf_Nombre,
                     RutaDelLogo = u.usInf_RutaLogo,
-                    RutaDeLaPaginaWeb = u.usInf_RutaPaginaWed,
+                    //RutaDeLaPaginaWeb = u.usInf_RutaPaginaWed,
                     IdTipoUsuario = u.tipUs_Id,
                     UnicoUsuario = u.usInf_IgualSubInfo,
                 });
