@@ -1,10 +1,13 @@
-﻿using ApiCircularGraphQL.Domain.Entities;
+﻿using ApiCircularGraphQL.CrossCutting.Helpers;
+using ApiCircularGraphQL.Domain.Entities;
 using ApiCircularGraphQL.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,10 +17,15 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
     public class UserRepository : Repository<tbUsuarios>, IUserRepository
     {
         private readonly IDbContextFactory<AppECOContext> _contextFactory;
-
-        public UserRepository(IDbContextFactory<AppECOContext> contextFactory) : base(contextFactory)
+        private readonly ITokenBlacklistRepository _tokenBlacklistRepository;
+        private readonly IConfiguration _configuration;
+        public UserRepository(IDbContextFactory<AppECOContext> contextFactory, 
+            ITokenBlacklistRepository tokenBlacklistRepository,
+            IConfiguration configuration) : base(contextFactory)
         {
             _contextFactory = contextFactory;
+            _tokenBlacklistRepository = tokenBlacklistRepository;
+            _configuration = configuration;
         }
 
         public async Task<tbUsuarios> GetUserIdAsync(Guid idUser)
@@ -130,12 +138,29 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             if (!usuario) throw new Exception($"No se pudo obtener el usuario con el id {idUsuario}, Para guardar el Token Verificacion.");
             var tipoToken = await context.tbTipoToken.AnyAsync(a => a.tipToke_Id == idTipoToken);
             if (!tipoToken) throw new Exception($"No se pudo obtener el tipo Token con el id {idTipoToken}, para guardar el token.");
-            context.tbUsuariosTokens.Add(new tbUsuariosTokens
+            var tokenBD = await context.tbUsuariosTokens.FirstOrDefaultAsync(a => a.user_Id == idUsuario && a.tipToke_Id == idTipoToken);
+            if(tokenBD == null)
             {
-                user_Id = idUsuario,
-                tipToke_Id = idTipoToken,
-                userToke_Token = token
-            });
+                context.tbUsuariosTokens.Add(new tbUsuariosTokens
+                {
+                    user_Id = idUsuario,
+                    tipToke_Id = idTipoToken,
+                    userToke_Token = token
+                });
+            }
+            else
+            {
+                var validToken = JwtHelper.ValidateToken(tokenBD.userToke_Token, _configuration);
+                if (validToken)
+                {
+                    var (Jti, Expiration) = JwtHelper.GetTokenInfo(tokenBD.userToke_Token);
+                    if (Expiration > DateTime.UtcNow)//Agregar Token
+                    {
+                        await _tokenBlacklistRepository.AddToBlacklistAsync(token, Expiration);
+                    }
+                }
+                tokenBD.userToke_Token = token;
+            }
 
             await context.SaveChangesAsync();
         }
@@ -216,6 +241,23 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
                         ?? throw new Exception("No se encontro un token verificar");
 
             return token == tokesDB;
+        }
+        
+        public async Task<tbUsuarios> UsuarioVerificado(string correo,string contraseña)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+
+            var usuarios = await context.tbUsuarios.AsNoTracking().Where(a=> a.user_Correo.ToUpper() == correo.ToUpper()).ToListAsync();
+            if (usuarios.Count > 1)
+                throw new Exception("Existen mas de un usuario con el mismo correo.");
+
+            var usuario = usuarios.FirstOrDefault() ?? throw new Exception($"No existe el Correo {correo}.");
+
+            string paswordSal = EncryptPass.GeneratePassword(contraseña, usuario.user_PasswordSal);
+            if (usuario.user_Password != paswordSal)
+                throw new Exception("Contraseña no validad.");
+
+            return usuario;
         }
     }
 }

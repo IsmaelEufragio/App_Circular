@@ -1,4 +1,5 @@
 ﻿using ApiCircularGraphQL.Application.Configuracion;
+using ApiCircularGraphQL.Application.DTOs.Utilidades;
 using ApiCircularGraphQL.Application.Services.Interfaces;
 using ApiCircularGraphQL.CrossCutting.Helpers;
 using ApiCircularGraphQL.CrossCutting.Logging;
@@ -8,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,24 +36,6 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             _userRepository = userRepository;
             _baseServices = baseServices;
             _tokenBlacklistRepository = tokenBlacklistRepository;
-        }
-
-        public string Authenticate(string username, string password)
-        {
-            if (username == "Josue" || password == "123") // ¡Usa hashing en producción!
-            {
-                var roles = new[] { "Admin" }; // Obtén los roles del usuario desde la base de datos
-                _authLogger.LogAuthenticationAttempt("Josue", true);
-                var tokenModel = new CrearTokenModel
-                {
-                    IdUsuario = "1",
-                    NombreUsuario = "Josue",
-                    Configuration = _configuration,
-                    Roles = roles
-                };
-                return JwtHelper.GenerateToken(tokenModel);
-            }
-            return null;
         }
 
         public async Task<ServiceResult> VarificarUsuario(string token)
@@ -99,6 +84,60 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             catch (Exception ex)
             {
                 return new ServiceResult { Success = false, Message = ex.Message };
+            }
+        }
+
+        public async Task<ServiceResult> Login(string correo, string contraseña)
+        {
+            try
+            {
+                var usuarioVerificado = await _userRepository.UsuarioVerificado(correo, contraseña);
+                var roles = await _userRepository.RolesUsuario(usuarioVerificado.user_Id);
+                var claims = await _userRepository.ClaimsUsuario(usuarioVerificado.user_Id);
+
+                var tokenModel = new CrearTokenModel()
+                {
+                    Configuration = _configuration,
+                    IdUsuario = usuarioVerificado.user_Id.ToString(),
+                    NombreUsuario = usuarioVerificado.user_NombreUsuario,
+                    Expira = DateTime.Now.AddMinutes(5),
+                    Roles = []
+                };
+
+                if (!usuarioVerificado.user_Verificado)
+                {
+                    var tokeValidar = JwtHelper.GenerateToken(tokenModel) ?? throw new Exception("No se pudo generar el Token para validar el usuario.");
+                    Guid idTipoTokenCorreo = Guid.Parse(await _baseServices.GetConfiguracion("IdTipoTokenVarificacionCorreo"));
+                    await _userRepository.GuardarToken(usuarioVerificado.user_Id, idTipoTokenCorreo, tokeValidar);
+
+                    var ruta = await _baseServices.GetConfiguracion("ApiRutaToken");
+                    var CorreoModel = new EmailDTO
+                    {
+                        Asunto = "Verificacion Del token",
+                        DestinoCorreo = usuarioVerificado.user_Correo,
+                        Cuerpo = $"{ruta}{tokeValidar}"
+                    };
+                    await _baseServices.Correo(CorreoModel);
+                }
+
+                tokenModel.Roles = roles ?? [];
+                tokenModel.Claims = claims;
+                tokenModel.Expira = null;
+                var token = JwtHelper.GenerateToken(tokenModel) ?? throw new Exception("No se pudo generar el Token para logear al usuario.");
+
+                Guid idTipoTokenLogin = Guid.Parse(await _baseServices.GetConfiguracion("IdTipoTokenLogin"));
+                await _userRepository.GuardarToken(usuarioVerificado.user_Id, idTipoTokenLogin, token);
+                return new ServiceResult()
+                {
+                    Data = usuarioVerificado.user_Verificado ? new { token } : new { token, CorreoEnviado = true },
+                    Success = true,
+                    Type = ServiceResultType.Success,
+                    Message = usuarioVerificado.user_Verificado ? "Todo Bien." : $"Se envio el correo verificacion. al Correo {usuarioVerificado.user_Correo}, Revise el Spam."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult() { Success = false, Message = ex.Message, Type = ServiceResultType.Error };
             }
         }
     }

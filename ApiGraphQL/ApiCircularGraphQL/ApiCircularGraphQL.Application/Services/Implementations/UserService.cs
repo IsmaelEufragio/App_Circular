@@ -348,6 +348,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 {
                     //var rutaLogo = await _baseServices.GuardarArchivo(tamanoLogo, congRutLog, model.Logo);
                     //model.RutaLogo = rutaLogo;
+                    model.RutaLogo = "https://apicircular.blob.core.windows.net/logos/0fa7ca0c-a08b-435d-9002-587811bcc5c3.jpg";
                 }
 
                 var modelUbicacion = await _ubicacionRepository.AddAsync(new tbUbicacion
@@ -404,8 +405,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                     }
                 };
 
-                //var idUsuario = await _userRepository.CrearUsuarioPrincipal(usuario);
-                var idUsuario = Guid.Parse("5a4fdf62-62ff-4a6b-a06d-a6288eb550e1");
+                var idUsuario = await _userRepository.CrearUsuarioPrincipal(usuario);
+                //var idUsuario = Guid.Parse("5a4fdf62-62ff-4a6b-a06d-a6288eb550e1");
                 //Generar Token Para Verificar Usuario
 
                 var tokenModel = new CrearTokenModel()
@@ -431,8 +432,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 //Genera Token Por si Edita el Correo.
                 var rolDB = await _userRepository.RolesUsuario(idUsuario);
                 tokenModel.Roles = rolDB?? [];
-                var dicioClaims = await _userRepository.ClaimsUsuario(idUsuario);
-                tokenModel.Claims = dicioClaims;
+                var claims = await _userRepository.ClaimsUsuario(idUsuario);
+                tokenModel.Claims = claims;
                 tokenModel.Expira = null;
                 var token = JwtHelper.GenerateToken(tokenModel) ?? throw new Exception("No se pudo generar el Token para validar el usuario.");
 

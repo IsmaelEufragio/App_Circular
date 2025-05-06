@@ -18,7 +18,7 @@ namespace ApiCircularGraphQL.Api.Controllers
         [HttpPost, Route("Login")]
         public async Task<IActionResult> Login(LoginDTO model)
         {
-            var data = _authService.Authenticate(model.Correo, model.Passsword);
+            var data = await _authService.Login(model.Correo, model.Passsword);
             return Ok(data);
         }
         [Authorize(Policy = "EditarCorreo"), HttpPatch, Route("VarificarCorreo")]

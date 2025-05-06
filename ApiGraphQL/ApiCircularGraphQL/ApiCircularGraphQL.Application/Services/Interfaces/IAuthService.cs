@@ -9,7 +9,7 @@ namespace ApiCircularGraphQL.Application.Services.Interfaces
 {
     public interface IAuthService
     {
-        string Authenticate(string username, string password);
+        Task<ServiceResult> Login(string correo, string contraseña);
         Task<ServiceResult> VarificarUsuario(string token);
     }
 }
