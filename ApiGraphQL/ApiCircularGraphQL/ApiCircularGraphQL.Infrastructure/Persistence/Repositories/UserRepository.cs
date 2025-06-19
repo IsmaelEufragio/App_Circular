@@ -156,7 +156,7 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
                     var (Jti, Expiration) = JwtHelper.GetTokenInfo(tokenBD.userToke_Token);
                     if (Expiration > DateTime.UtcNow)//Agregar Token
                     {
-                        await _tokenBlacklistRepository.AddToBlacklistAsync(token, Expiration);
+                        await _tokenBlacklistRepository.AddToBlacklistAsync(Jti.ToString(), Expiration);
                     }
                 }
                 tokenBD.userToke_Token = token;

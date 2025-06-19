@@ -30,9 +30,9 @@ void main() async {
   final sessionService = SessionSevices(const FlutterSecureStorage());
   final http = Http(
     Client(),
-    baseUrl: 'https://api.themoviedb.org/3',
+    baseUrl: 'https://localhost:7181',
     apiKey:
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNzc0NWQ5YzU3YjZiYzE2MDBjZTEyOGM4YzY4OGQwOSIsIm5iZiI6MTcyMjk5NjkzOC4yNTM0OTQsInN1YiI6IjY2YjJkNDNiZTg0NjljOTg5MmE4NmQ4NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QJc8s_d_niXZGaHGzqDS6hHc-0RG0BVRUxw0KLcWLT8',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZDc0ZDM5OC05MDJlLTQ1MjktYTU3ZS00YmJmMDQyYjFmZWUiLCJuYW1lIjoiUG9sbG9zIGVsIFR1YW5pcyB0ZXMiLCJqdGkiOiI4NTFjZWFkOS00MDEyLTRlODctYjEzOC1jMjkwMTE0YzM1MDYiLCJQZXJtaXNvIjoiRWRpdGFyQ29ycmVvIiwiZXhwIjoxNzQ3NTI2MDI3LCJpc3MiOiJodHRwczovL3R1LWFwaS5jb20iLCJhdWQiOiJodHRwczovL3R1LWFwaS5jb20ifQ.OsJIYCyEoPfWWgA-oZKwCDSSPOanT2mIUg1MQZH5M3w',
     //lenguageCode: languageService.languageCode,
   );
   final systemDarkMode =
