@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 //import '../../../../../generated/translations.g.dart';
+import '../../../../global/colors.dart';
 import '../../../../routes/routes.dart';
 import '../../controller/sign_in_controller.dart';
 
@@ -12,7 +13,9 @@ class SubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final SignInController controller = Provider.of(context);
     if (controller.state.fetching) {
-      return const CircularProgressIndicator();
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
     }
     return MaterialButton(
       onPressed: () {
@@ -21,8 +24,14 @@ class SubmitButton extends StatelessWidget {
           _submit(context);
         }
       },
-      color: Colors.blue,
-      child: const Text('Login'),
+      color: AppColors.sucess,
+      child: const Text(
+        'Iniciar sesión',
+        style: TextStyle(
+          color: AppColors.fondo,
+          fontSize: 16,
+        ),
+      ),
     );
   }
 

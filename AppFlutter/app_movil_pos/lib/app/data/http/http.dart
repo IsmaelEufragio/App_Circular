@@ -36,6 +36,7 @@ class Http {
     Map<String, dynamic> body = const {},
     String languageCode = 'en',
     Duration timeout = const Duration(seconds: 10),
+    bool authentication = true,
   }) async {
     Map<String, dynamic> logs = {};
     try {
@@ -49,18 +50,22 @@ class Http {
             'language': languageCode,
           },
         );
-      } else {
+      }
+      /*else {
         url = url.replace(
           queryParameters: {
             'language': languageCode,
           },
         );
-      }
+      }*/
       headers = {
-        'Authorization': 'Bearer $_apiKey',
+        //'Authorization': 'Bearer $_apiKey',
         'Content-Type': 'application/json',
         ...headers
       };
+      if (authentication) {
+        headers = {'Authorization': 'Bearer $_apiKey', ...headers};
+      }
       late final Response response;
       final String bodyString = jsonEncode(body);
 

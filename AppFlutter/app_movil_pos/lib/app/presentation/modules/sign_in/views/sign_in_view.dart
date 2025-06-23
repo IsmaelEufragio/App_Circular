@@ -14,9 +14,6 @@ class SingInView extends StatefulWidget {
 }
 
 class _SingInViewState extends State<SingInView> {
-  final _scrollController = ScrollController();
-  final _focusNode = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignInController>(
@@ -27,23 +24,53 @@ class _SingInViewState extends State<SingInView> {
         authenticationRepository: context.read(),
       ),
       child: Scaffold(
-        body: SafeArea(
-          child: Container(
-            color: AppColors.fondo,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Container(
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.info,
-                    borderRadius: BorderRadius.circular(15),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.sucess,
+                AppColors.primary,
+              ],
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 80.0)
+                  .copyWith(top: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Bienvenido',
+                    style: TextStyle(
+                      color: AppColors.fondo,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  margin: const EdgeInsets.all(20),
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(16),
+                  const Text(
+                    'Inicia sesión para continuar',
+                    style: TextStyle(
+                      color: AppColors.fondo75,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.fondo,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: AppColors.info,
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(24),
                     child: Form(
                       child: Builder(
                         builder: (context) {
@@ -52,37 +79,49 @@ class _SingInViewState extends State<SingInView> {
                           return AbsorbPointer(
                             absorbing: controlle.state.fetching,
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Correo electrónico',
+                                    prefixIcon:
+                                        const Icon(Icons.email_outlined),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
                                   onChanged: (text) {
                                     controlle.onUserNameChanged(text);
                                   },
-                                  decoration: const InputDecoration(
-                                    hintText: 'Usuario',
-                                  ),
                                   validator: (text) {
                                     text = text?.trim().toLowerCase() ?? '';
                                     if (text.isEmpty) {
-                                      return 'Ingrese un usuario valid';
+                                      return 'Ingrese un correo valido';
                                     }
                                     return null;
                                   },
+                                  keyboardType: TextInputType.emailAddress,
                                 ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
+                                const SizedBox(height: 16),
                                 TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Contraseña',
+                                    prefixIcon: const Icon(Icons.lock_outlined),
+                                    suffixIcon: IconButton(
+                                      icon:
+                                          const Icon(Icons.visibility_outlined),
+                                      onPressed: () {},
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
                                   onChanged: (text) {
                                     controlle.onPasswordChanged(text);
                                   },
-                                  decoration: const InputDecoration(
-                                    hintText: 'Contraseña',
-                                  ),
                                   validator: (text) {
                                     text = text?.replaceAll(' ', '') ?? '';
                                     if (text.length < 4) {
@@ -90,11 +129,32 @@ class _SingInViewState extends State<SingInView> {
                                     }
                                     return null;
                                   },
+                                  obscureText: true,
                                 ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {},
+                                    child: const Text(
+                                      '¿Olvidaste tu contraseña?',
+                                      style: TextStyle(
+                                        color: AppColors.sucess,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                //const SizedBox(height: 12),
                                 const SizedBox(
-                                  height: 30,
+                                  width: double.infinity,
+                                  height: 45,
+                                  child: SubmitButton(),
                                 ),
-                                const SubmitButton()
+                                const SizedBox(height: 16),
+                                const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [],
+                                ),
                               ],
                             ),
                           );
@@ -102,127 +162,26 @@ class _SingInViewState extends State<SingInView> {
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        // Espera un frame y luego desplaza
-        Future.delayed(const Duration(milliseconds: 300), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        });
-      }
-    });
-  }
-}
-/*
-class SingInView extends StatelessWidget {
-  const SingInView({super.key});
-
-  // ignore: unused_field
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignInController>(
-      create: (_) => SignInController(
-        const SignInState(),
-        //Ya estan en main, es solo los castea.
-        sessionController: context.read(),
-        authenticationRepository: context.read(),
-      ),
-      child: Scaffold(
-        //resizeToAvoidBottomInset: true,
-
-        body: SafeArea(
-          child: Container(
-            color: AppColors.fondo,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.info,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  //margin: const EdgeInsets.all(30),
-                  child: Form(
-                    child: Builder(
-                      builder: (context) {
-                        final controlle =
-                            Provider.of<SignInController>(context);
-                        return AbsorbPointer(
-                          absorbing: controlle.state.fetching,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              TextFormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                onChanged: (text) {
-                                  controlle.onUserNameChanged(text);
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: 'Usuario',
-                                ),
-                                validator: (text) {
-                                  text = text?.trim().toLowerCase() ?? '';
-                                  if (text.isEmpty) {
-                                    return 'Ingrese un usuario valid';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              TextFormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                onChanged: (text) {
-                                  controlle.onPasswordChanged(text);
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: 'Contraseña',
-                                ),
-                                validator: (text) {
-                                  text = text?.replaceAll(' ', '') ?? '';
-                                  if (text.length < 4) {
-                                    return 'Tiene que tener almanos 4 caracteres.';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              const SubmitButton()
-                            ],
+                  //const SizedBox(height: 24),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text.rich(
+                      TextSpan(
+                        text: '¿No tienes una cuenta? ',
+                        style: TextStyle(color: AppColors.fondo75),
+                        children: [
+                          TextSpan(
+                            text: 'Regístrate',
+                            style: TextStyle(
+                              color: AppColors.fondo,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
@@ -231,4 +190,3 @@ class SingInView extends StatelessWidget {
     );
   }
 }
-*/

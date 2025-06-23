@@ -1026,6 +1026,8 @@ CREATE TABLE [Genl].tbTipoToken(
 GO
 INSERT INTO [Genl].[tbTipoToken] VALUES ('e575e6e8-52ad-4235-b3d6-dadb6c0caa36','Login')
 INSERT INTO [Genl].[tbTipoToken] VALUES ('3736d268-14df-4dd5-b192-b6e3120eba25','Varificacion Correo')
+INSERT INTO [Genl].[tbTipoToken] VALUES ('a9136126-bf2d-44e4-bea7-bce4f65a1b96','RefresToken')
+
 /*Sección #54*/
 CREATE TABLE [Genl].tbUsuariosTokens(
 	[user_Id]				UNIQUEIDENTIFIER 	NOT NULL,
