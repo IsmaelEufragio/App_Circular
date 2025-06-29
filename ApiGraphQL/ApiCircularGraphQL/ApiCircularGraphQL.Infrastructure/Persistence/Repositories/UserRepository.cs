@@ -3,6 +3,7 @@ using ApiCircularGraphQL.Domain.Entities;
 using ApiCircularGraphQL.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,9 +20,10 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
         private readonly IDbContextFactory<AppECOContext> _contextFactory;
         private readonly ITokenBlacklistRepository _tokenBlacklistRepository;
         private readonly IConfiguration _configuration;
-        public UserRepository(IDbContextFactory<AppECOContext> contextFactory, 
+        public UserRepository(IDbContextFactory<AppECOContext> contextFactory,
             ITokenBlacklistRepository tokenBlacklistRepository,
-            IConfiguration configuration) : base(contextFactory)
+            IConfiguration configuration
+            ) : base(contextFactory)
         {
             _contextFactory = contextFactory;
             _tokenBlacklistRepository = tokenBlacklistRepository;
@@ -229,7 +231,7 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             return [];
         }
 
-        public async Task<bool> VerificarToke(Guid idUsuario, Guid idTipoUsuario, string token)
+        public async Task<bool> TokesUsuarios(Guid idUsuario, Guid idTipoToken, string token)
         {
             using var context = _contextFactory.CreateDbContext();
             var usuario = await context.tbUsuarios
@@ -237,27 +239,34 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
                             .FirstOrDefaultAsync(a=> a.user_Id == idUsuario) 
                         ?? throw new Exception("No se encontro un usuario para validar");
 
-            var tokesDB = usuario.tbUsuariosTokens.FirstOrDefault(a => a.tipToke_Id == idTipoUsuario)?.userToke_Token 
-                        ?? throw new Exception("No se encontro un token verificar");
+            var tokesDB = usuario.tbUsuariosTokens.FirstOrDefault(a => a.tipToke_Id == idTipoToken)?.userToke_Token 
+                        ?? throw new Exception("No se encontro un token");
 
             return token == tokesDB;
         }
         
-        public async Task<tbUsuarios> UsuarioVerificado(string correo,string contraseña)
+        public async Task<tbUsuarios?> UsuarioVerificado(string correo,string contraseña)
         {
-            using var context = await _contextFactory.CreateDbContextAsync();
+            try
+            {
+                using var context = await _contextFactory.CreateDbContextAsync();
 
-            var usuarios = await context.tbUsuarios.AsNoTracking().Where(a=> a.user_Correo.ToUpper() == correo.ToUpper()).ToListAsync();
-            if (usuarios.Count > 1)
-                throw new Exception("Existen mas de un usuario con el mismo correo.");
+                var usuarios = await context.tbUsuarios.AsNoTracking().Where(a => a.user_Correo.ToUpper() == correo.ToUpper()).ToListAsync();
+                if (usuarios.Count > 1)
+                    throw new Exception("Existen mas de un usuario con el mismo correo.");
 
-            var usuario = usuarios.FirstOrDefault() ?? throw new Exception($"No existe el Correo {correo}.");
+                var usuario = usuarios.FirstOrDefault() ?? throw new Exception($"No existe el Correo {correo}.");
 
-            string paswordSal = EncryptPass.GeneratePassword(contraseña, usuario.user_PasswordSal);
-            if (usuario.user_Password != paswordSal)
-                throw new Exception("Contraseña no validad.");
+                string paswordSal = EncryptPass.GeneratePassword(contraseña, usuario.user_PasswordSal);
+                if (usuario.user_Password != paswordSal)
+                    throw new Exception("Contraseña no validad.");
 
-            return usuario;
+                return usuario;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }
