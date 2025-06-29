@@ -7,7 +7,7 @@ namespace ApiCircularGraphQL.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : ApiBaseController
     {
         private readonly IUserService _userService;
         private readonly IBaseServices _baseServices;
@@ -30,7 +30,7 @@ namespace ApiCircularGraphQL.Api.Controllers
                 if (isValid)
                 {
                     var resul = await _userService.CrearUsaurio(modelo);
-                    return Ok(resul);
+                    return ApiServiceResult(resul);
                 }
                 else
                 {
