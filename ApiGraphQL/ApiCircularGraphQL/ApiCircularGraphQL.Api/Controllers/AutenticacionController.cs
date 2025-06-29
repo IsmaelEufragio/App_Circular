@@ -36,9 +36,9 @@ namespace ApiCircularGraphQL.Api.Controllers
         }
 
         [HttpPatch, Route("TokenDeAcceso")]
-        public async Task<IActionResult> AccessToken(string refresToken)
+        public async Task<IActionResult> AccessToken(TokenAccessDTO tokenAccessDTO)
         {
-            var data = await _authService.ObtenerAccessToken(refresToken);
+            var data = await _authService.ObtenerAccessToken(tokenAccessDTO.RefresToken);
             return ApiServiceResult(data);
         }
     }
