@@ -22,14 +22,14 @@ class SignInController extends StateNotifier<SignInState> {
   void onUserNameChanged(String text) {
     onlyUpdate(
       state.copyWith(
-        username: text.trim().toLowerCase(),
+        username: text,
       ),
     );
   }
 
   void onPasswordChanged(String text) {
     onlyUpdate(state.copyWith(
-      password: text.trim().toLowerCase(),
+      password: text,
     ));
   }
 

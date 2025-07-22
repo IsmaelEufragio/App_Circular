@@ -210,6 +210,22 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             return dataResult;
         }
 
+        public async Task<Dictionary<Guid, RolDTO[]>> GetRolesUsuario(IReadOnlyList<Guid> idsUsuarios)
+        {
+            var data = await _userRepository.GetRolesPorUsuarios(idsUsuarios);
+            if(data is null)
+                return idsUsuarios.ToDictionary(k => k, v => Array.Empty<RolDTO>());
+
+            var dataDTO = data.ToDictionary(k => k.Key, d => d.Value.Select(a => new RolDTO
+            {
+                Id = a.rol_Id,
+                Nombre = a.rol_Nombre,
+                NombreNormalizado = a.rol_NombreNormalizado
+            }).ToArray());
+            return dataDTO;
+            
+        }
+
         public IQueryable<UserPrincipalDTO> GetUsuarioPrincipalQuery()
         {
             return _userRepository.GetUserAllQueryableAsync()

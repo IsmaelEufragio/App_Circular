@@ -89,5 +89,16 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
                         .ToBatchPageAsync(p=> p.IdUserPrincipal, pagingArguments, cancellationToken);
         }
 
+        [DataLoader]
+        public static async Task<IReadOnlyDictionary<Guid, RolDTO[]>> RolPorUsuario(
+            IReadOnlyList<Guid> idsUsuario,
+            IUserService userService,
+            CancellationToken cancellationToken
+        )
+        {
+            var data = await userService.GetRolesUsuario(idsUsuario);
+            return data;
+        }
+
     }
 }

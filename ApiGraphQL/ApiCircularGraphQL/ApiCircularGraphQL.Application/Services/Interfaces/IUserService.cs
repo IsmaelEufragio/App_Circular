@@ -17,6 +17,7 @@ namespace ApiCircularGraphQL.Application.Services.Interfaces
         Task<IEnumerable<HorarioDTO>> GetHorarioPorUsuario(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<TipoIdentidadDTO>> GetIdentidadPorByIds(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<TipoUsuarioDTO>> GetManyByIds(IReadOnlyList<Guid> tiposUsuarioIds);
+        Task<Dictionary<Guid, RolDTO[]>> GetRolesUsuario(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<TelefonosUsuarioDTO>> GetTelefonosPorUsuario(IReadOnlyList<Guid> idsUsuarios);
         Task<List<TipoUsuarioDTO>> GetTipoUsuarioAll();
         Task<TipoUsuarioDTO> GetTipoUsuarioId(Guid id);

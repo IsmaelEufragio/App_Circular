@@ -26,6 +26,15 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   @override
   Future<Either<SignInFailure, User>> signIn(
       String username, String password) async {
+    final requestTokenRefres = await _authenticationService
+        .createRequestTokenRefres(username: username, password: password);
+    requestTokenRefres.when(
+      left: (failure) async => Either.left(failure),
+      right: (token) async {
+        final requestTokenAccess = await _authenticationService
+            .createRequestTokenAccess(refresToken: token);
+      },
+    );
     final requestToken = await _authenticationService.createRequestToken();
     return requestToken.when(
       left: (failure) async => Either.left(failure),

@@ -268,5 +268,14 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
                 return null;
             }
         }
+
+        public async Task<Dictionary<Guid, tbRoles[]>?> GetRolesPorUsuarios(IReadOnlyList<Guid> ids)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.tbUsuarios.AsNoTracking()
+                            .Where(a => ids.Contains(a.user_Id))
+                            .Include(u => u.rol)
+                            .ToDictionaryAsync(d => d.user_Id, d => d.rol.ToArray());
+        }
     }
 }

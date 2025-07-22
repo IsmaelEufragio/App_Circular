@@ -28,5 +28,6 @@ namespace ApiCircularGraphQL.Domain.Interfaces
         Task<Dictionary<string, string>> ClaimsUsuario(Guid idUsuario);
         Task<bool> TokesUsuarios(Guid idUsuario, Guid idTipoUsuario, string token);
         Task<tbUsuarios?> UsuarioVerificado(string correo, string contraseña);
+        Task<Dictionary<Guid, tbRoles[]>?> GetRolesPorUsuarios(IReadOnlyList<Guid> ids);
     }
 }

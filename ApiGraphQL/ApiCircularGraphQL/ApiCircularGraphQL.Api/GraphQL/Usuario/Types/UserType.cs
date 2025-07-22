@@ -37,5 +37,18 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
             var data = await horarioPorUsuarioDataLoader.LoadAsync(userDTO.Id, CancellationToken.None);
             return data is null ? throw new GraphQLException($"No se encontraron los Horarios con IdUsuarios {userDTO.Id}") : [.. data];
         }
+
+        [BindMember(nameof(UserDTO.UsuarioRole))]
+        public static async Task<List<RolDTO>> GetRolesAsync(
+            [Parent(nameof(UserDTO.Id))] UserDTO userDTO,
+            IRolPorUsuarioDataLoader rolPorUsuarioDataLoader
+        )
+        {
+            var data = await rolPorUsuarioDataLoader.LoadRequiredAsync(userDTO.Id, CancellationToken.None);
+            if (data is null)
+                return [];
+
+            return [.. data];
+        }
     }
 }

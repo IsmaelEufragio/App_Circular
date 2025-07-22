@@ -28,6 +28,51 @@ class AuthenticationService {
     return Either.left(const SignInFailure.unknown());
   }
 
+  Future<Either<SignInFailure, String>> createRequestTokenRefres({
+    required String username,
+    required String password,
+  }) async {
+    final result = await _http.request('/Autenticacion/TokenRefres',
+        method: HttpMethod.patch,
+        authentication: false,
+        body: {
+          'correo': username,
+          'password': password,
+        }, onSucces: (responseBody) {
+      final json = responseBody as Map;
+      final data = json['data'] as Map;
+      return data['refresToken'] as String;
+    });
+    return result.when(
+      left: _handleFailure,
+      right: (responseBody) {
+        return Either.right(responseBody);
+      },
+    );
+  }
+
+  Future<Either<SignInFailure, String>> createRequestTokenAccess(
+      {required String refresToken}) async {
+    final result = await _http.request('/Autenticacion/TokenDeAcceso',
+        method: HttpMethod.patch,
+        timeout: const Duration(seconds: 30),
+        authentication: false,
+        body: {
+          'refresToken': refresToken,
+        }, onSucces: (responseBody) {
+      final json = responseBody as Map;
+      final data = json['data'] as Map;
+      return data['tokenAccess'] as String;
+    });
+
+    return result.when(
+      left: _handleFailure,
+      right: (responseBody) {
+        return Either.right(responseBody);
+      },
+    );
+  }
+
   Future<Either<SignInFailure, String>> createRequestToken() async {
     final result = await _http.request(
       '/Autenticacion/Login',
