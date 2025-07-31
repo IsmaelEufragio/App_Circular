@@ -28,6 +28,6 @@ namespace ApiCircularGraphQL.Application.DTOs.Usuarios
         public TipoIdentidadDTO TipoIdentidad { get; set; }
         public List<HorarioDTO> Horarios { get; set; }
         public List<UsuarioRolesDTO> UsuarioRole { get; set; }
-
+        public List<UsuariosClaimsDTO> Claims { get; set; }
     }
 }

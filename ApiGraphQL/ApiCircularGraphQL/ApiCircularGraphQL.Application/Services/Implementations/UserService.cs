@@ -226,6 +226,20 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
             
         }
 
+        public async Task<Dictionary<Guid,UsuariosClaimsDTO[]>> GetClaimsUsuario(IReadOnlyList<Guid> idsUsuarios)
+        {
+            var data = await _userRepository.ClaimsPorUsuarios(idsUsuarios);
+            if (data is null)
+                return [];
+
+            var dataDTO = data.ToDictionary(k => k.Key, d => d.Value.Select(a => new UsuariosClaimsDTO
+            {
+                Tipo = a.Key,
+                Valor = a.Value
+            }).ToArray());
+            return dataDTO??[];
+        }
+
         public IQueryable<UserPrincipalDTO> GetUsuarioPrincipalQuery()
         {
             return _userRepository.GetUserAllQueryableAsync()

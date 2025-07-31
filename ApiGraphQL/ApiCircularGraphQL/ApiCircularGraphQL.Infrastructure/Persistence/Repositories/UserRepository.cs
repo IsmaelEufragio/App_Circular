@@ -197,40 +197,6 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             return usuario.rol.Count > 0 ? [.. usuario.rol.Select(a => a.rol_NombreNormalizado)] : [];
         }
 
-        public async Task<Dictionary<string, string>> ClaimsUsuario(Guid idUsuario)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var usuario = await context.tbUsuarios
-                            .Include(a => a.rol).ThenInclude(e => e.tbRolesClaims)
-                            .Include(a=> a.tbUsuariosClaims)
-                            .FirstOrDefaultAsync(a => a.user_Id == idUsuario);
-            Dictionary<string, string> Claims;
-            if (usuario is not null)
-            {
-                Claims = usuario.rol?
-                    .SelectMany(a => a.tbRolesClaims ?? [])
-                    .ToDictionary(
-                        a => a.rolClai_Tipo,
-                        a => a.rolClai_Value
-                    ) ?? [];
-
-                var usuarioClaims = usuario.tbUsuariosClaims?.ToDictionary(
-                    a => a.userClai_Tipo,
-                    a => a.userClai_Value) ?? [];
-
-                foreach (var item in usuarioClaims)
-                {
-                    if (!Claims.ContainsKey(item.Key))
-                    {
-                        Claims[item.Key] = item.Value;
-                    }
-                }
-
-                return Claims;
-            }
-            return [];
-        }
-
         public async Task<bool> TokesUsuarios(Guid idUsuario, Guid idTipoToken, string token)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -269,6 +235,12 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             }
         }
 
+        public async Task<Dictionary<string, string>> ClaimsUsuario(Guid idUsuario)
+        {
+            var mapa = await ClaimsPorUsuarios([idUsuario]);
+            return mapa.TryGetValue(idUsuario, out var claims) ? claims : [];
+        }
+
         public async Task<Dictionary<Guid, tbRoles[]>?> GetRolesPorUsuarios(IReadOnlyList<Guid> ids)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -276,6 +248,52 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
                             .Where(a => ids.Contains(a.user_Id))
                             .Include(u => u.rol)
                             .ToDictionaryAsync(d => d.user_Id, d => d.rol.ToArray());
+        }
+
+        public async Task<Dictionary<Guid, Dictionary<string,string>>> ClaimsPorUsuarios(IReadOnlyList<Guid> idsUsuarios)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var usuarios = await context.tbUsuarios
+                            .AsNoTracking()
+                            .Include(a => a.rol).ThenInclude(e => e.tbRolesClaims)
+                            .Include(a => a.tbUsuariosClaims)
+                            .Where(a => idsUsuarios.Contains(a.user_Id)).ToListAsync();
+            var claimsUsuarios = new Dictionary<Guid, Dictionary<string, string>>();
+            foreach (var id in idsUsuarios)
+            {
+                if(usuarios != null && usuarios.Any(a=> a.user_Id == id))
+                {
+
+                    Dictionary<string, string> Claims;
+                    var usuario = usuarios.FirstOrDefault(a => a.user_Id == id);
+
+                    Claims = usuario.rol?
+                    .SelectMany(a => a.tbRolesClaims ?? [])
+                    .ToDictionary(
+                        a => a.rolClai_Tipo,
+                        a => a.rolClai_Value
+                    ) ?? [];
+
+                    var usuarioClaims = usuario.tbUsuariosClaims?.ToDictionary(
+                        a => a.userClai_Tipo,
+                        a => a.userClai_Value) ?? [];
+
+                    foreach (var item in usuarioClaims)
+                    {
+                        if (!Claims.ContainsKey(item.Key))
+                        {
+                            Claims[item.Key] = item.Value;
+                        }
+                    }
+                    claimsUsuarios[id] = Claims;
+                }
+                else
+                {
+                    claimsUsuarios[id] = [];
+                }
+            }
+            return claimsUsuarios;
         }
     }
 }

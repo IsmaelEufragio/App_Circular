@@ -50,5 +50,17 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
 
             return [.. data];
         }
+
+        public static async Task<List<UsuariosClaimsDTO>> GetClaims(
+            [Parent] UserDTO userDTO,
+            IClaimsUsuarioDataLoader claimsUsuarioDataLoader,
+            CancellationToken cancellationToken
+        )
+        {
+            var data = await claimsUsuarioDataLoader.LoadAsync(userDTO.Id, CancellationToken.None);
+            return data is null
+                ? throw new GraphQLException($"No se encontró el tipo de Identificacion con ID {userDTO.IdTipoIdentidad}")
+                : [.. data];
+        }
     }
 }

@@ -100,5 +100,16 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
             return data;
         }
 
+        [DataLoader]
+        public static async Task<IReadOnlyDictionary<Guid, UsuariosClaimsDTO[]>> ClaimsUsuario(
+            IReadOnlyList<Guid> idsUsuario,
+            IUserService userService,
+            CancellationToken cancellationToken
+        )
+        {
+            var data = await userService.GetClaimsUsuario(idsUsuario);
+            return data?? [];
+        }
+
     }
 }
