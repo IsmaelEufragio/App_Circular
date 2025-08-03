@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const _key = 'sessionId';
 const _accountKey = 'accountId';
+const _refresToken = 'refresToken';
 
 class SessionSevices {
   SessionSevices(this._securestorage);
@@ -16,6 +17,10 @@ class SessionSevices {
     return _securestorage.read(key: _accountKey);
   }
 
+  Future<String?> get refresToken {
+    return _securestorage.read(key: _refresToken);
+  }
+
   Future<void> saveSessionId(String sessionId) {
     return _securestorage.write(
       key: _key,
@@ -27,6 +32,13 @@ class SessionSevices {
     return _securestorage.write(
       key: _accountKey,
       value: accountId,
+    );
+  }
+
+  Future<void> saveRefresToken(String refresToken) {
+    return _securestorage.write(
+      key: _refresToken,
+      value: refresToken,
     );
   }
 

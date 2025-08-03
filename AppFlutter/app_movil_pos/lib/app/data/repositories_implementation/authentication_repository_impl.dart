@@ -31,8 +31,13 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     requestTokenRefres.when(
       left: (failure) async => Either.left(failure),
       right: (token) async {
+        _sessionSevices.saveRefresToken(token);
         final requestTokenAccess = await _authenticationService
             .createRequestTokenAccess(refresToken: token);
+
+        requestTokenAccess.when(
+            left: (failure) async => Either.left(failure),
+            right: (accesToken) async => {});
       },
     );
     final requestToken = await _authenticationService.createRequestToken();
