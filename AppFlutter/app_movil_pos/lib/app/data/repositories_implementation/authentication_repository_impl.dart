@@ -19,8 +19,8 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   @override
   Future<bool> get isSignedIn async {
-    final sessionId = await _sessionSevices.sessionId;
-    return sessionId != null;
+    final accessToken = await _sessionSevices.accessToken;
+    return accessToken != null;
   }
 
   @override
@@ -28,45 +28,24 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       String username, String password) async {
     final requestTokenRefres = await _authenticationService
         .createRequestTokenRefres(username: username, password: password);
-    requestTokenRefres.when(
+    return requestTokenRefres.when(
       left: (failure) async => Either.left(failure),
       right: (token) async {
         _sessionSevices.saveRefresToken(token);
         final requestTokenAccess = await _authenticationService
             .createRequestTokenAccess(refresToken: token);
 
-        requestTokenAccess.when(
-            left: (failure) async => Either.left(failure),
-            right: (accesToken) async => {});
-      },
-    );
-    final requestToken = await _authenticationService.createRequestToken();
-    return requestToken.when(
-      left: (failure) async => Either.left(failure),
-      right: (token) async {
-        final requesLogin = await _authenticationService.CreateSessionWithLogin(
-          username: username,
-          password: password,
-          token: token,
+        return requestTokenAccess.when(
+          left: (failure) async => Either.left(failure),
+          right: (accessToken) async {
+            _sessionSevices.saveAccessToken(accessToken);
+            final user = await _accountServices.getAccount();
+            if (user == null) {
+              return Either.left(const SignInFailure.unknown());
+            }
+            return Either.right(user);
+          },
         );
-        return requesLogin.when(
-            left: (failure) async => Either.left(failure),
-            right: (newRequestToken) async {
-              final sessionId =
-                  await _authenticationService.createSession(newRequestToken);
-
-              return sessionId.when(
-                left: (failure) async => Either.left(failure),
-                right: (sessionId) async {
-                  _sessionSevices.saveSessionId(sessionId);
-                  final user = await _accountServices.getAccount();
-                  if (user == null) {
-                    return Either.left(const SignInFailure.unknown());
-                  }
-                  return Either.right(user);
-                },
-              );
-            });
       },
     );
   }

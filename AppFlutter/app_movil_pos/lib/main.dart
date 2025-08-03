@@ -34,6 +34,7 @@ void main() async {
         'https://apicircular-c6a8def4bjhycyga.canadacentral-01.azurewebsites.net',
     apiKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZDc0ZDM5OC05MDJlLTQ1MjktYTU3ZS00YmJmMDQyYjFmZWUiLCJuYW1lIjoiUG9sbG9zIGVsIFR1YW5pcyB0ZXMiLCJqdGkiOiI4NTFjZWFkOS00MDEyLTRlODctYjEzOC1jMjkwMTE0YzM1MDYiLCJQZXJtaXNvIjoiRWRpdGFyQ29ycmVvIiwiZXhwIjoxNzQ3NTI2MDI3LCJpc3MiOiJodHRwczovL3R1LWFwaS5jb20iLCJhdWQiOiJodHRwczovL3R1LWFwaS5jb20ifQ.OsJIYCyEoPfWWgA-oZKwCDSSPOanT2mIUg1MQZH5M3w',
+    sessionSevices: sessionService,
     //lenguageCode: languageService.languageCode,
   );
   final systemDarkMode =

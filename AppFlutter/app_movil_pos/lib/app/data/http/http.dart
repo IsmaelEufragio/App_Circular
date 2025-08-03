@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:graphql/client.dart' as graphql;
 import 'package:http/http.dart';
 
 import '../../domain/either/either.dart';
+import '../services/local/session_service.dart';
 
 part 'failure.dart';
 part 'logs.dart';
@@ -18,12 +20,15 @@ class Http {
     this._client, {
     required String baseUrl,
     required String apiKey,
+    required SessionSevices sessionSevices,
   })  : _baseUrl = baseUrl,
-        _apiKey = apiKey;
+        _apiKey = apiKey,
+        _sessionSevices = sessionSevices;
 
   final Client _client;
   final String _baseUrl;
   final String _apiKey;
+  final SessionSevices _sessionSevices;
   // ignore: prefer_final_fields
   //String _lenguageCode;
 
@@ -51,18 +56,7 @@ class Http {
           },
         );
       }
-      /*else {
-        url = url.replace(
-          queryParameters: {
-            'language': languageCode,
-          },
-        );
-      }*/
-      headers = {
-        //'Authorization': 'Bearer $_apiKey',
-        'Content-Type': 'application/json',
-        ...headers
-      };
+      headers = {'Content-Type': 'application/json', ...headers};
       if (authentication) {
         headers = {'Authorization': 'Bearer $_apiKey', ...headers};
       }
@@ -146,6 +140,48 @@ class Http {
         'endTime': DateTime.now().toString(),
       };
       _printLogs(logs);
+    }
+  }
+
+  Future<Either<HttpFailure, R>> requestGraphQL<R>({
+    required String query,
+    required R Function(dynamic responseBody) onSucces,
+    bool authentication = true,
+  }) async {
+    final httpLink = graphql.HttpLink('$_baseUrl/graphql/');
+    final tokenAccess = await _sessionSevices.accessToken ?? '';
+    final authLink = graphql.AuthLink(
+      getToken: () async => 'Bearer $tokenAccess',
+    );
+
+    final link = authentication ? authLink.concat(httpLink) : httpLink;
+
+    final client = graphql.GraphQLClient(
+      cache: graphql.GraphQLCache(),
+      link: link,
+    );
+
+    try {
+      final result = await client.query(
+        graphql.QueryOptions(document: graphql.gql(query)),
+      );
+
+      if (result.hasException) {
+        return Either.left(
+          HttpFailure(
+            statusCode: 500,
+            data: 'Nose que pedo.',
+          ),
+        );
+      }
+      return Either.right(onSucces(result.data));
+    } catch (e) {
+      return Either.left(
+        HttpFailure(
+          statusCode: 500,
+          data: 'Nose que pedo.',
+        ),
+      );
     }
   }
 }

@@ -20,12 +20,12 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$User {
-  int get id => throw _privateConstructorUsedError;
-  String get username => throw _privateConstructorUsedError;
-
-  ///
-  @JsonKey(fromJson: avatarPathFromJson, name: 'avatar')
-  String? get avatarPath => throw _privateConstructorUsedError;
+  String get identidad => throw _privateConstructorUsedError;
+  bool get usuarioPrincipal => throw _privateConstructorUsedError;
+  String get nombreUsuario => throw _privateConstructorUsedError;
+  String get correo => throw _privateConstructorUsedError;
+  List<Rol> get roles => throw _privateConstructorUsedError;
+  List<Claim> get claims => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,10 +42,12 @@ abstract class $UserCopyWith<$Res> {
       _$UserCopyWithImpl<$Res, User>;
   @useResult
   $Res call(
-      {int id,
-      String username,
-      @JsonKey(fromJson: avatarPathFromJson, name: 'avatar')
-      String? avatarPath});
+      {String identidad,
+      bool usuarioPrincipal,
+      String nombreUsuario,
+      String correo,
+      List<Rol> roles,
+      List<Claim> claims});
 }
 
 /// @nodoc
@@ -63,23 +65,38 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? username = null,
-    Object? avatarPath = freezed,
+    Object? identidad = null,
+    Object? usuarioPrincipal = null,
+    Object? nombreUsuario = null,
+    Object? correo = null,
+    Object? roles = null,
+    Object? claims = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+      identidad: null == identidad
+          ? _value.identidad
+          : identidad // ignore: cast_nullable_to_non_nullable
               as String,
-      avatarPath: freezed == avatarPath
-          ? _value.avatarPath
-          : avatarPath // ignore: cast_nullable_to_non_nullable
-              as String?,
+      usuarioPrincipal: null == usuarioPrincipal
+          ? _value.usuarioPrincipal
+          : usuarioPrincipal // ignore: cast_nullable_to_non_nullable
+              as bool,
+      nombreUsuario: null == nombreUsuario
+          ? _value.nombreUsuario
+          : nombreUsuario // ignore: cast_nullable_to_non_nullable
+              as String,
+      correo: null == correo
+          ? _value.correo
+          : correo // ignore: cast_nullable_to_non_nullable
+              as String,
+      roles: null == roles
+          ? _value.roles
+          : roles // ignore: cast_nullable_to_non_nullable
+              as List<Rol>,
+      claims: null == claims
+          ? _value.claims
+          : claims // ignore: cast_nullable_to_non_nullable
+              as List<Claim>,
     ) as $Val);
   }
 }
@@ -92,10 +109,12 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {int id,
-      String username,
-      @JsonKey(fromJson: avatarPathFromJson, name: 'avatar')
-      String? avatarPath});
+      {String identidad,
+      bool usuarioPrincipal,
+      String nombreUsuario,
+      String correo,
+      List<Rol> roles,
+      List<Claim> claims});
 }
 
 /// @nodoc
@@ -110,23 +129,38 @@ class __$$UserImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? username = null,
-    Object? avatarPath = freezed,
+    Object? identidad = null,
+    Object? usuarioPrincipal = null,
+    Object? nombreUsuario = null,
+    Object? correo = null,
+    Object? roles = null,
+    Object? claims = null,
   }) {
     return _then(_$UserImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+      identidad: null == identidad
+          ? _value.identidad
+          : identidad // ignore: cast_nullable_to_non_nullable
               as String,
-      avatarPath: freezed == avatarPath
-          ? _value.avatarPath
-          : avatarPath // ignore: cast_nullable_to_non_nullable
-              as String?,
+      usuarioPrincipal: null == usuarioPrincipal
+          ? _value.usuarioPrincipal
+          : usuarioPrincipal // ignore: cast_nullable_to_non_nullable
+              as bool,
+      nombreUsuario: null == nombreUsuario
+          ? _value.nombreUsuario
+          : nombreUsuario // ignore: cast_nullable_to_non_nullable
+              as String,
+      correo: null == correo
+          ? _value.correo
+          : correo // ignore: cast_nullable_to_non_nullable
+              as String,
+      roles: null == roles
+          ? _value._roles
+          : roles // ignore: cast_nullable_to_non_nullable
+              as List<Rol>,
+      claims: null == claims
+          ? _value._claims
+          : claims // ignore: cast_nullable_to_non_nullable
+              as List<Claim>,
     ));
   }
 }
@@ -135,27 +169,46 @@ class __$$UserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserImpl extends _User {
   const _$UserImpl(
-      {required this.id,
-      required this.username,
-      @JsonKey(fromJson: avatarPathFromJson, name: 'avatar') this.avatarPath})
-      : super._();
+      {required this.identidad,
+      required this.usuarioPrincipal,
+      required this.nombreUsuario,
+      required this.correo,
+      required final List<Rol> roles,
+      required final List<Claim> claims})
+      : _roles = roles,
+        _claims = claims,
+        super._();
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
 
   @override
-  final int id;
+  final String identidad;
   @override
-  final String username;
+  final bool usuarioPrincipal;
+  @override
+  final String nombreUsuario;
+  @override
+  final String correo;
+  final List<Rol> _roles;
+  @override
+  List<Rol> get roles {
+    if (_roles is EqualUnmodifiableListView) return _roles;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_roles);
+  }
 
-  ///
+  final List<Claim> _claims;
   @override
-  @JsonKey(fromJson: avatarPathFromJson, name: 'avatar')
-  final String? avatarPath;
+  List<Claim> get claims {
+    if (_claims is EqualUnmodifiableListView) return _claims;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_claims);
+  }
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, avatarPath: $avatarPath)';
+    return 'User(identidad: $identidad, usuarioPrincipal: $usuarioPrincipal, nombreUsuario: $nombreUsuario, correo: $correo, roles: $roles, claims: $claims)';
   }
 
   @override
@@ -163,16 +216,27 @@ class _$UserImpl extends _User {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.avatarPath, avatarPath) ||
-                other.avatarPath == avatarPath));
+            (identical(other.identidad, identidad) ||
+                other.identidad == identidad) &&
+            (identical(other.usuarioPrincipal, usuarioPrincipal) ||
+                other.usuarioPrincipal == usuarioPrincipal) &&
+            (identical(other.nombreUsuario, nombreUsuario) ||
+                other.nombreUsuario == nombreUsuario) &&
+            (identical(other.correo, correo) || other.correo == correo) &&
+            const DeepCollectionEquality().equals(other._roles, _roles) &&
+            const DeepCollectionEquality().equals(other._claims, _claims));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, username, avatarPath);
+  int get hashCode => Object.hash(
+      runtimeType,
+      identidad,
+      usuarioPrincipal,
+      nombreUsuario,
+      correo,
+      const DeepCollectionEquality().hash(_roles),
+      const DeepCollectionEquality().hash(_claims));
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -192,23 +256,28 @@ class _$UserImpl extends _User {
 
 abstract class _User extends User {
   const factory _User(
-      {required final int id,
-      required final String username,
-      @JsonKey(fromJson: avatarPathFromJson, name: 'avatar')
-      final String? avatarPath}) = _$UserImpl;
+      {required final String identidad,
+      required final bool usuarioPrincipal,
+      required final String nombreUsuario,
+      required final String correo,
+      required final List<Rol> roles,
+      required final List<Claim> claims}) = _$UserImpl;
   const _User._() : super._();
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
-  int get id;
+  String get identidad;
   @override
-  String get username;
-
-  ///
+  bool get usuarioPrincipal;
   @override
-  @JsonKey(fromJson: avatarPathFromJson, name: 'avatar')
-  String? get avatarPath;
+  String get nombreUsuario;
+  @override
+  String get correo;
+  @override
+  List<Rol> get roles;
+  @override
+  List<Claim> get claims;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
