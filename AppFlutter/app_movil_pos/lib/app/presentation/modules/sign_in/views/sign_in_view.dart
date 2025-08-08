@@ -102,6 +102,7 @@ class _SingInViewState extends State<SingInView> {
                                     return null;
                                   },
                                   keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(

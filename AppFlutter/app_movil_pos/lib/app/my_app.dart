@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'presentation/global/controllers/theme_controller.dart';
 import 'presentation/global/theme.dart';
-import 'presentation/routes/app_routes.dart';
-import 'presentation/routes/routes.dart';
+import 'presentation/routes/router.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -13,16 +12,17 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+class _MyAppState extends State<MyApp>
+    with WidgetsBindingObserver, RouterMixin {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    //WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    //WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -31,10 +31,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final ThemeController themeController = context.watch();
     return GestureDetector(
       onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
+        final focus = FocusScope.of(context);
+        final focusedChild = focus.focusedChild;
+        if (focusedChild != null && !focusedChild.hasPrimaryFocus) {
+          focusedChild.unfocus();
+        }
       },
-      child: MaterialApp(
-        initialRoute: Routes.signIn,
+      child: MaterialApp.router(
+        routerConfig: router,
+        theme: getTheme(themeController.dartMode),
+      ),
+      /*child: MaterialApp(
+        //initialRoute: Routes.signIn,
         theme: getTheme(themeController.dartMode),
         routes: appRoutes,
         onUnknownRoute: (_) => MaterialPageRoute(
@@ -44,7 +52,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             ),
           ),
         ),
-      ),
+      ),*/
     );
   }
 }

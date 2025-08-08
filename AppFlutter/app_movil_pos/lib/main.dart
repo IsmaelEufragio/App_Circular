@@ -45,7 +45,7 @@ void main() async {
     InternetChecker(),
   );
 
-  await connectivity.initialize();
+  //await connectivity.initialize();
   runApp(
     MultiProvider(
       providers: [
