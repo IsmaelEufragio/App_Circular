@@ -5,4 +5,5 @@ class Routes {
   static const billing = 'billing';
   static const signIn = 'sign-in';
   static const home = 'home';
+  static const error = 'error';
 }

@@ -67,7 +67,6 @@ void main() async {
               sessionService,
               AccountServices(
                 http,
-                sessionService,
               ),
             );
           },

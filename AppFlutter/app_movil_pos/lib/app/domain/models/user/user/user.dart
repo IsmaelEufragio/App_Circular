@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../typedefs.dart';
-import 'claim.dart';
-import 'rol.dart';
+import '../../../typedefs.dart';
+import '../claim/claim.dart';
+import '../rol/rol.dart';
 
 part 'user.freezed.dart';
 part 'user.g.dart';

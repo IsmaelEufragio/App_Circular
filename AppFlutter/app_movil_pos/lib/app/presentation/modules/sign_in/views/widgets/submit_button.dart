@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 //import '../../../../../generated/translations.g.dart';
@@ -58,7 +59,9 @@ class SubmitButton extends StatelessWidget {
         );
         return message;
       },
-      right: (_) => Navigator.pushReplacementNamed(context, Routes.home),
+      right: (_) => GoRouter.of(context).pushNamed(
+        Routes.home,
+      ),
     );
   }
 }

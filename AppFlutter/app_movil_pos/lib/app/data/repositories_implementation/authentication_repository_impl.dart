@@ -1,6 +1,6 @@
 import '../../domain/either/either.dart';
 import '../../domain/failures/sign_in/sign_in_failure.dart';
-import '../../domain/models/user/user.dart';
+import '../../domain/models/user/user/user.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../services/local/session_service.dart';
 import '../services/remoto/account_service.dart';
@@ -25,23 +25,28 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   @override
   Future<Either<SignInFailure, User>> signIn(
-      String username, String password) async {
+      String username, String password, bool rememberCredentials) async {
     final requestTokenRefres = await _authenticationService
         .createRequestTokenRefres(username: username, password: password);
     return requestTokenRefres.when(
       left: (failure) async => Either.left(failure),
       right: (token) async {
         _sessionSevices.saveRefresToken(token);
+        if (rememberCredentials) {
+          _sessionSevices.saveCredentials(
+              username, password, rememberCredentials);
+        } else {
+          _sessionSevices.deleteCredential();
+        }
         final requestTokenAccess = await _authenticationService
-            .createRequestTokenAccess(refresToken: token);
-
+            .createRequestTokenAccess(refresToken: token.refresToken);
         return requestTokenAccess.when(
           left: (failure) async => Either.left(failure),
           right: (accessToken) async {
             _sessionSevices.saveAccessToken(accessToken);
             final user = await _accountServices.getAccount();
             if (user == null) {
-              return Either.left(const SignInFailure.unknown());
+              return Either.left(const SignInFailure.notFound());
             }
             return Either.right(user);
           },

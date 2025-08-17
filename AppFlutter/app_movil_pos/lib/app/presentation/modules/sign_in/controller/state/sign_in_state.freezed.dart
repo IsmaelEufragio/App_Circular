@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SignInState {
   String get username => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
+  bool get rememberCredentials => throw _privateConstructorUsedError;
   bool get fetching => throw _privateConstructorUsedError;
 
   /// Create a copy of SignInState
@@ -33,7 +34,11 @@ abstract class $SignInStateCopyWith<$Res> {
           SignInState value, $Res Function(SignInState) then) =
       _$SignInStateCopyWithImpl<$Res, SignInState>;
   @useResult
-  $Res call({String username, String password, bool fetching});
+  $Res call(
+      {String username,
+      String password,
+      bool rememberCredentials,
+      bool fetching});
 }
 
 /// @nodoc
@@ -53,6 +58,7 @@ class _$SignInStateCopyWithImpl<$Res, $Val extends SignInState>
   $Res call({
     Object? username = null,
     Object? password = null,
+    Object? rememberCredentials = null,
     Object? fetching = null,
   }) {
     return _then(_value.copyWith(
@@ -64,6 +70,10 @@ class _$SignInStateCopyWithImpl<$Res, $Val extends SignInState>
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
               as String,
+      rememberCredentials: null == rememberCredentials
+          ? _value.rememberCredentials
+          : rememberCredentials // ignore: cast_nullable_to_non_nullable
+              as bool,
       fetching: null == fetching
           ? _value.fetching
           : fetching // ignore: cast_nullable_to_non_nullable
@@ -80,7 +90,11 @@ abstract class _$$SignInStateImplCopyWith<$Res>
       __$$SignInStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String username, String password, bool fetching});
+  $Res call(
+      {String username,
+      String password,
+      bool rememberCredentials,
+      bool fetching});
 }
 
 /// @nodoc
@@ -98,6 +112,7 @@ class __$$SignInStateImplCopyWithImpl<$Res>
   $Res call({
     Object? username = null,
     Object? password = null,
+    Object? rememberCredentials = null,
     Object? fetching = null,
   }) {
     return _then(_$SignInStateImpl(
@@ -109,6 +124,10 @@ class __$$SignInStateImplCopyWithImpl<$Res>
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
               as String,
+      rememberCredentials: null == rememberCredentials
+          ? _value.rememberCredentials
+          : rememberCredentials // ignore: cast_nullable_to_non_nullable
+              as bool,
       fetching: null == fetching
           ? _value.fetching
           : fetching // ignore: cast_nullable_to_non_nullable
@@ -121,7 +140,10 @@ class __$$SignInStateImplCopyWithImpl<$Res>
 
 class _$SignInStateImpl implements _SignInState {
   const _$SignInStateImpl(
-      {this.username = '', this.password = '', this.fetching = false});
+      {this.username = '',
+      this.password = '',
+      this.rememberCredentials = false,
+      this.fetching = false});
 
   @override
   @JsonKey()
@@ -131,11 +153,14 @@ class _$SignInStateImpl implements _SignInState {
   final String password;
   @override
   @JsonKey()
+  final bool rememberCredentials;
+  @override
+  @JsonKey()
   final bool fetching;
 
   @override
   String toString() {
-    return 'SignInState(username: $username, password: $password, fetching: $fetching)';
+    return 'SignInState(username: $username, password: $password, rememberCredentials: $rememberCredentials, fetching: $fetching)';
   }
 
   @override
@@ -147,12 +172,15 @@ class _$SignInStateImpl implements _SignInState {
                 other.username == username) &&
             (identical(other.password, password) ||
                 other.password == password) &&
+            (identical(other.rememberCredentials, rememberCredentials) ||
+                other.rememberCredentials == rememberCredentials) &&
             (identical(other.fetching, fetching) ||
                 other.fetching == fetching));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, username, password, fetching);
+  int get hashCode => Object.hash(
+      runtimeType, username, password, rememberCredentials, fetching);
 
   /// Create a copy of SignInState
   /// with the given fields replaced by the non-null parameter values.
@@ -167,12 +195,15 @@ abstract class _SignInState implements SignInState {
   const factory _SignInState(
       {final String username,
       final String password,
+      final bool rememberCredentials,
       final bool fetching}) = _$SignInStateImpl;
 
   @override
   String get username;
   @override
   String get password;
+  @override
+  bool get rememberCredentials;
   @override
   bool get fetching;
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../global/colors.dart';
+import '../../../routes/routes.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -24,12 +26,19 @@ class _HomeViewState extends State<HomeView> {
             ],
           ),
         ),
-        child: const Center(
-          child: Text(
-            'Home',
-            style: TextStyle(
-              color: AppColors.dark,
+        child: Center(
+          child: TextButton(
+            child: const Text(
+              'SigIn',
+              style: TextStyle(
+                color: AppColors.dark,
+              ),
             ),
+            onPressed: () {
+              GoRouter.of(context).pushNamed(
+                Routes.signIn,
+              );
+            },
           ),
         ),
       ),

@@ -133,17 +133,37 @@ class _SingInViewState extends State<SingInView> {
                                   obscureText: true,
                                 ),
                                 const SizedBox(height: 8),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      '¿Olvidaste tu contraseña?',
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value:
+                                          Provider.of<SignInController>(context)
+                                              .state
+                                              .rememberCredentials,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          controlle
+                                              .onRememberCredentialsChanged(
+                                                  value ?? false);
+                                        });
+                                      },
+                                    ),
+                                    const Text(
+                                      'Recordar credenciales',
                                       style: TextStyle(
                                         color: AppColors.sucess,
                                       ),
                                     ),
-                                  ),
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: const Text(
+                                        '¿Olvidaste tu contraseña?',
+                                        style: TextStyle(
+                                          color: AppColors.sucess,
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 //const SizedBox(height: 12),
                                 const SizedBox(

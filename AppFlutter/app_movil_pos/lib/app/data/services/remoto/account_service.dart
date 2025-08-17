@@ -1,12 +1,10 @@
-import '../../../domain/models/user/user.dart';
+import '../../../domain/models/user/user/user.dart';
 import '../../http/http.dart';
-import '../local/session_service.dart';
 
 class AccountServices {
-  AccountServices(this._http, this._sessionSevices);
+  AccountServices(this._http);
 
   final Http _http;
-  final SessionSevices _sessionSevices;
 
   Future<User?> getAccount() async {
     String usuarioQuery = '''

@@ -1,5 +1,7 @@
 import '../../../domain/either/either.dart';
 import '../../../domain/failures/sign_in/sign_in_failure.dart';
+import '../../../domain/models/authentication/accessToken/accessToken.dart';
+import '../../../domain/models/authentication/refresToken/refresToken.dart';
 import '../../http/http.dart';
 
 class AuthenticationService {
@@ -7,7 +9,7 @@ class AuthenticationService {
 
   final Http _http;
 
-  Either<SignInFailure, String> _handleFailure(HttpFailure failure) {
+  Either<SignInFailure, T> _handleFailure<T>(HttpFailure failure) {
     if (failure.statusCode != null) {
       switch (failure.statusCode) {
         case 401:
@@ -28,120 +30,16 @@ class AuthenticationService {
     return Either.left(const SignInFailure.unknown());
   }
 
-  Future<Either<SignInFailure, String>> createRequestTokenRefres({
+  Future<Either<SignInFailure, RefresToken>> createRequestTokenRefres({
     required String username,
     required String password,
-  }) async {
-    final result = await _http.request('/Autenticacion/TokenRefres',
-        method: HttpMethod.patch,
-        authentication: false,
-        body: {
-          'correo': username,
-          'password': password,
-        }, onSucces: (responseBody) {
-      final json = responseBody as Map;
-      final data = json['data'] as Map;
-      return data['refresToken'] as String;
-    });
-    return result.when(
-      left: _handleFailure,
-      right: (responseBody) {
-        return Either.right(responseBody);
-      },
-    );
+  }) {
+    return _http.createRequestTokenRefres(
+        username: username, password: password);
   }
 
-  Future<Either<SignInFailure, String>> createRequestTokenAccess(
-      {required String refresToken}) async {
-    final result = await _http.request('/Autenticacion/TokenDeAcceso',
-        method: HttpMethod.patch,
-        timeout: const Duration(seconds: 30),
-        authentication: false,
-        body: {
-          'refresToken': refresToken,
-        }, onSucces: (responseBody) {
-      final json = responseBody as Map;
-      final data = json['data'] as Map;
-      return data['tokenAccess'] as String;
-    });
-
-    return result.when(
-      left: _handleFailure,
-      right: (responseBody) {
-        return Either.right(responseBody);
-      },
-    );
-  }
-
-  Future<Either<SignInFailure, String>> createRequestToken() async {
-    final result = await _http.request(
-      '/Autenticacion/Login',
-      method: HttpMethod.post,
-      body: {
-        'correo': 'josueeufragio93@gmail.com',
-        'passsword': 'P@ssw0rd2002',
-        //'request_token': token,
-      },
-      authentication: false,
-      onSucces: (responseBody) {
-        final json = responseBody as Map;
-        return json['request_token'] as String;
-      },
-    );
-
-    return result.when(
-      left: _handleFailure,
-      right: (responseBody) {
-        return Either.right(responseBody);
-      },
-    );
-  }
-
-  Future<Either<SignInFailure, String>> CreateSessionWithLogin(
-      {required String username,
-      required String password,
-      required String token}) async {
-    final result = await _http.request(
-      '/authentication/token/validate_with_login',
-      method: HttpMethod.post,
-      body: {
-        'username': username,
-        'password': password,
-        'request_token': token,
-      },
-      onSucces: (responseBody) {
-        final json = responseBody as Map;
-        return json['request_token'] as String;
-      },
-    );
-
-    return result.when(
-      left: _handleFailure,
-      right: (responseBody) {
-        return Either.right(responseBody);
-      },
-    );
-  }
-
-  Future<Either<SignInFailure, String>> createSession(
-      String requestToken) async {
-    final result = await _http.request(
-      '/authentication/session/new',
-      method: HttpMethod.post,
-      body: {
-        'request_token': requestToken,
-      },
-      onSucces: (responseBody) {
-        final json = responseBody as Map;
-        return json['session_id'] as String;
-      },
-    );
-
-    return result.when(
-      left: _handleFailure,
-      right: (responseBody) {
-        return Either.right(responseBody);
-      },
-    );
+  Future<Either<SignInFailure, AccessToken>> createRequestTokenAccess(
+      {required String refresToken}) {
+    return _http.createRequestTokenAccess(refresToken: refresToken);
   }
 }

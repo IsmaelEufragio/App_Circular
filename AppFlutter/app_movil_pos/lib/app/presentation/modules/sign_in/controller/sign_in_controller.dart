@@ -1,6 +1,6 @@
 import '../../../../domain/either/either.dart';
 import '../../../../domain/failures/sign_in/sign_in_failure.dart';
-import '../../../../domain/models/user/user.dart';
+import '../../../../domain/models/user/user/user.dart';
 import '../../../../domain/repositories/authentication_repository.dart';
 //import '../../../global/controllers/favorites/favorites_controller.dart';
 import '../../../global/controllers/session_controller.dart';
@@ -33,10 +33,18 @@ class SignInController extends StateNotifier<SignInState> {
     ));
   }
 
+  void onRememberCredentialsChanged(bool rememberCredentials) {
+    onlyUpdate(
+      state.copyWith(
+        rememberCredentials: rememberCredentials,
+      ),
+    );
+  }
+
   Future<Either<SignInFailure, User>> submit() async {
     state = state.copyWith(fetching: true); //Se pone a cargar.
-    final result =
-        await authenticationRepository.signIn(state.username, state.password);
+    final result = await authenticationRepository.signIn(
+        state.username, state.password, state.rememberCredentials);
     result.when(
       left: (_) => state = state.copyWith(fetching: false),
       right: (user) {
