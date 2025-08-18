@@ -295,5 +295,11 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
             }
             return claimsUsuarios;
         }
+
+        public async Task<IEnumerable<tbInfoUnicaUsuario>> GetInfUsuarioPrincipal(IReadOnlyList<Guid> idUsuarioPrincipal)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.tbInfoUnicaUsuario.Where(a => idUsuarioPrincipal.Contains(a.usInf_Id)).ToListAsync();
+        }
     }
 }

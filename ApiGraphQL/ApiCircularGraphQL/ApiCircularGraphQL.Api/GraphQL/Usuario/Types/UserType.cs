@@ -6,6 +6,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
     [ObjectType<UserDTO>]
     public static partial class UserType
     {
+
         public static async Task<List<TelefonosUsuarioDTO>> GetTelefonos(//Telefonos Por Usuario.
             [Parent]UserDTO userDTO,
             ITelefonosPorUsuariosDataLoader telefonosPorUsuariosDataLoader,
@@ -61,6 +62,18 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
             return data is null
                 ? throw new GraphQLException($"No se encontró el tipo de Identificacion con ID {userDTO.IdTipoIdentidad}")
                 : [.. data];
+        }
+
+        public static async Task<UserPrincipalDTO> GetInformacionUnica(
+            [Parent] UserDTO userDTO,
+            IInfUsuarioPrincipalDataLoader infUsuarioPrincipalDataLoader,
+            CancellationToken cancellationToken
+        )
+        {
+            var data = await infUsuarioPrincipalDataLoader.LoadAsync(userDTO.IdUserPrincipal, CancellationToken.None);
+            return data is null
+                ? throw new GraphQLException($"No se encontró el tipo de Identificacion con ID {userDTO.IdTipoIdentidad}")
+                : data;
         }
     }
 }

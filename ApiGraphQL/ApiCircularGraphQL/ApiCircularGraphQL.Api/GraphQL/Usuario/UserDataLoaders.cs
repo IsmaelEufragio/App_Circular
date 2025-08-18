@@ -111,5 +111,18 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario
             return data?? [];
         }
 
+        [DataLoader]//Trea el Tipo de usuario por UsuarioPrincipal
+        public static async Task<IReadOnlyDictionary<Guid, UserPrincipalDTO>> InfUsuarioPrincipalAsync(
+            IReadOnlyList<Guid> ids,
+            CancellationToken cancellationToken,
+            IUserService userService
+        )
+        {
+            IEnumerable<UserPrincipalDTO> tipos = await userService.GetInfUsuarioPrincipal(ids);
+            return tipos
+                .Where(i => i != null && !ids.Contains(Guid.Empty))
+                .GroupBy(i => i.Id)
+                .ToDictionary(g => g.Key, g => g.First());
+        }
     }
 }

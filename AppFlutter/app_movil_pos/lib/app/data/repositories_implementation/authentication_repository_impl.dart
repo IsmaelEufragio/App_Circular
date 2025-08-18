@@ -19,8 +19,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   @override
   Future<bool> get isSignedIn async {
-    final accessToken = await _sessionSevices.accessToken;
-    return accessToken != null;
+    return await _authenticationService.isSignedIn();
   }
 
   @override

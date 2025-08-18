@@ -42,4 +42,8 @@ class AuthenticationService {
       {required String refresToken}) {
     return _http.createRequestTokenAccess(refresToken: refresToken);
   }
+
+  Future<bool> isSignedIn() async {
+    return await _http.isAuthenticated();
+  }
 }

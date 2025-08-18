@@ -49,7 +49,6 @@ class SignInController extends StateNotifier<SignInState> {
       left: (_) => state = state.copyWith(fetching: false),
       right: (user) {
         sessionController.setUser(user);
-        //favoritesController.init();
       },
     );
     return result;

@@ -27,18 +27,48 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
         child: Center(
-          child: TextButton(
-            child: const Text(
-              'SigIn',
-              style: TextStyle(
-                color: AppColors.dark,
+          child: Row(
+            children: [
+              TextButton(
+                child: const Text(
+                  'SigIn',
+                  style: TextStyle(
+                    color: AppColors.dark,
+                  ),
+                ),
+                onPressed: () {
+                  GoRouter.of(context).pushNamed(
+                    Routes.signIn,
+                  );
+                },
               ),
-            ),
-            onPressed: () {
-              GoRouter.of(context).pushNamed(
-                Routes.signIn,
-              );
-            },
+              TextButton(
+                child: const Text(
+                  'Billing',
+                  style: TextStyle(
+                    color: AppColors.dark,
+                  ),
+                ),
+                onPressed: () {
+                  GoRouter.of(context).pushNamed(
+                    Routes.billing,
+                  );
+                },
+              ),
+              TextButton(
+                child: const Text(
+                  'Profile',
+                  style: TextStyle(
+                    color: AppColors.dark,
+                  ),
+                ),
+                onPressed: () {
+                  GoRouter.of(context).pushNamed(
+                    Routes.profile,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

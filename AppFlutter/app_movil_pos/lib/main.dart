@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'app/data/http/http.dart';
+import 'app/data/repositories_implementation/account_repository_impl.dart';
 import 'app/data/repositories_implementation/authentication_repository_impl.dart';
 import 'app/data/repositories_implementation/connectivity_repository_impl.dart';
 import 'app/data/repositories_implementation/preferences_repository_impl.dart';
@@ -16,6 +17,7 @@ import 'app/data/services/local/session_service.dart';
 import 'app/data/services/remoto/account_service.dart';
 import 'app/data/services/remoto/authentication_service.dart';
 import 'app/data/services/remoto/internet_checker.dart';
+import 'app/domain/repositories/account_repository.dart';
 import 'app/domain/repositories/authentication_repository.dart';
 import 'app/domain/repositories/connectivity_repository.dart';
 import 'app/domain/repositories/preferences_repository.dart';
@@ -28,6 +30,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final sessionService = SessionSevices(const FlutterSecureStorage());
+
   final http = Http(
     Client(),
     baseUrl:
@@ -45,10 +48,19 @@ void main() async {
     InternetChecker(),
   );
 
-  //await connectivity.initialize();
+  await connectivity.initialize();
   runApp(
     MultiProvider(
       providers: [
+        Provider<AccountRepository>(
+          create: (_) {
+            return AccountRepositoryImpl(
+              AccountServices(
+                http,
+              ),
+            );
+          },
+        ),
         Provider<PreferencesRepository>(
           create: (_) => PreferencesRepositoryImpl(preferences),
         ),

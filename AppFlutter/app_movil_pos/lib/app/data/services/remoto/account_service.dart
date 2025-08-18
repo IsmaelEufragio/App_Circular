@@ -10,10 +10,23 @@ class AccountServices {
     String usuarioQuery = '''
   query{
     usuario{
+      id
+      idUserPrincipal
       identidad
       usuarioPrincipal
       nombreUsuario
       correo
+      despcripcion
+      fecebook
+      informacionUnica{
+        id
+        nombre
+        rutaDelLogo
+        rutaDeLaPaginaWeb
+      }
+      telefonos{
+        telefono
+      }
       roles{
         nombre
         nombreNormalizado

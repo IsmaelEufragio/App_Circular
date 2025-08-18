@@ -12,7 +12,7 @@ namespace ApiCircularGraphQL.Application.DTOs.Usuarios
         public bool UnicoUsuario { get; set; }
         public string Nombre { get; set; }
         public string RutaDelLogo { get; set; }
-       // public string RutaDeLaPaginaWeb { get; set; }
+        public string RutaDeLaPaginaWeb { get; set; }
         public Guid IdTipoUsuario { get; set; }
         public TipoUsuarioDTO TipoUsuario { get; set; }
         public List<UserDTO> Usuarios { get; set; }

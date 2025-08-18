@@ -481,5 +481,17 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 return new ServiceResult() { Success = false, Message = $"Error en el Servicio Usuario Al Crear un Usaurio: {ex.Message}", Type = ServiceResultType.Error };
             }
         }
+
+        public async Task<IEnumerable<UserPrincipalDTO>> GetInfUsuarioPrincipal(IReadOnlyList<Guid> idUsuarioPrincipal)
+        {
+            var data = await _userRepository.GetInfUsuarioPrincipal(idUsuarioPrincipal);
+            return data.Select(a => new UserPrincipalDTO
+            {
+                Id = a.usInf_Id,
+                Nombre = a.usInf_Nombre,
+                RutaDelLogo = a.usInf_RutaLogo,
+                RutaDeLaPaginaWeb = a.usInf_RutaPaginaWed
+            });
+        }
     }
 }
