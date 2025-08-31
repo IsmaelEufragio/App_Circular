@@ -7,7 +7,11 @@ import '../controller/state/sign_in_state.dart';
 import 'widgets/submit_button.dart';
 
 class SingInView extends StatefulWidget {
-  const SingInView({super.key});
+  const SingInView({
+    super.key,
+    required this.callbackUrll,
+  });
+  final String callbackUrll;
 
   @override
   State<SingInView> createState() => _SingInViewState();
@@ -16,6 +20,7 @@ class SingInView extends StatefulWidget {
 class _SingInViewState extends State<SingInView> {
   @override
   Widget build(BuildContext context) {
+    final ruta = widget.callbackUrll;
     return ChangeNotifierProvider<SignInController>(
       create: (_) => SignInController(
         const SignInState(),
@@ -166,10 +171,12 @@ class _SingInViewState extends State<SingInView> {
                                   ],
                                 ),
                                 //const SizedBox(height: 12),
-                                const SizedBox(
+                                SizedBox(
                                   width: double.infinity,
                                   height: 45,
-                                  child: SubmitButton(),
+                                  child: SubmitButton(
+                                    callbackUrl: ruta,
+                                  ),
                                 ),
                                 const SizedBox(height: 16),
                                 const Row(

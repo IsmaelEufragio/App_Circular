@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 
 //import '../../../../../generated/translations.g.dart';
 import '../../../../global/colors.dart';
-import '../../../../routes/routes.dart';
 import '../../controller/sign_in_controller.dart';
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({super.key});
-
+  const SubmitButton({
+    super.key,
+    required this.callbackUrl,
+  });
+  final String callbackUrl;
   @override
   Widget build(BuildContext context) {
     final SignInController controller = Provider.of(context);
@@ -59,8 +61,8 @@ class SubmitButton extends StatelessWidget {
         );
         return message;
       },
-      right: (_) => GoRouter.of(context).pushNamed(
-        Routes.home,
+      right: (_) => GoRouter.of(context).pushReplacement(
+        callbackUrl,
       ),
     );
   }

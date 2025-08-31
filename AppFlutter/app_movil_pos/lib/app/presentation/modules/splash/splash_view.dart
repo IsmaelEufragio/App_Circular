@@ -28,11 +28,7 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: SizedBox(
-          height: 80,
-          width: 80,
-          child: CircularProgressIndicator(),
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }

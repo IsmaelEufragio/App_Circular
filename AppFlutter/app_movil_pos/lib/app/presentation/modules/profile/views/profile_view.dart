@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../domain/repositories/authentication_repository.dart';
 import '../../../global/colors.dart';
 import '../../../global/controllers/session_controller.dart';
+import '../../../routes/routes.dart';
 import '../Widget/dayBox.dart';
 import '../Widget/iconWithCounter.dart';
 
@@ -16,13 +19,26 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<SessionController>().state!;
-    final telefonos = user.telefonos.map((e) => e.telefono).join(', ');
+    final user = context.watch<SessionController>().state;
+    final telefonos = user?.telefonos.map((e) => e.telefono).join(', ');
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              final AuthenticationRepository authenticationRepository =
+                  context.read();
+              authenticationRepository.signOut();
+
+              GoRouter.of(context).goNamed(Routes.signIn);
+            },
+            icon: const Icon(Icons.login),
+            color: AppColors.primary,
+          ),
+        ],
       ),
       body: SafeArea(
         top: false,
@@ -60,14 +76,14 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               const SizedBox(height: 28),
               Text(
-                user.nombre,
+                user?.nombre ?? '',
                 style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: AppColors.alert),
               ),
               Text(
-                user.despcripcion,
+                user?.despcripcion ?? '',
                 style: const TextStyle(
                   fontSize: 11,
                   color: AppColors.fondo75,
@@ -122,7 +138,7 @@ class _ProfileViewState extends State<ProfileView> {
                               color: AppColors.primary,
                             ),
                             Text(
-                              user.fecebook,
+                              user?.fecebook ?? '',
                               style: const TextStyle(
                                 color: AppColors.info,
                                 fontSize: 12,
@@ -139,7 +155,7 @@ class _ProfileViewState extends State<ProfileView> {
                               color: AppColors.primary,
                             ),
                             Text(
-                              telefonos,
+                              telefonos ?? '',
                               style: const TextStyle(
                                 color: AppColors.info,
                                 fontSize: 12,
