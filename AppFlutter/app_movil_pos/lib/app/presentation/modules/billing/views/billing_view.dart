@@ -143,74 +143,9 @@ class _BillingViewState extends State<BillingView> {
                               //color: Colors.red,
                               ),
                         ),
-                        Expanded(
+                        const Expanded(
                           flex: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.info,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.home),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.receipt),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.store),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.engineering),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.print),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.inventory),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.campaign),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.recycling),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.post_add),
-                                  color: AppColors.fondo,
-                                  padding: const EdgeInsets.all(0),
-                                ),
-                              ],
-                            ),
-                          ),
+                          child: SizedBox(),
                         ),
                         Expanded(
                           child: Padding(

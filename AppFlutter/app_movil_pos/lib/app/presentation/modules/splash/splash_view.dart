@@ -47,19 +47,19 @@ class _SplashViewState extends State<SplashView> {
           if (user != null) {
             sessionController.setUser(user);
             // ignore: use_build_context_synchronously
-            GoRouter.of(context).pushNamed(Routes.home);
+            GoRouter.of(context).pushReplacementNamed(Routes.home);
             return;
           }
           // ignore: use_build_context_synchronously
-          GoRouter.of(context).pushNamed(Routes.home);
+          GoRouter.of(context).pushReplacementNamed(Routes.home);
           return;
         }
         // ignore: use_build_context_synchronously
-        GoRouter.of(context).pushNamed(Routes.signIn);
+        GoRouter.of(context).pushReplacementNamed(Routes.signIn);
         return;
       }
     } else {
-      GoRouter.of(context).pushNamed(Routes.offLine);
+      GoRouter.of(context).pushReplacementNamed(Routes.offLine);
       return;
     }
   }
