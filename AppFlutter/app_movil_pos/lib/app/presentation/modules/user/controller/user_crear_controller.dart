@@ -1,8 +1,18 @@
+import '../../../../domain/models/user/business_category/business_category.dart';
+import '../../../../domain/repositories/category_repsitory.dart';
 import '../../../global/state_notifier.dart';
 import 'state/user_crear_state.dart';
 
 class UserCrearController extends StateNotifier<UserCrearState> {
-  UserCrearController(super.state);
+  UserCrearController(super.state, {required this.categoryRepository});
+
+  final CategoryRepository categoryRepository;
+  List<BusinessCategory?> items = [];
+  void init() {
+    categoryRepository
+        .getBusinessCategory()
+        .then((category) => {items = category ?? []});
+  }
 
   void onUserNameChanged(String text) {
     onlyUpdate(

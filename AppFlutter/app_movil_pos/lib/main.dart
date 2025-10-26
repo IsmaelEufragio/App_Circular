@@ -11,19 +11,24 @@ import 'package:url_strategy/url_strategy.dart';
 import 'app/data/http/http.dart';
 import 'app/data/repositories_implementation/account_repository_impl.dart';
 import 'app/data/repositories_implementation/authentication_repository_impl.dart';
+import 'app/data/repositories_implementation/category_repository_impl.dart';
 import 'app/data/repositories_implementation/connectivity_repository_impl.dart';
 import 'app/data/repositories_implementation/preferences_repository_impl.dart';
 import 'app/data/services/local/session_service.dart';
 import 'app/data/services/remoto/account_service.dart';
 import 'app/data/services/remoto/authentication_service.dart';
+import 'app/data/services/remoto/category_service.dart';
 import 'app/data/services/remoto/internet_checker.dart';
 import 'app/domain/repositories/account_repository.dart';
 import 'app/domain/repositories/authentication_repository.dart';
+import 'app/domain/repositories/category_repsitory.dart';
 import 'app/domain/repositories/connectivity_repository.dart';
 import 'app/domain/repositories/preferences_repository.dart';
 import 'app/my_app.dart';
 import 'app/presentation/global/controllers/session_controller.dart';
 import 'app/presentation/global/controllers/theme_controller.dart';
+import 'app/presentation/modules/user/controller/state/user_crear_state.dart';
+import 'app/presentation/modules/user/controller/user_crear_controller.dart';
 
 void main() async {
   setPathUrlStrategy();
@@ -61,6 +66,11 @@ void main() async {
             );
           },
         ),
+        Provider<CategoryRepository>(
+          create: (_) => CategoryRepositoryImpl(
+            CategoryService(http),
+          ),
+        ),
         Provider<PreferencesRepository>(
           create: (_) => PreferencesRepositoryImpl(preferences),
         ),
@@ -95,6 +105,12 @@ void main() async {
         ChangeNotifierProvider<SessionController>(
           create: (context) => SessionController(
             authenticationRepository: context.read<AuthenticationRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserCrearController(
+            UserCrearState(),
+            categoryRepository: context.read<CategoryRepository>(),
           ),
         ),
       ],
