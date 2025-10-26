@@ -20,7 +20,7 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
 
         public async Task<List<tbPais>> GetPedidosByPaisIdAsync(Guid idPais)
         {
-            using var context = _contextFactory.CreateDbContext(); // ✅ Crear contexto correctamente
+            using var context = _contextFactory.CreateDbContext();
             return await context.tbPais.Where(a => a.pais_Id == idPais).ToListAsync();
         }
     }

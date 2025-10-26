@@ -12,6 +12,7 @@ namespace ApiCircularGraphQL.Application
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPaisService, PaisService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategoriaService, CategoriaService>();
             services.AddScoped<IAlmacenarArchivo, AlmacenadorArchivosAzure>();
             services.AddScoped<IBaseServices, BaseServices>();
             services.AddScoped<AuthLogger>();

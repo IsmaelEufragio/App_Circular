@@ -32,4 +32,8 @@
     <ProjectReference Include="..\ApiCircularGraphQL.Infrastructure\ApiCircularGraphQL.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="GraphQL\CategoriasNegocio\Types\" />
+  </ItemGroup>
+
 </Project>

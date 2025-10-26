@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApiCircularGraphQL.Domain.Interfaces
 {
-    public interface ICategoriaRepository: IRepository<tbCategoria>
+    public interface ICategoriaRepository : IRepository<tbCategoria>
     {
     }
 }
