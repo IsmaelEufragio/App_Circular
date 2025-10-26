@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../global/colors.dart';
+import '../../../routes/routes.dart';
 import '../controller/sign_in_controller.dart';
 import '../controller/state/sign_in_state.dart';
 import 'widgets/submit_button.dart';
@@ -159,6 +161,7 @@ class _SingInViewState extends State<SingInView> {
                                         color: AppColors.sucess,
                                       ),
                                     ),
+                                    const Spacer(),
                                     TextButton(
                                       onPressed: () {},
                                       child: const Text(
@@ -192,7 +195,11 @@ class _SingInViewState extends State<SingInView> {
                   ),
                   //const SizedBox(height: 24),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      GoRouter.of(context).pushNamed(
+                        Routes.userType,
+                      );
+                    },
                     child: const Text.rich(
                       TextSpan(
                         text: '¿No tienes una cuenta? ',

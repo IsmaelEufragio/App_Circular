@@ -7,4 +7,6 @@ class Routes {
   static const home = 'home';
   static const error = 'error';
   static const profile = 'profile';
+  static const userType = 'user-type';
+  static const userCrear = 'user-crear';
 }
