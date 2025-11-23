@@ -7,11 +7,10 @@ class UserCrearController extends StateNotifier<UserCrearState> {
   UserCrearController(super.state, {required this.categoryRepository});
 
   final CategoryRepository categoryRepository;
-  List<BusinessCategory?> items = [];
-  void init() {
-    categoryRepository
-        .getBusinessCategory()
-        .then((category) => {items = category ?? []});
+
+  Future<List<BusinessCategory>> init() async {
+    final list = await categoryRepository.getBusinessCategory();
+    return list ?? [];
   }
 
   void onUserNameChanged(String text) {
@@ -46,10 +45,58 @@ class UserCrearController extends StateNotifier<UserCrearState> {
     );
   }
 
-  void onIdRubroChanged(int idRubro) {
+  void onSelectedCategoriesChanged(List<BusinessCategory> selectedCategories) {
     onlyUpdate(
       state.copyWith(
-        IdRubro: idRubro,
+        selectedCategories: selectedCategories,
+      ),
+    );
+  }
+
+  void onTelefonoChanged(String text) {
+    onlyUpdate(
+      state.copyWith(
+        telefono: text,
+      ),
+    );
+  }
+
+  void onEmailChanged(String text) {
+    onlyUpdate(
+      state.copyWith(
+        email: text,
+      ),
+    );
+  }
+
+  void onFacebookChanged(String text) {
+    onlyUpdate(
+      state.copyWith(
+        facebook: text,
+      ),
+    );
+  }
+
+  void onInstagramChanged(String text) {
+    onlyUpdate(
+      state.copyWith(
+        instagram: text,
+      ),
+    );
+  }
+
+  void onWhatsappChanged(bool value) {
+    onlyUpdate(
+      state.copyWith(
+        whatsapp: value,
+      ),
+    );
+  }
+
+  void onDomicilioChanged(bool value) {
+    onlyUpdate(
+      state.copyWith(
+        domicilio: value,
       ),
     );
   }
@@ -61,6 +108,13 @@ class UserCrearController extends StateNotifier<UserCrearState> {
     print('Descripción: ${state.descripcion}');
     print('RTN: ${state.rtn}');
     print('RTN Personal: ${state.rtnPersonal}');
-    print('ID Rubro: ${state.IdRubro}');
+    print('Teléfono: ${state.telefono}');
+    print('Email: ${state.email}');
+    print('Facebook: ${state.facebook}');
+    print('Instagram: ${state.instagram}');
+    print('WhatsApp: ${state.whatsapp}');
+    print('Domicilio: ${state.domicilio}');
+    print(
+        'Categorías seleccionadas: ${state.selectedCategories.map((c) => c.descripcion).join(', ')}');
   }
 }

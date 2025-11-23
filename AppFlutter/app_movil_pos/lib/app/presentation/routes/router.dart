@@ -15,7 +15,7 @@ import '../modules/offline/views/offline_view.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/sign_in/views/sign_in_view.dart';
 import '../modules/splash/splash_view.dart';
-import '../modules/user/view/user_crear_view.dart';
+import '../modules/user/view/user_crear_form.dart';
 import '../modules/user/view/user_type_view.dart';
 import 'routes.dart';
 
@@ -68,7 +68,7 @@ mixin RouterMixin on State<MyApp> {
           final userType = UserType.values.firstWhere(
             (e) => e.name == userTypeString,
           );
-          return CrearUserView(type: userType);
+          return CrearUserForm(type: userType);
         },
       ),
       GoRoute(

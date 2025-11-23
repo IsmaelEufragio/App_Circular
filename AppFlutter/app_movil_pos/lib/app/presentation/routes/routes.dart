@@ -9,4 +9,5 @@ class Routes {
   static const profile = 'profile';
   static const userType = 'user-type';
   static const userCrear = 'user-crear';
+  static const userCrearContact = 'user-crear-contact';
 }

@@ -20,7 +20,14 @@ mixin _$UserCrearState {
   String get descripcion => throw _privateConstructorUsedError;
   String get rtn => throw _privateConstructorUsedError;
   String get rtnPersonal => throw _privateConstructorUsedError;
-  int get IdRubro => throw _privateConstructorUsedError;
+  String get telefono => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String get facebook => throw _privateConstructorUsedError;
+  String get instagram => throw _privateConstructorUsedError;
+  bool get whatsapp => throw _privateConstructorUsedError;
+  bool get domicilio => throw _privateConstructorUsedError;
+  List<BusinessCategory> get selectedCategories =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
@@ -40,7 +47,13 @@ abstract class $UserCrearStateCopyWith<$Res> {
       String descripcion,
       String rtn,
       String rtnPersonal,
-      int IdRubro});
+      String telefono,
+      String email,
+      String facebook,
+      String instagram,
+      bool whatsapp,
+      bool domicilio,
+      List<BusinessCategory> selectedCategories});
 }
 
 /// @nodoc
@@ -62,7 +75,13 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
     Object? descripcion = null,
     Object? rtn = null,
     Object? rtnPersonal = null,
-    Object? IdRubro = null,
+    Object? telefono = null,
+    Object? email = null,
+    Object? facebook = null,
+    Object? instagram = null,
+    Object? whatsapp = null,
+    Object? domicilio = null,
+    Object? selectedCategories = null,
   }) {
     return _then(_value.copyWith(
       nombre: null == nombre
@@ -81,10 +100,34 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
           ? _value.rtnPersonal
           : rtnPersonal // ignore: cast_nullable_to_non_nullable
               as String,
-      IdRubro: null == IdRubro
-          ? _value.IdRubro
-          : IdRubro // ignore: cast_nullable_to_non_nullable
-              as int,
+      telefono: null == telefono
+          ? _value.telefono
+          : telefono // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      facebook: null == facebook
+          ? _value.facebook
+          : facebook // ignore: cast_nullable_to_non_nullable
+              as String,
+      instagram: null == instagram
+          ? _value.instagram
+          : instagram // ignore: cast_nullable_to_non_nullable
+              as String,
+      whatsapp: null == whatsapp
+          ? _value.whatsapp
+          : whatsapp // ignore: cast_nullable_to_non_nullable
+              as bool,
+      domicilio: null == domicilio
+          ? _value.domicilio
+          : domicilio // ignore: cast_nullable_to_non_nullable
+              as bool,
+      selectedCategories: null == selectedCategories
+          ? _value.selectedCategories
+          : selectedCategories // ignore: cast_nullable_to_non_nullable
+              as List<BusinessCategory>,
     ) as $Val);
   }
 }
@@ -102,7 +145,13 @@ abstract class _$$UserCrearStateImplCopyWith<$Res>
       String descripcion,
       String rtn,
       String rtnPersonal,
-      int IdRubro});
+      String telefono,
+      String email,
+      String facebook,
+      String instagram,
+      bool whatsapp,
+      bool domicilio,
+      List<BusinessCategory> selectedCategories});
 }
 
 /// @nodoc
@@ -122,7 +171,13 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
     Object? descripcion = null,
     Object? rtn = null,
     Object? rtnPersonal = null,
-    Object? IdRubro = null,
+    Object? telefono = null,
+    Object? email = null,
+    Object? facebook = null,
+    Object? instagram = null,
+    Object? whatsapp = null,
+    Object? domicilio = null,
+    Object? selectedCategories = null,
   }) {
     return _then(_$UserCrearStateImpl(
       nombre: null == nombre
@@ -141,10 +196,34 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
           ? _value.rtnPersonal
           : rtnPersonal // ignore: cast_nullable_to_non_nullable
               as String,
-      IdRubro: null == IdRubro
-          ? _value.IdRubro
-          : IdRubro // ignore: cast_nullable_to_non_nullable
-              as int,
+      telefono: null == telefono
+          ? _value.telefono
+          : telefono // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      facebook: null == facebook
+          ? _value.facebook
+          : facebook // ignore: cast_nullable_to_non_nullable
+              as String,
+      instagram: null == instagram
+          ? _value.instagram
+          : instagram // ignore: cast_nullable_to_non_nullable
+              as String,
+      whatsapp: null == whatsapp
+          ? _value.whatsapp
+          : whatsapp // ignore: cast_nullable_to_non_nullable
+              as bool,
+      domicilio: null == domicilio
+          ? _value.domicilio
+          : domicilio // ignore: cast_nullable_to_non_nullable
+              as bool,
+      selectedCategories: null == selectedCategories
+          ? _value._selectedCategories
+          : selectedCategories // ignore: cast_nullable_to_non_nullable
+              as List<BusinessCategory>,
     ));
   }
 }
@@ -157,7 +236,14 @@ class _$UserCrearStateImpl implements _UserCrearState {
       this.descripcion = '',
       this.rtn = '',
       this.rtnPersonal = '',
-      this.IdRubro = 0});
+      this.telefono = '',
+      this.email = '',
+      this.facebook = '',
+      this.instagram = '',
+      this.whatsapp = false,
+      this.domicilio = false,
+      final List<BusinessCategory> selectedCategories = const []})
+      : _selectedCategories = selectedCategories;
 
   @override
   @JsonKey()
@@ -173,11 +259,35 @@ class _$UserCrearStateImpl implements _UserCrearState {
   final String rtnPersonal;
   @override
   @JsonKey()
-  final int IdRubro;
+  final String telefono;
+  @override
+  @JsonKey()
+  final String email;
+  @override
+  @JsonKey()
+  final String facebook;
+  @override
+  @JsonKey()
+  final String instagram;
+  @override
+  @JsonKey()
+  final bool whatsapp;
+  @override
+  @JsonKey()
+  final bool domicilio;
+  final List<BusinessCategory> _selectedCategories;
+  @override
+  @JsonKey()
+  List<BusinessCategory> get selectedCategories {
+    if (_selectedCategories is EqualUnmodifiableListView)
+      return _selectedCategories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_selectedCategories);
+  }
 
   @override
   String toString() {
-    return 'UserCrearState(nombre: $nombre, descripcion: $descripcion, rtn: $rtn, rtnPersonal: $rtnPersonal, IdRubro: $IdRubro)';
+    return 'UserCrearState(nombre: $nombre, descripcion: $descripcion, rtn: $rtn, rtnPersonal: $rtnPersonal, telefono: $telefono, email: $email, facebook: $facebook, instagram: $instagram, whatsapp: $whatsapp, domicilio: $domicilio, selectedCategories: $selectedCategories)';
   }
 
   @override
@@ -191,12 +301,35 @@ class _$UserCrearStateImpl implements _UserCrearState {
             (identical(other.rtn, rtn) || other.rtn == rtn) &&
             (identical(other.rtnPersonal, rtnPersonal) ||
                 other.rtnPersonal == rtnPersonal) &&
-            (identical(other.IdRubro, IdRubro) || other.IdRubro == IdRubro));
+            (identical(other.telefono, telefono) ||
+                other.telefono == telefono) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.facebook, facebook) ||
+                other.facebook == facebook) &&
+            (identical(other.instagram, instagram) ||
+                other.instagram == instagram) &&
+            (identical(other.whatsapp, whatsapp) ||
+                other.whatsapp == whatsapp) &&
+            (identical(other.domicilio, domicilio) ||
+                other.domicilio == domicilio) &&
+            const DeepCollectionEquality()
+                .equals(other._selectedCategories, _selectedCategories));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, nombre, descripcion, rtn, rtnPersonal, IdRubro);
+  int get hashCode => Object.hash(
+      runtimeType,
+      nombre,
+      descripcion,
+      rtn,
+      rtnPersonal,
+      telefono,
+      email,
+      facebook,
+      instagram,
+      whatsapp,
+      domicilio,
+      const DeepCollectionEquality().hash(_selectedCategories));
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
@@ -214,7 +347,13 @@ abstract class _UserCrearState implements UserCrearState {
       final String descripcion,
       final String rtn,
       final String rtnPersonal,
-      final int IdRubro}) = _$UserCrearStateImpl;
+      final String telefono,
+      final String email,
+      final String facebook,
+      final String instagram,
+      final bool whatsapp,
+      final bool domicilio,
+      final List<BusinessCategory> selectedCategories}) = _$UserCrearStateImpl;
 
   @override
   String get nombre;
@@ -225,7 +364,19 @@ abstract class _UserCrearState implements UserCrearState {
   @override
   String get rtnPersonal;
   @override
-  int get IdRubro;
+  String get telefono;
+  @override
+  String get email;
+  @override
+  String get facebook;
+  @override
+  String get instagram;
+  @override
+  bool get whatsapp;
+  @override
+  bool get domicilio;
+  @override
+  List<BusinessCategory> get selectedCategories;
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
