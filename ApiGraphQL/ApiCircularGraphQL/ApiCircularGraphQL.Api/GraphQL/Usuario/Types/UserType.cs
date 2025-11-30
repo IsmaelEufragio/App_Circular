@@ -60,7 +60,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
         {
             var data = await claimsUsuarioDataLoader.LoadAsync(userDTO.Id, CancellationToken.None);
             return data is null
-                ? throw new GraphQLException($"No se encontró el tipo de Identificacion con ID {userDTO.IdTipoIdentidad}")
+                ? throw new GraphQLException($"No se encontró Claims con ID {userDTO.IdTipoIdentidad}")
                 : [.. data];
         }
 
@@ -72,7 +72,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Usuario.Types
         {
             var data = await infUsuarioPrincipalDataLoader.LoadAsync(userDTO.IdUserPrincipal, CancellationToken.None);
             return data is null
-                ? throw new GraphQLException($"No se encontró el tipo de Identificacion con ID {userDTO.IdTipoIdentidad}")
+                ? throw new GraphQLException($"No se encontró Informacion Unica con ID {userDTO.IdTipoIdentidad}")
                 : data;
         }
     }

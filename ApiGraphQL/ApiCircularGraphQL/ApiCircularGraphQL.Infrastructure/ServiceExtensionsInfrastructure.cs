@@ -27,6 +27,9 @@ namespace ApiCircularGraphQL.Infrastructure
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<ISubdivicionLugarRepository, SubdivicionLugarRepository>();
             services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+            services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
+            services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
+            services.AddScoped<ILugarRepository, LugarRepository>();
             services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
             return services;
         }
