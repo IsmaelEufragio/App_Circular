@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/enums.dart';
+import '../../domain/models/user/user_create/select_option/user_data_option.dart';
 import '../../domain/repositories/authentication_repository.dart';
+import '../../domain/repositories/user_repository.dart';
 import '../../my_app.dart';
 import '../global/widgets/menu.dart';
 import '../modules/billing/views/billing_view.dart';
@@ -15,6 +17,7 @@ import '../modules/offline/views/offline_view.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/sign_in/views/sign_in_view.dart';
 import '../modules/splash/splash_view.dart';
+import '../modules/user/controller/user_crear_controller.dart';
 import '../modules/user/view/user_crear_form.dart';
 import '../modules/user/view/user_type_view.dart';
 import 'routes.dart';
@@ -63,12 +66,44 @@ mixin RouterMixin on State<MyApp> {
         path: '/userCrear/:userType',
         name: Routes.userCrear,
         parentNavigatorKey: parentNavigatorKey,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final userTypeString = state.pathParameters['userType']!;
           final userType = UserType.values.firstWhere(
             (e) => e.name == userTypeString,
           );
-          return CrearUserForm(type: userType);
+          return MaterialPage(
+            child: FutureBuilder<UserDataOption>(
+              future: context.read<UserRepository>().getUserDataOption(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Scaffold(
+                    body: Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    ),
+                  );
+                } else if (snapshot.hasData) {
+                  final option = snapshot.data!;
+                  final controlle = context.read<UserCrearController>();
+                  controlle.setOptiondCategories(option.categoriaNegocios);
+                  controlle.setOptiodnDepartamentos(option.departamentos);
+
+                  return CrearUserForm(type: userType);
+                } else {
+                  return const Scaffold(
+                    body: Center(
+                      child: Text('No data available'),
+                    ),
+                  );
+                }
+              },
+            ),
+          );
         },
       ),
       GoRoute(

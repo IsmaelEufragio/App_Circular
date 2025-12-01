@@ -14,16 +14,19 @@ import 'app/data/repositories_implementation/authentication_repository_impl.dart
 import 'app/data/repositories_implementation/category_repository_impl.dart';
 import 'app/data/repositories_implementation/connectivity_repository_impl.dart';
 import 'app/data/repositories_implementation/preferences_repository_impl.dart';
+import 'app/data/repositories_implementation/user_repository_impl.dart';
 import 'app/data/services/local/session_service.dart';
 import 'app/data/services/remoto/account_service.dart';
 import 'app/data/services/remoto/authentication_service.dart';
 import 'app/data/services/remoto/category_service.dart';
 import 'app/data/services/remoto/internet_checker.dart';
+import 'app/data/services/remoto/user_service.dart';
 import 'app/domain/repositories/account_repository.dart';
 import 'app/domain/repositories/authentication_repository.dart';
 import 'app/domain/repositories/category_repsitory.dart';
 import 'app/domain/repositories/connectivity_repository.dart';
 import 'app/domain/repositories/preferences_repository.dart';
+import 'app/domain/repositories/user_repository.dart';
 import 'app/my_app.dart';
 import 'app/presentation/global/controllers/session_controller.dart';
 import 'app/presentation/global/controllers/theme_controller.dart';
@@ -71,6 +74,11 @@ void main() async {
             CategoryService(http),
           ),
         ),
+        Provider<UserRepository>(
+          create: (_) => UserRepositoryImpl(
+            UserService(http),
+          ),
+        ),
         Provider<PreferencesRepository>(
           create: (_) => PreferencesRepositoryImpl(preferences),
         ),
@@ -110,7 +118,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => UserCrearController(
             UserCrearState(),
-            categoryRepository: context.read<CategoryRepository>(),
+            //categoryRepository: context.read<CategoryRepository>(),
           ),
         ),
       ],

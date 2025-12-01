@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../typedefs.dart';
+
 part 'phone.freezed.dart';
 part 'phone.g.dart';
 
@@ -9,5 +11,5 @@ class Phone with _$Phone {
     required String telefono,
   }) = _Phone;
 
-  factory Phone.fromJson(Map<String, dynamic> json) => _$PhoneFromJson(json);
+  factory Phone.fromJson(Json json) => _$PhoneFromJson(json);
 }

@@ -89,7 +89,9 @@ class _CrearUserFormState extends State<CrearUserForm> {
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
                   onPageChanged: (int page) {
-                    _currentPage = page;
+                    setState(() {
+                      _currentPage = page;
+                    });
                   },
                   children: [
                     CrearUserInfoView(formKey: _formKeyStep1),

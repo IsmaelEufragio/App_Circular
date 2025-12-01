@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../typedefs.dart';
+
 part 'rol.freezed.dart';
 part 'rol.g.dart';
 
@@ -10,5 +12,5 @@ class Rol with _$Rol {
     required String nombreNormalizado,
   }) = _Rol;
 
-  factory Rol.fromJson(Map<String, dynamic> json) => _$RolFromJson(json);
+  factory Rol.fromJson(Json json) => _$RolFromJson(json);
 }
