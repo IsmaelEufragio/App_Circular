@@ -9,5 +9,6 @@ namespace ApiCircularGraphQL.Domain.Interfaces
 {
     public interface ISubdivicionLugarRepository : IRepository<tbSubdivicionLugar>
     {
+        Task<Dictionary<Guid, tbSubdivicionLugar[]>> SubdivicionLugarPorUbicacion(IReadOnlyList<Guid> idsLugar);
     }
 }

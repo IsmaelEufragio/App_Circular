@@ -10,5 +10,6 @@ namespace ApiCircularGraphQL.Application.DTOs
     {
         public Guid Id { get; set; }
         public string Descripcion { get; set; }
+        public List<SubdivicionLugarDTO> Colonia { get; set; }
     }
 }

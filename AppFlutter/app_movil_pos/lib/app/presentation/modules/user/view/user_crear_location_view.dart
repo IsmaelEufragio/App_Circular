@@ -70,7 +70,7 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
               ),
               UserDropdow(
                 optionDeparta: optionLugar,
-                label: 'Colonia o Barrio',
+                label: 'Mas Conocido',
                 selectedValue: controller.state.selectedLugarId,
                 onSelected: (value) {
                   if (value == null) return;

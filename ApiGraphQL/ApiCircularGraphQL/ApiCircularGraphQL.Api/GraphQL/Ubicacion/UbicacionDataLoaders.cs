@@ -26,5 +26,16 @@ namespace ApiCircularGraphQL.Api.GraphQL.Ubicacion
             var data = await lugarService.GetLugarPorMunicipio(idsMunicipio);
             return data;
         }
+
+        [DataLoader]
+        public static async Task<IReadOnlyDictionary<Guid, SubdivicionLugarDTO[]>> SubdivicionPorLugar(
+            IReadOnlyList<Guid> idsLugar,
+            ISubdivicionLugarService subdivicionLugarService,
+            CancellationToken cancellationToken
+        )
+        {
+            var data = await subdivicionLugarService.GetSubdivicionPorLugar(idsLugar);
+            return data;
+        }
     }
 }

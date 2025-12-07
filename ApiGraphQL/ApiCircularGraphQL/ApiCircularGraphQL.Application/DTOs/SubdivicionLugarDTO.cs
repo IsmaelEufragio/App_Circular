@@ -8,8 +8,8 @@ namespace ApiCircularGraphQL.Application.DTOs
 {
     public class SubdivicionLugarDTO
     {
-        public Guid IdSubdivicionLugar { get; set; }
-        public string NombreSubdivicion { get; set; }
+        public Guid Id { get; set; }
+        public string Nombre { get; set; }
         public CategoriaSubdivicion Categoria { get; set; }
 
     }
