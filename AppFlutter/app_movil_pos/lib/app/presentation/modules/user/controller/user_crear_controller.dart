@@ -1,12 +1,27 @@
 import '../../../../domain/models/ubicacion/department/department.dart';
 import '../../../../domain/models/user/business_category/business_category.dart';
+import '../../../../domain/repositories/geolocator_repository.dart';
 import '../../../global/state_notifier.dart';
 import 'state/user_crear_state.dart';
 
 class UserCrearController extends StateNotifier<UserCrearState> {
-  UserCrearController(
-    super.state,
-  );
+  UserCrearController(super.state, {required this.geolocatorRepository});
+
+  final GeolocatorRepository geolocatorRepository;
+
+  Future<void> getCurrentLocation() async {
+    await geolocatorRepository.checkPermissions();
+    final location = await geolocatorRepository.getCurrentLocation();
+    print('Ubicación actual: $location');
+  }
+
+  Future<void> openAppSettings() async {
+    await geolocatorRepository.openAppSettings();
+  }
+
+  Future<void> permisos() async {
+    await geolocatorRepository.checkPermissions();
+  }
 
   void onUserNameChanged(String text) {
     onlyUpdate(
@@ -120,6 +135,14 @@ class UserCrearController extends StateNotifier<UserCrearState> {
     );
   }
 
+  void onSelectedColonyIdChanged(String value) {
+    onlyUpdate(
+      state.copyWith(
+        selectedColonyId: value,
+      ),
+    );
+  }
+
   void submit() {
     // Aquí puedes agregar la lógica para enviar los datos del formulario
     // Por ejemplo, podrías llamar a un repositorio para guardar el usuario
@@ -135,6 +158,10 @@ class UserCrearController extends StateNotifier<UserCrearState> {
     print('Domicilio: ${state.domicilio}');
     print(
         'Categorías seleccionadas: ${state.selectedCategories.map((c) => c.descripcion).join(', ')}');
+  }
+
+  void geolocator() async {
+    await geolocatorRepository.getCurrentLocation();
   }
 
   void setOptiondCategories(List<BusinessCategory>? category) {

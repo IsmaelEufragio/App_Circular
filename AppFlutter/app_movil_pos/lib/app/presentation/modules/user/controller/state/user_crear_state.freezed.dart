@@ -34,6 +34,7 @@ mixin _$UserCrearState {
   String get selectedDepartamentoId => throw _privateConstructorUsedError;
   String get selectedMunicipioId => throw _privateConstructorUsedError;
   String get selectedLugarId => throw _privateConstructorUsedError;
+  String get selectedColonyId => throw _privateConstructorUsedError;
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
@@ -64,7 +65,8 @@ abstract class $UserCrearStateCopyWith<$Res> {
       List<Department> departamentos,
       String selectedDepartamentoId,
       String selectedMunicipioId,
-      String selectedLugarId});
+      String selectedLugarId,
+      String selectedColonyId});
 }
 
 /// @nodoc
@@ -98,6 +100,7 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
     Object? selectedDepartamentoId = null,
     Object? selectedMunicipioId = null,
     Object? selectedLugarId = null,
+    Object? selectedColonyId = null,
   }) {
     return _then(_value.copyWith(
       nombre: null == nombre
@@ -164,6 +167,10 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
           ? _value.selectedLugarId
           : selectedLugarId // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedColonyId: null == selectedColonyId
+          ? _value.selectedColonyId
+          : selectedColonyId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -192,7 +199,8 @@ abstract class _$$UserCrearStateImplCopyWith<$Res>
       List<Department> departamentos,
       String selectedDepartamentoId,
       String selectedMunicipioId,
-      String selectedLugarId});
+      String selectedLugarId,
+      String selectedColonyId});
 }
 
 /// @nodoc
@@ -224,6 +232,7 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
     Object? selectedDepartamentoId = null,
     Object? selectedMunicipioId = null,
     Object? selectedLugarId = null,
+    Object? selectedColonyId = null,
   }) {
     return _then(_$UserCrearStateImpl(
       nombre: null == nombre
@@ -290,6 +299,10 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
           ? _value.selectedLugarId
           : selectedLugarId // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedColonyId: null == selectedColonyId
+          ? _value.selectedColonyId
+          : selectedColonyId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -313,7 +326,8 @@ class _$UserCrearStateImpl implements _UserCrearState {
       final List<Department> departamentos = const [],
       this.selectedDepartamentoId = '',
       this.selectedMunicipioId = '',
-      this.selectedLugarId = ''})
+      this.selectedLugarId = '',
+      this.selectedColonyId = ''})
       : _selectedCategories = selectedCategories,
         _optiondCategories = optiondCategories,
         _departamentos = departamentos;
@@ -386,10 +400,13 @@ class _$UserCrearStateImpl implements _UserCrearState {
   @override
   @JsonKey()
   final String selectedLugarId;
+  @override
+  @JsonKey()
+  final String selectedColonyId;
 
   @override
   String toString() {
-    return 'UserCrearState(nombre: $nombre, descripcion: $descripcion, rtn: $rtn, rtnPersonal: $rtnPersonal, telefono: $telefono, email: $email, facebook: $facebook, instagram: $instagram, whatsapp: $whatsapp, domicilio: $domicilio, selectedCategories: $selectedCategories, optiondCategories: $optiondCategories, departamentos: $departamentos, selectedDepartamentoId: $selectedDepartamentoId, selectedMunicipioId: $selectedMunicipioId, selectedLugarId: $selectedLugarId)';
+    return 'UserCrearState(nombre: $nombre, descripcion: $descripcion, rtn: $rtn, rtnPersonal: $rtnPersonal, telefono: $telefono, email: $email, facebook: $facebook, instagram: $instagram, whatsapp: $whatsapp, domicilio: $domicilio, selectedCategories: $selectedCategories, optiondCategories: $optiondCategories, departamentos: $departamentos, selectedDepartamentoId: $selectedDepartamentoId, selectedMunicipioId: $selectedMunicipioId, selectedLugarId: $selectedLugarId, selectedColonyId: $selectedColonyId)';
   }
 
   @override
@@ -425,7 +442,9 @@ class _$UserCrearStateImpl implements _UserCrearState {
             (identical(other.selectedMunicipioId, selectedMunicipioId) ||
                 other.selectedMunicipioId == selectedMunicipioId) &&
             (identical(other.selectedLugarId, selectedLugarId) ||
-                other.selectedLugarId == selectedLugarId));
+                other.selectedLugarId == selectedLugarId) &&
+            (identical(other.selectedColonyId, selectedColonyId) ||
+                other.selectedColonyId == selectedColonyId));
   }
 
   @override
@@ -446,7 +465,8 @@ class _$UserCrearStateImpl implements _UserCrearState {
       const DeepCollectionEquality().hash(_departamentos),
       selectedDepartamentoId,
       selectedMunicipioId,
-      selectedLugarId);
+      selectedLugarId,
+      selectedColonyId);
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
@@ -475,7 +495,8 @@ abstract class _UserCrearState implements UserCrearState {
       final List<Department> departamentos,
       final String selectedDepartamentoId,
       final String selectedMunicipioId,
-      final String selectedLugarId}) = _$UserCrearStateImpl;
+      final String selectedLugarId,
+      final String selectedColonyId}) = _$UserCrearStateImpl;
 
   @override
   String get nombre;
@@ -509,6 +530,8 @@ abstract class _UserCrearState implements UserCrearState {
   String get selectedMunicipioId;
   @override
   String get selectedLugarId;
+  @override
+  String get selectedColonyId;
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.

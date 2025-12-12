@@ -22,6 +22,7 @@ Place _$PlaceFromJson(Map<String, dynamic> json) {
 mixin _$Place {
   String get id => throw _privateConstructorUsedError;
   String get descripcion => throw _privateConstructorUsedError;
+  List<Colony> get colonias => throw _privateConstructorUsedError;
 
   /// Serializes this Place to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -37,7 +38,7 @@ abstract class $PlaceCopyWith<$Res> {
   factory $PlaceCopyWith(Place value, $Res Function(Place) then) =
       _$PlaceCopyWithImpl<$Res, Place>;
   @useResult
-  $Res call({String id, String descripcion});
+  $Res call({String id, String descripcion, List<Colony> colonias});
 }
 
 /// @nodoc
@@ -57,6 +58,7 @@ class _$PlaceCopyWithImpl<$Res, $Val extends Place>
   $Res call({
     Object? id = null,
     Object? descripcion = null,
+    Object? colonias = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -67,6 +69,10 @@ class _$PlaceCopyWithImpl<$Res, $Val extends Place>
           ? _value.descripcion
           : descripcion // ignore: cast_nullable_to_non_nullable
               as String,
+      colonias: null == colonias
+          ? _value.colonias
+          : colonias // ignore: cast_nullable_to_non_nullable
+              as List<Colony>,
     ) as $Val);
   }
 }
@@ -78,7 +84,7 @@ abstract class _$$PlaceImplCopyWith<$Res> implements $PlaceCopyWith<$Res> {
       __$$PlaceImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String descripcion});
+  $Res call({String id, String descripcion, List<Colony> colonias});
 }
 
 /// @nodoc
@@ -96,6 +102,7 @@ class __$$PlaceImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? descripcion = null,
+    Object? colonias = null,
   }) {
     return _then(_$PlaceImpl(
       id: null == id
@@ -106,6 +113,10 @@ class __$$PlaceImplCopyWithImpl<$Res>
           ? _value.descripcion
           : descripcion // ignore: cast_nullable_to_non_nullable
               as String,
+      colonias: null == colonias
+          ? _value._colonias
+          : colonias // ignore: cast_nullable_to_non_nullable
+              as List<Colony>,
     ));
   }
 }
@@ -113,7 +124,12 @@ class __$$PlaceImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PlaceImpl extends _Place {
-  const _$PlaceImpl({required this.id, required this.descripcion}) : super._();
+  const _$PlaceImpl(
+      {required this.id,
+      required this.descripcion,
+      required final List<Colony> colonias})
+      : _colonias = colonias,
+        super._();
 
   factory _$PlaceImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlaceImplFromJson(json);
@@ -122,10 +138,17 @@ class _$PlaceImpl extends _Place {
   final String id;
   @override
   final String descripcion;
+  final List<Colony> _colonias;
+  @override
+  List<Colony> get colonias {
+    if (_colonias is EqualUnmodifiableListView) return _colonias;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_colonias);
+  }
 
   @override
   String toString() {
-    return 'Place(id: $id, descripcion: $descripcion)';
+    return 'Place(id: $id, descripcion: $descripcion, colonias: $colonias)';
   }
 
   @override
@@ -135,12 +158,14 @@ class _$PlaceImpl extends _Place {
             other is _$PlaceImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.descripcion, descripcion) ||
-                other.descripcion == descripcion));
+                other.descripcion == descripcion) &&
+            const DeepCollectionEquality().equals(other._colonias, _colonias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, descripcion);
+  int get hashCode => Object.hash(runtimeType, id, descripcion,
+      const DeepCollectionEquality().hash(_colonias));
 
   /// Create a copy of Place
   /// with the given fields replaced by the non-null parameter values.
@@ -161,7 +186,8 @@ class _$PlaceImpl extends _Place {
 abstract class _Place extends Place {
   const factory _Place(
       {required final String id,
-      required final String descripcion}) = _$PlaceImpl;
+      required final String descripcion,
+      required final List<Colony> colonias}) = _$PlaceImpl;
   const _Place._() : super._();
 
   factory _Place.fromJson(Map<String, dynamic> json) = _$PlaceImpl.fromJson;
@@ -170,6 +196,8 @@ abstract class _Place extends Place {
   String get id;
   @override
   String get descripcion;
+  @override
+  List<Colony> get colonias;
 
   /// Create a copy of Place
   /// with the given fields replaced by the non-null parameter values.

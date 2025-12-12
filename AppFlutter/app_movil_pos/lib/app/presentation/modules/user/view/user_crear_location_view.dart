@@ -18,10 +18,12 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UserCrearController>();
+
     final optionDeparta = controller.state.departamentos.map((departamento) {
       return DropdownMenuEntry(
           value: departamento.id, label: departamento.nombre);
     }).toList();
+
     final optionMunicipio = controller.state.departamentos
         .where((dep) => dep.id == controller.state.selectedDepartamentoId)
         .expand((dep) => dep.municipios)
@@ -39,6 +41,16 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
       return DropdownMenuEntry(value: lugar.id, label: lugar.descripcion);
     }).toList();
 
+    final optionColonia = controller.state.departamentos
+        .where((dep) => dep.id == controller.state.selectedDepartamentoId)
+        .expand((dep) => dep.municipios)
+        .where((mun) => mun.id == controller.state.selectedMunicipioId)
+        .expand((mun) => mun.lugares)
+        .where((lugar) => lugar.id == controller.state.selectedLugarId)
+        .expand((lugar) => lugar.colonias)
+        .map((colonia) {
+      return DropdownMenuEntry(value: colonia.id, label: colonia.nombre);
+    }).toList();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -74,8 +86,37 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
                 selectedValue: controller.state.selectedLugarId,
                 onSelected: (value) {
                   if (value == null) return;
-                  controller.onSelectedLugarIdChanged(value);
+                  setState(() {
+                    controller.onSelectedLugarIdChanged(value);
+                  });
                 },
+              ),
+              UserDropdow(
+                optionDeparta: optionColonia,
+                label: 'Colonia',
+                selectedValue: controller.state.selectedColonyId,
+                onSelected: (value) {
+                  if (value == null) return;
+                  controller.onSelectedColonyIdChanged(value);
+                },
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  controller.permisos();
+                },
+                child: const Text('Con permisos'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  controller.openAppSettings();
+                },
+                child: const Text('Abrir Configuraciones'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  controller.getCurrentLocation();
+                },
+                child: const Text('Ubicacion'),
               ),
             ],
           ),

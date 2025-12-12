@@ -24,5 +24,6 @@ class UserCrearState with _$UserCrearState {
     @Default('') String selectedDepartamentoId,
     @Default('') String selectedMunicipioId,
     @Default('') String selectedLugarId,
+    @Default('') String selectedColonyId,
   }) = _UserCrearState;
 }

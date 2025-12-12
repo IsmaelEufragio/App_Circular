@@ -20,6 +20,10 @@ class UserService {
           lugares{
             id
             descripcion
+            colonias{
+              id
+              nombre
+            }
           }
         }
       }

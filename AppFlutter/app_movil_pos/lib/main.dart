@@ -13,8 +13,10 @@ import 'app/data/repositories_implementation/account_repository_impl.dart';
 import 'app/data/repositories_implementation/authentication_repository_impl.dart';
 import 'app/data/repositories_implementation/category_repository_impl.dart';
 import 'app/data/repositories_implementation/connectivity_repository_impl.dart';
+import 'app/data/repositories_implementation/geolocator_repository_impl.dart';
 import 'app/data/repositories_implementation/preferences_repository_impl.dart';
 import 'app/data/repositories_implementation/user_repository_impl.dart';
+import 'app/data/services/local/geolocator_service.dart';
 import 'app/data/services/local/session_service.dart';
 import 'app/data/services/remoto/account_service.dart';
 import 'app/data/services/remoto/authentication_service.dart';
@@ -25,6 +27,7 @@ import 'app/domain/repositories/account_repository.dart';
 import 'app/domain/repositories/authentication_repository.dart';
 import 'app/domain/repositories/category_repsitory.dart';
 import 'app/domain/repositories/connectivity_repository.dart';
+import 'app/domain/repositories/geolocator_repository.dart';
 import 'app/domain/repositories/preferences_repository.dart';
 import 'app/domain/repositories/user_repository.dart';
 import 'app/my_app.dart';
@@ -101,6 +104,13 @@ void main() async {
             );
           },
         ),
+        Provider<GeolocatorRepository>(
+          create: (_) {
+            return GeolocatorRepositoryImpl(
+              GeolocatorService(),
+            );
+          },
+        ),
         ChangeNotifierProvider<ThemeController>(
           create: (context) {
             final preferencesRepository = context.read<PreferencesRepository>();
@@ -118,7 +128,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => UserCrearController(
             UserCrearState(),
-            //categoryRepository: context.read<CategoryRepository>(),
+            geolocatorRepository: context.read<GeolocatorRepository>(),
           ),
         ),
       ],
