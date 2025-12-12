@@ -6,7 +6,7 @@ namespace ApiCircularGraphQL.Api.GraphQL.Ubicacion.Types
     [ObjectType<LugarDTO>]
     public static partial class LugarType
     {
-        public static async Task<List<SubdivicionLugarDTO>> GetColonia(
+        public static async Task<List<SubdivicionLugarDTO>> GetColonias(
             [Parent] LugarDTO lugarDTO,
             ISubdivicionPorLugarDataLoader subdivicionPorLugarDataLoader,
             CancellationToken cancellationToken
