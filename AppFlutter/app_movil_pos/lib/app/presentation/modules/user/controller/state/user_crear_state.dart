@@ -25,5 +25,8 @@ class UserCrearState with _$UserCrearState {
     @Default('') String selectedMunicipioId,
     @Default('') String selectedLugarId,
     @Default('') String selectedColonyId,
+    @Default(0) double latitude,
+    @Default(0) double longitude,
+    @Default(false) bool isPermissionGranted,
   }) = _UserCrearState;
 }

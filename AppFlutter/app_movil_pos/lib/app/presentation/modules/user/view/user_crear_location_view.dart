@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../global/colors.dart';
 import '../controller/user_crear_controller.dart';
 import '../widgets/user_dropdow.dart';
 
@@ -14,16 +15,54 @@ class UserCrearLocationView extends StatefulWidget {
   State<UserCrearLocationView> createState() => _UserCrearLocationViewState();
 }
 
-class _UserCrearLocationViewState extends State<UserCrearLocationView> {
-  //final ScannerService _scannerService = ScannerService();
-  final String _scanResult = 'Esperando resultado del escaneo';
+class _UserCrearLocationViewState extends State<UserCrearLocationView>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserCrearController>().permisos();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
-  void _getScanResult() {
-    setState(() {
-      // Actualiza el estado con el último resultado de escaneo
-      //_scanResult =
-      //_scannerService.lastScanResult ?? 'No se ha escaneado nada aún';
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // App visible y activa (usuario regresó)
+        print('App resumida - Usuario regresó');
+        context.read<UserCrearController>().permisos();
+        setState(() {});
+        break;
+
+      case AppLifecycleState.inactive:
+        // App inactiva (llamada entrante, notificación)
+        print('App inactiva');
+        break;
+
+      case AppLifecycleState.paused:
+        // App en segundo plano (usuario salió)
+        print('App pausada - Usuario salió');
+        //_onAppPaused();
+        break;
+
+      case AppLifecycleState.detached:
+        // App destruida por el sistema
+        print('App detached');
+        break;
+
+      case AppLifecycleState.hidden:
+        // App oculta (nuevo en algunas versiones)
+        print('App oculta');
+        break;
+    }
   }
 
   @override
@@ -111,27 +150,29 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
                   controller.onSelectedColonyIdChanged(value);
                 },
               ),
-              Text(_scanResult, style: const TextStyle(color: Colors.black)),
-              ElevatedButton(
-                onPressed: () {
-                  //controller.permisos();
-                  controller.triggerScan();
-                  //_scannerService.triggerScan();
-                },
-                child: const Text('Iniciar Scaner'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  controller.configLcd();
-                },
-                child: const Text('Dormir Pantalla'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  controller.getCurrentLocation();
-                },
-                child: const Text('Ubicacion'),
-              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (controller.state.isPermissionGranted) {
+                        controller.getCurrentLocation();
+                      } else {
+                        controller.openAppSettings();
+                      }
+                    },
+                    icon: const Icon(Icons.my_location),
+                    color: controller.state.isPermissionGranted
+                        ? AppColors.sucess
+                        : AppColors.info,
+                  ),
+                  Text(
+                    controller.state.isPermissionGranted
+                        ? ''
+                        : 'Es necesario otorgar permisos de ubicación',
+                    style: const TextStyle(color: AppColors.alert),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -139,71 +180,3 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
     );
   }
 }
-
-/*class ScannerService {
-  ScannerService() {
-    platform.setMethodCallHandler(_handleScanResult);
-  }
-  static const platform = MethodChannel('com.example.device/scanner');
-  String? _lastScanResult;
-
-  Future<void> _handleScanResult(MethodCall call) async {
-    if (call.method == 'onScanDataReceived') {
-      try {
-        dynamic scanResult = call.arguments;
-        print('Resultado del escaneo recibido: $scanResult');
-
-        final Json jsonMap = Json.from(scanResult as Map);
-
-        if (jsonMap['data'] is Map) {
-          jsonMap['data'] = Json.from(jsonMap['data'] as Map);
-        }
-
-        // Ahora sí parsear el resultado
-        var result = Response<Scan>.fromJson(
-          jsonMap,
-          (json) => Scan.fromJson(json as Json),
-        );
-
-        // Acceder a los datos
-        print('Success: ${result.success}');
-        print('Message: ${result.message}');
-        print('QSC Code: ${result.data.qscCode}');
-      } catch (e) {
-        print('Error parsing scan result: $e');
-      }
-    }
-  }
-
-  String? get lastScanResult => _lastScanResult;
-
-  Future<void> unregisterScannerReceiver() async {
-    try {
-      await platform.invokeMethod('unregisterReceiver');
-    } on PlatformException catch (e) {
-      print('Error unregistering: ${e.message}');
-    }
-  }
-
-  Future<void> triggerScan() async {
-    try {
-      final dynamic result = await platform.invokeMethod('triggerScan');
-      print(result); // "Scan triggered successfully"
-    } on PlatformException catch (e) {
-      print("Failed to trigger scan: '${e.message}'.");
-    }
-  }
-
-  Future<Map<String, dynamic>?> getPantallaLCD(int stadoLCD) async {
-    try {
-      final result =
-          await platform.invokeMethod('configLcd', {'parametro': stadoLCD});
-      print(result);
-      // Cast explícito al tipo esperado
-      return Map<String, dynamic>.from(result as Map);
-    } on PlatformException catch (e) {
-      print("Failed to get printer directory: '${e.message}'.");
-      return null;
-    }
-  }
-}*/

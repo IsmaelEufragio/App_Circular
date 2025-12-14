@@ -146,8 +146,6 @@ void main() async {
           create: (context) => UserCrearController(
             UserCrearState(),
             geolocatorRepository: context.read<GeolocatorRepository>(),
-            scanRepository: context.read<ScanRepository>(),
-            printerService: context.read<PrinterRepository>(),
           ),
         ),
       ],

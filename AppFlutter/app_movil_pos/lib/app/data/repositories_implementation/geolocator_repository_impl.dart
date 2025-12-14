@@ -1,3 +1,6 @@
+import '../../domain/enums.dart';
+import '../../domain/models/Local/geolocator/geolocator.dart';
+import '../../domain/models/Local/result/response.dart';
 import '../../domain/repositories/geolocator_repository.dart';
 import '../services/local/geolocator_service.dart';
 
@@ -7,12 +10,12 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   final GeolocatorService _geolocatorService;
 
   @override
-  Future<void> checkPermissions() async {
-    await _geolocatorService.checkPermissions();
+  Future<Permisos> checkPermissions() async {
+    return await _geolocatorService.checkPermissions();
   }
 
   @override
-  Future<String> getCurrentLocation() async {
+  Future<Response<Geolocator>> getCurrentLocation() async {
     return await _geolocatorService.getCurrentLocation();
   }
 

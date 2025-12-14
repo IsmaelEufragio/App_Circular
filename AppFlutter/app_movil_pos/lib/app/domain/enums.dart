@@ -20,3 +20,19 @@ enum ConfigLcd {
   final int value;
   const ConfigLcd(this.value);
 }
+
+enum Permisos {
+  granted('GRANTED'),
+  showRationale('SHOW_RATIONALE'),
+  requestPermission('REQUEST_PERMISSION');
+
+  final String value;
+  const Permisos(this.value);
+
+  static Permisos fromValue(String value) {
+    return Permisos.values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => throw ArgumentError('Valor inválido: $value'),
+    );
+  }
+}
