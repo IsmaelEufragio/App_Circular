@@ -15,8 +15,12 @@ import 'app/data/repositories_implementation/category_repository_impl.dart';
 import 'app/data/repositories_implementation/connectivity_repository_impl.dart';
 import 'app/data/repositories_implementation/geolocator_repository_impl.dart';
 import 'app/data/repositories_implementation/preferences_repository_impl.dart';
+import 'app/data/repositories_implementation/printer_repository_impl.dart';
+import 'app/data/repositories_implementation/scan_repository_impl.dart';
 import 'app/data/repositories_implementation/user_repository_impl.dart';
 import 'app/data/services/local/geolocator_service.dart';
+import 'app/data/services/local/printer_service.dart';
+import 'app/data/services/local/scan_service.dart';
 import 'app/data/services/local/session_service.dart';
 import 'app/data/services/remoto/account_service.dart';
 import 'app/data/services/remoto/authentication_service.dart';
@@ -29,6 +33,8 @@ import 'app/domain/repositories/category_repsitory.dart';
 import 'app/domain/repositories/connectivity_repository.dart';
 import 'app/domain/repositories/geolocator_repository.dart';
 import 'app/domain/repositories/preferences_repository.dart';
+import 'app/domain/repositories/printer_repository.dart';
+import 'app/domain/repositories/scan_repository.dart';
 import 'app/domain/repositories/user_repository.dart';
 import 'app/my_app.dart';
 import 'app/presentation/global/controllers/session_controller.dart';
@@ -41,7 +47,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final sessionService = SessionSevices(const FlutterSecureStorage());
-
+  final scanService = ScanService();
+  scanService.scannerService();
   final http = Http(
     Client(),
     baseUrl:
@@ -111,6 +118,16 @@ void main() async {
             );
           },
         ),
+        Provider<PrinterRepository>(create: (_) {
+          return PrinterRepositoryImpl(
+            printerService: PrinterService(),
+          );
+        }),
+        Provider<ScanRepository>.value(
+          value: ScanRepositoryImpl(
+            scanService,
+          ),
+        ),
         ChangeNotifierProvider<ThemeController>(
           create: (context) {
             final preferencesRepository = context.read<PreferencesRepository>();
@@ -129,10 +146,12 @@ void main() async {
           create: (context) => UserCrearController(
             UserCrearState(),
             geolocatorRepository: context.read<GeolocatorRepository>(),
+            scanRepository: context.read<ScanRepository>(),
+            printerService: context.read<PrinterRepository>(),
           ),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(scanService: scanService),
     ),
   );
 }

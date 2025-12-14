@@ -1,13 +1,54 @@
+import 'dart:async';
+
+import '../../../../domain/enums.dart';
 import '../../../../domain/models/ubicacion/department/department.dart';
 import '../../../../domain/models/user/business_category/business_category.dart';
 import '../../../../domain/repositories/geolocator_repository.dart';
+import '../../../../domain/repositories/printer_repository.dart';
+import '../../../../domain/repositories/scan_repository.dart';
 import '../../../global/state_notifier.dart';
 import 'state/user_crear_state.dart';
 
 class UserCrearController extends StateNotifier<UserCrearState> {
-  UserCrearController(super.state, {required this.geolocatorRepository});
+  UserCrearController(
+    super.state, {
+    required this.geolocatorRepository,
+    required this.scanRepository,
+    required this.printerService,
+  }) {
+    _scanSubscription = scanRepository.scanResults.listen(_handleScanResult);
+  }
 
   final GeolocatorRepository geolocatorRepository;
+  final ScanRepository scanRepository;
+  final PrinterRepository printerService;
+
+  late final StreamSubscription _scanSubscription;
+
+  void _handleScanResult(String result) {
+    print('Código escaneado Controller: $result');
+  }
+
+  Future<void> triggerScan() async {
+    // Bloquear la UI mientras el trigger se está enviando/esperando
+    //state = state.copyWith(isLoading: true, scanMessage: 'Activando escáner...');
+
+    try {
+      final response = await scanRepository.triggerScan();
+      print('Respuesta triggerScan Controller: $response');
+    } catch (e) {
+      /*state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
+        scanMessage: 'Error desconocido al escanear',
+      );*/
+    }
+  }
+
+  Future<void> configLcd() async {
+    final succes = await printerService.configLcd(ConfigLcd.sleep);
+    print('Respuesta configLcd Controller: $succes');
+  }
 
   Future<void> getCurrentLocation() async {
     await geolocatorRepository.checkPermissions();
@@ -178,5 +219,14 @@ class UserCrearController extends StateNotifier<UserCrearState> {
         departamentos: departamentos ?? [],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Cancelar la suscripción del Stream al repositorio
+    _scanSubscription.cancel();
+    // Limpiar los recursos del repositorio nativo
+    scanRepository.dispose();
+    super.dispose();
   }
 }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'data/services/local/scan_service.dart';
 import 'presentation/global/controllers/theme_controller.dart';
 import 'presentation/global/theme.dart';
 import 'presentation/routes/router.dart';
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.scanService,
+  });
+  final ScanService scanService;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -22,7 +27,7 @@ class _MyAppState extends State<MyApp>
 
   @override
   void dispose() {
-    //WidgetsBinding.instance.removeObserver(this);
+    widget.scanService.dispose();
     super.dispose();
   }
 

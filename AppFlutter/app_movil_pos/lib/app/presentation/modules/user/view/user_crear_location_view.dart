@@ -15,6 +15,17 @@ class UserCrearLocationView extends StatefulWidget {
 }
 
 class _UserCrearLocationViewState extends State<UserCrearLocationView> {
+  //final ScannerService _scannerService = ScannerService();
+  final String _scanResult = 'Esperando resultado del escaneo';
+
+  void _getScanResult() {
+    setState(() {
+      // Actualiza el estado con el último resultado de escaneo
+      //_scanResult =
+      //_scannerService.lastScanResult ?? 'No se ha escaneado nada aún';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UserCrearController>();
@@ -100,17 +111,20 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
                   controller.onSelectedColonyIdChanged(value);
                 },
               ),
+              Text(_scanResult, style: const TextStyle(color: Colors.black)),
               ElevatedButton(
                 onPressed: () {
-                  controller.permisos();
+                  //controller.permisos();
+                  controller.triggerScan();
+                  //_scannerService.triggerScan();
                 },
-                child: const Text('Con permisos'),
+                child: const Text('Iniciar Scaner'),
               ),
               ElevatedButton(
                 onPressed: () {
-                  controller.openAppSettings();
+                  controller.configLcd();
                 },
-                child: const Text('Abrir Configuraciones'),
+                child: const Text('Dormir Pantalla'),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -125,3 +139,71 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView> {
     );
   }
 }
+
+/*class ScannerService {
+  ScannerService() {
+    platform.setMethodCallHandler(_handleScanResult);
+  }
+  static const platform = MethodChannel('com.example.device/scanner');
+  String? _lastScanResult;
+
+  Future<void> _handleScanResult(MethodCall call) async {
+    if (call.method == 'onScanDataReceived') {
+      try {
+        dynamic scanResult = call.arguments;
+        print('Resultado del escaneo recibido: $scanResult');
+
+        final Json jsonMap = Json.from(scanResult as Map);
+
+        if (jsonMap['data'] is Map) {
+          jsonMap['data'] = Json.from(jsonMap['data'] as Map);
+        }
+
+        // Ahora sí parsear el resultado
+        var result = Response<Scan>.fromJson(
+          jsonMap,
+          (json) => Scan.fromJson(json as Json),
+        );
+
+        // Acceder a los datos
+        print('Success: ${result.success}');
+        print('Message: ${result.message}');
+        print('QSC Code: ${result.data.qscCode}');
+      } catch (e) {
+        print('Error parsing scan result: $e');
+      }
+    }
+  }
+
+  String? get lastScanResult => _lastScanResult;
+
+  Future<void> unregisterScannerReceiver() async {
+    try {
+      await platform.invokeMethod('unregisterReceiver');
+    } on PlatformException catch (e) {
+      print('Error unregistering: ${e.message}');
+    }
+  }
+
+  Future<void> triggerScan() async {
+    try {
+      final dynamic result = await platform.invokeMethod('triggerScan');
+      print(result); // "Scan triggered successfully"
+    } on PlatformException catch (e) {
+      print("Failed to trigger scan: '${e.message}'.");
+    }
+  }
+
+  Future<Map<String, dynamic>?> getPantallaLCD(int stadoLCD) async {
+    try {
+      final result =
+          await platform.invokeMethod('configLcd', {'parametro': stadoLCD});
+      print(result);
+      // Cast explícito al tipo esperado
+      return Map<String, dynamic>.from(result as Map);
+    } on PlatformException catch (e) {
+      print("Failed to get printer directory: '${e.message}'.");
+      return null;
+    }
+  }
+}*/

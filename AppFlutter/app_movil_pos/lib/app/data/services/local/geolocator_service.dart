@@ -3,13 +3,20 @@
 import 'package:flutter/services.dart';
 
 class GeolocatorService {
-  static const platform = MethodChannel('com.example.device/infrared');
+  static const localtionChannel = MethodChannel('com.example.device/location');
 
   Future<void> checkPermissions() async {
     try {
-      final String result =
-          await platform.invokeMethod('checkLocationPermissions');
-      print('Permisos: $result');
+      // final String result =
+      //     await platform.invokeMethod('checkLocationPermissions');
+      final dynamic result =
+          await localtionChannel.invokeMethod('getCurrentLocation');
+
+      // Convertir a Map<String, dynamic>
+      final Map<String, dynamic> locationInfo =
+          Map<String, dynamic>.from(result);
+      //return 'Latitud: ${locationInfo['latitude']}, Longitud: ${locationInfo['longitude']}';
+      print(locationInfo['message']);
     } on PlatformException catch (e) {
       print('Error permisos: ${e.message}');
     }
@@ -17,12 +24,13 @@ class GeolocatorService {
 
   Future<String> getCurrentLocation() async {
     try {
-      final dynamic result = await platform.invokeMethod('getCurrentLocation');
+      final dynamic result =
+          await localtionChannel.invokeMethod('getCurrentLocation');
 
-      // Convertir a Map<String, dynamic>
       final Map<String, dynamic> locationInfo =
           Map<String, dynamic>.from(result);
-      return 'Latitud: ${locationInfo['latitude']}, Longitud: ${locationInfo['longitude']}';
+      //return 'Latitud: ${locationInfo['latitude']}, Longitud: ${locationInfo['longitude']}';
+      return locationInfo['message'];
     } on PlatformException catch (e) {
       return 'Error: ${e.message}';
     }
@@ -30,7 +38,7 @@ class GeolocatorService {
 
   Future<void> openAppSettings() async {
     try {
-      await platform.invokeMethod('openAppSettings');
+      await localtionChannel.invokeMethod('openAppSettings');
     } on PlatformException catch (e) {
       print('Error abriendo configuración: ${e.message}');
     }
