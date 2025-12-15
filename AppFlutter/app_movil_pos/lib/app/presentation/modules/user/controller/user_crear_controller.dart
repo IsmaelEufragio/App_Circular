@@ -14,7 +14,6 @@ class UserCrearController extends StateNotifier<UserCrearState> {
   });
 
   final GeolocatorRepository geolocatorRepository;
-
   Future<void> getCurrentLocation() async {
     final permiso = await geolocatorRepository.checkPermissions();
     if (permiso == Permisos.granted) {
