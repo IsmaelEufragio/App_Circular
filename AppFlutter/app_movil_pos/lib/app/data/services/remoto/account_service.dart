@@ -6,6 +6,15 @@ class AccountServices {
 
   final Http _http;
 
+  Future<bool> createUser() async {
+    final result = await _http.request('/Usuario/CrearUsuario',
+        method: HttpMethod.post, authentication: false, onSucces: (_) => false);
+    return result.when(
+      left: (_) => false,
+      right: (value) => value,
+    );
+  }
+
   Future<User?> getAccount() async {
     String usuarioQuery = '''
   query{
@@ -25,6 +34,7 @@ class AccountServices {
         rutaDeLaPaginaWeb
       }
       telefonos{
+        idTipoTelefono
         telefono
       }
       roles{
@@ -42,8 +52,12 @@ class AccountServices {
       query: usuarioQuery,
       authentication: true,
       onSucces: (json) {
-        final user = User.fromJson(json['usuario']);
-        return user;
+        try {
+          final user = User.fromJson(json['usuario']);
+          return user;
+        } catch (e) {
+          return null;
+        }
       },
     );
     return resutlGraphql.when(

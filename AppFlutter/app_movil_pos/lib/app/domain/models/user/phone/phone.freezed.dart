@@ -20,6 +20,7 @@ Phone _$PhoneFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Phone {
+  String get idTipoTelefono => throw _privateConstructorUsedError;
   String get telefono => throw _privateConstructorUsedError;
 
   /// Serializes this Phone to a JSON map.
@@ -36,7 +37,7 @@ abstract class $PhoneCopyWith<$Res> {
   factory $PhoneCopyWith(Phone value, $Res Function(Phone) then) =
       _$PhoneCopyWithImpl<$Res, Phone>;
   @useResult
-  $Res call({String telefono});
+  $Res call({String idTipoTelefono, String telefono});
 }
 
 /// @nodoc
@@ -54,9 +55,14 @@ class _$PhoneCopyWithImpl<$Res, $Val extends Phone>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? idTipoTelefono = null,
     Object? telefono = null,
   }) {
     return _then(_value.copyWith(
+      idTipoTelefono: null == idTipoTelefono
+          ? _value.idTipoTelefono
+          : idTipoTelefono // ignore: cast_nullable_to_non_nullable
+              as String,
       telefono: null == telefono
           ? _value.telefono
           : telefono // ignore: cast_nullable_to_non_nullable
@@ -72,7 +78,7 @@ abstract class _$$PhoneImplCopyWith<$Res> implements $PhoneCopyWith<$Res> {
       __$$PhoneImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String telefono});
+  $Res call({String idTipoTelefono, String telefono});
 }
 
 /// @nodoc
@@ -88,9 +94,14 @@ class __$$PhoneImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? idTipoTelefono = null,
     Object? telefono = null,
   }) {
     return _then(_$PhoneImpl(
+      idTipoTelefono: null == idTipoTelefono
+          ? _value.idTipoTelefono
+          : idTipoTelefono // ignore: cast_nullable_to_non_nullable
+              as String,
       telefono: null == telefono
           ? _value.telefono
           : telefono // ignore: cast_nullable_to_non_nullable
@@ -102,17 +113,19 @@ class __$$PhoneImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PhoneImpl implements _Phone {
-  const _$PhoneImpl({required this.telefono});
+  const _$PhoneImpl({required this.idTipoTelefono, required this.telefono});
 
   factory _$PhoneImpl.fromJson(Map<String, dynamic> json) =>
       _$$PhoneImplFromJson(json);
 
   @override
+  final String idTipoTelefono;
+  @override
   final String telefono;
 
   @override
   String toString() {
-    return 'Phone(telefono: $telefono)';
+    return 'Phone(idTipoTelefono: $idTipoTelefono, telefono: $telefono)';
   }
 
   @override
@@ -120,13 +133,15 @@ class _$PhoneImpl implements _Phone {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PhoneImpl &&
+            (identical(other.idTipoTelefono, idTipoTelefono) ||
+                other.idTipoTelefono == idTipoTelefono) &&
             (identical(other.telefono, telefono) ||
                 other.telefono == telefono));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, telefono);
+  int get hashCode => Object.hash(runtimeType, idTipoTelefono, telefono);
 
   /// Create a copy of Phone
   /// with the given fields replaced by the non-null parameter values.
@@ -145,10 +160,14 @@ class _$PhoneImpl implements _Phone {
 }
 
 abstract class _Phone implements Phone {
-  const factory _Phone({required final String telefono}) = _$PhoneImpl;
+  const factory _Phone(
+      {required final String idTipoTelefono,
+      required final String telefono}) = _$PhoneImpl;
 
   factory _Phone.fromJson(Map<String, dynamic> json) = _$PhoneImpl.fromJson;
 
+  @override
+  String get idTipoTelefono;
   @override
   String get telefono;
 

@@ -9,7 +9,7 @@ class AuthenticationService {
 
   final Http _http;
 
-  Either<SignInFailure, T> _handleFailure<T>(HttpFailure failure) {
+  Either<SignInFailure, T> handleFailure<T>(HttpFailure failure) {
     if (failure.statusCode != null) {
       switch (failure.statusCode) {
         case 401:

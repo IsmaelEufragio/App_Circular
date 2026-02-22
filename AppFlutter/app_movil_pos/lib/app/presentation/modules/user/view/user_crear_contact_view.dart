@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../global/colors.dart';
+import '../controller/clases/phone_number_formatter.dart';
 import '../controller/user_crear_controller.dart';
 import '../widgets/user_text_field.dart';
 
@@ -21,7 +23,7 @@ class _CrearUserContactViewState extends State<CrearUserContactView> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<UserCrearController>();
-
+    controller.permisos();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -35,12 +37,21 @@ class _CrearUserContactViewState extends State<CrearUserContactView> {
                 onChanged: controller.onTelefonoChanged,
                 value: controller.state.telefono,
                 keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(8), // Solo 8 dígitos
+                  PhoneNumberFormatter()
+                ],
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validPhone,
               ),
               UserField(
                 label: 'Email',
                 onChanged: controller.onEmailChanged,
                 value: controller.state.email,
                 keyboardType: TextInputType.emailAddress,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validEmail,
               ),
               UserField(
                 label: 'Facebook',

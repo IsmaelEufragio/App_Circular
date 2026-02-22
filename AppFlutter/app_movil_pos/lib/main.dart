@@ -10,6 +10,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'app/data/http/http.dart';
 import 'app/data/repositories_implementation/account_repository_impl.dart';
+import 'app/data/repositories_implementation/adress_repository_impl.dart';
 import 'app/data/repositories_implementation/authentication_repository_impl.dart';
 import 'app/data/repositories_implementation/category_repository_impl.dart';
 import 'app/data/repositories_implementation/connectivity_repository_impl.dart';
@@ -23,11 +24,13 @@ import 'app/data/services/local/printer_service.dart';
 import 'app/data/services/local/scan_service.dart';
 import 'app/data/services/local/session_service.dart';
 import 'app/data/services/remoto/account_service.dart';
+import 'app/data/services/remoto/address_service.dart';
 import 'app/data/services/remoto/authentication_service.dart';
 import 'app/data/services/remoto/category_service.dart';
 import 'app/data/services/remoto/internet_checker.dart';
 import 'app/data/services/remoto/user_service.dart';
 import 'app/domain/repositories/account_repository.dart';
+import 'app/domain/repositories/address_repository.dart';
 import 'app/domain/repositories/authentication_repository.dart';
 import 'app/domain/repositories/category_repsitory.dart';
 import 'app/domain/repositories/connectivity_repository.dart';
@@ -128,6 +131,11 @@ void main() async {
             scanService,
           ),
         ),
+        Provider<AddressRepository>(create: (_) {
+          return AdressRepositoryImpl(
+            addressService: AddressService(http),
+          );
+        }),
         ChangeNotifierProvider<ThemeController>(
           create: (context) {
             final preferencesRepository = context.read<PreferencesRepository>();
@@ -146,6 +154,7 @@ void main() async {
           create: (context) => UserCrearController(
             UserCrearState(),
             geolocatorRepository: context.read<GeolocatorRepository>(),
+            userRepository: context.read<UserRepository>(),
           ),
         ),
       ],

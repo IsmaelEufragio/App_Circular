@@ -17,8 +17,8 @@ enum ConfigLcd {
   clear(3),
   reset(4);
 
-  final int value;
   const ConfigLcd(this.value);
+  final int value;
 }
 
 enum Permisos {
@@ -26,8 +26,8 @@ enum Permisos {
   showRationale('SHOW_RATIONALE'),
   requestPermission('REQUEST_PERMISSION');
 
-  final String value;
   const Permisos(this.value);
+  final String value;
 
   static Permisos fromValue(String value) {
     return Permisos.values.firstWhere(

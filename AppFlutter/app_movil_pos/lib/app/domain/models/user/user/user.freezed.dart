@@ -270,7 +270,7 @@ class _$UserImpl extends _User {
       required this.usuarioPrincipal,
       required this.correo,
       required this.fecebook,
-      required final List<Rol> roles,
+      final List<Rol> roles = const [],
       required final List<Claim> claims,
       required final List<Phone> telefonos,
       @JsonKey(name: 'nombreUsuario') required this.nombre,
@@ -299,6 +299,7 @@ class _$UserImpl extends _User {
   final String fecebook;
   final List<Rol> _roles;
   @override
+  @JsonKey()
   List<Rol> get roles {
     if (_roles is EqualUnmodifiableListView) return _roles;
     // ignore: implicit_dynamic_type
@@ -409,7 +410,7 @@ abstract class _User extends User {
       required final bool usuarioPrincipal,
       required final String correo,
       required final String fecebook,
-      required final List<Rol> roles,
+      final List<Rol> roles,
       required final List<Claim> claims,
       required final List<Phone> telefonos,
       @JsonKey(name: 'nombreUsuario') required final String nombre,

@@ -13,9 +13,10 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       usuarioPrincipal: json['usuarioPrincipal'] as bool,
       correo: json['correo'] as String,
       fecebook: json['fecebook'] as String,
-      roles: (json['roles'] as List<dynamic>)
-          .map((e) => Rol.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      roles: (json['roles'] as List<dynamic>?)
+              ?.map((e) => Rol.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       claims: (json['claims'] as List<dynamic>)
           .map((e) => Claim.fromJson(e as Map<String, dynamic>))
           .toList(),

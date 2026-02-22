@@ -2,27 +2,33 @@ import 'package:flutter/material.dart';
 
 import '../../../global/colors.dart';
 
-class UserDropdow extends StatelessWidget {
+class UserDropdow<T> extends StatelessWidget {
   const UserDropdow({
     super.key,
-    required this.optionDeparta,
+    required this.option,
     this.onSelected,
+    this.validator,
     this.selectedValue,
     required this.label,
+    this.isIcon = false,
+    this.autovalidateMode = AutovalidateMode.disabled,
   });
 
-  final List<DropdownMenuEntry<String>> optionDeparta;
-  final String? selectedValue;
+  final List<DropdownMenuEntry<T>> option;
+  final T? selectedValue;
   final String label;
-  final Function(String?)? onSelected;
+  final Function(T?)? onSelected;
+  final String? Function(T?)? validator;
+  final AutovalidateMode autovalidateMode;
+  final bool isIcon;
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu(
+    return DropdownMenuFormField<T>(
       initialSelection: selectedValue,
       onSelected: onSelected,
-      label: Text(label),
-      width: MediaQuery.of(context).size.width - 80,
-      dropdownMenuEntries: optionDeparta,
+      label: isIcon ? Text(label) : null,
+      width: isIcon ? MediaQuery.of(context).size.width - 80 : null,
+      dropdownMenuEntries: option,
       inputDecorationTheme: const InputDecorationTheme(
         border: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.info, width: 2),
@@ -55,14 +61,18 @@ class UserDropdow extends StatelessWidget {
         color: Colors.black87,
       ),
       hintText: 'Seleccione un $label',
-      leadingIcon: const Icon(
-        Icons.business,
-        color: Colors.blue,
-      ),
+      leadingIcon: isIcon
+          ? const Icon(
+              Icons.business,
+              color: Colors.blue,
+            )
+          : null,
       trailingIcon: Icon(
         Icons.arrow_drop_down,
         color: Colors.blue.shade700,
       ),
+      validator: validator,
+      autovalidateMode: autovalidateMode,
     );
   }
 }

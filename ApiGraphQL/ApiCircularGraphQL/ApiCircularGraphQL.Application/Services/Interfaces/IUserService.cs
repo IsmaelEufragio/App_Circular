@@ -12,8 +12,7 @@ namespace ApiCircularGraphQL.Application.Services.Interfaces
 {
     public interface IUserService
     {
-        UsuarioCrearDTO ConvertirAUsuario(IFormCollection form);
-        Task<ServiceResult> CrearUsaurio(UsuarioCrearDTO model);
+        Task<ServiceResult> CrearUsaurio(UserCreateRequest model);
         Task<Dictionary<Guid, UsuariosClaimsDTO[]>> GetClaimsUsuario(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<HorarioDTO>> GetHorarioPorUsuario(IReadOnlyList<Guid> idsUsuarios);
         Task<IEnumerable<TipoIdentidadDTO>> GetIdentidadPorByIds(IReadOnlyList<Guid> idsUsuarios);

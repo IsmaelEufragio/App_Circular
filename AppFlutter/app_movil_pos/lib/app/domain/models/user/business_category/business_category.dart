@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../typedefs.dart';
+
 part 'business_category.freezed.dart';
 part 'business_category.g.dart';
 
@@ -10,6 +12,6 @@ class BusinessCategory with _$BusinessCategory {
     required String descripcion,
   }) = _BusinessCategory;
 
-  factory BusinessCategory.fromJson(Map<String, dynamic> json) =>
+  factory BusinessCategory.fromJson(Json json) =>
       _$BusinessCategoryFromJson(json);
 }

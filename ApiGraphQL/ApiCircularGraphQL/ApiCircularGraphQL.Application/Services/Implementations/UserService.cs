@@ -254,94 +254,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 });
         }
 
-        public UsuarioCrearDTO ConvertirAUsuario(IFormCollection form)
-        {
-            try
-            {
-                UsuarioCrearDTO modelo = new();
-                List<HorarioCrearDTO> horario = [];
-                List<CategoriaPorUsuarioCrearDTO> categorias = [];
-                List<TelefonosUsuariosCrearDTO> telefono = [];
-                IFormFile formFile = form.Files["Logo"];
-                if (formFile != null)
-                {
-                    modelo.Logo = formFile;
-                }
-                else modelo.RutaLogo = string.Empty;
-
-                modelo.tipUs_Id = form.TryGetValue("tipUs_Id", out var tipUs_Id) ? Guid.TryParse(tipUs_Id, out Guid idTipoUs) ? idTipoUs : Guid.Empty : Guid.Empty;
-                modelo.tipIde_Id = form.TryGetValue("tipIde_Id", out var tipIde_Id) ? Guid.TryParse(tipIde_Id, out Guid idTipoIde) ? idTipoIde : Guid.Empty : Guid.Empty;
-                modelo.Identidad = form.TryGetValue("Identidad", out var Identidad) ? Identidad.ToString() : string.Empty;
-                modelo.Nombre = form.TryGetValue("Nombre", out var nombreValue) ? nombreValue.ToString() : string.Empty;
-                modelo.PaginaWed = form.TryGetValue("PaginaWed", out var PaginaWed) ? PaginaWed.ToString() : string.Empty;
-                modelo.NombreUsuario = form.TryGetValue("NombreUsuario", out var NombreUsuario) ? NombreUsuario.ToString() : string.Empty;
-                modelo.Password = form.TryGetValue("Password", out var Password) ? Password.ToString() : string.Empty;
-                modelo.Descripcion = form.TryGetValue("Descripcion", out var Descripcion) ? Descripcion.ToString() : string.Empty;
-                modelo.Facebook = form.TryGetValue("Facebook", out var Facebook) ? Facebook.ToString() : string.Empty;
-                modelo.Intagram = form.TryGetValue("Intagram", out var Intagram) ? Intagram.ToString() : string.Empty;
-                modelo.WhatsApp = form.TryGetValue("WhatsApp", out var WhatsApp) ? bool.TryParse(WhatsApp, out bool whats) ? whats : null : null;
-                modelo.Envio = form.TryGetValue("Envio", out var Envio) ? bool.TryParse(Envio, out bool envi) ? envi : null : null;
-                modelo.Correo = form.TryGetValue("Correo", out var Correo) ? Correo.ToString() : string.Empty;
-                modelo.subLug_Id = form.TryGetValue("subLug_Id", out var subLug_Id) ? Guid.TryParse(subLug_Id, out Guid idSubLug) ? idSubLug : Guid.Empty : Guid.Empty;
-                modelo.Latitud = form.TryGetValue("Latitud", out var Latitud) ? Latitud.ToString() : string.Empty;
-                modelo.Longitub = form.TryGetValue("Longitub", out var Longitub) ? Longitub.ToString() : string.Empty;
-                int idexHora = 0;
-                while (true)
-                {
-                    var diaNumero = $"Horario[{idexHora}].DiaNumero";
-                    var horaInicio = $"Horario[{idexHora}].HoraInicio";
-                    var horaFin = $"Horario[{idexHora}].HoraFin";
-                    if (!form.ContainsKey(diaNumero) || !form.ContainsKey(horaInicio) || !form.ContainsKey(horaFin))
-                    {
-                        break;
-                    }
-                    int iDiaNumero = form.TryGetValue(diaNumero, out var DiaNumero) ? int.TryParse(DiaNumero, out int diaN) ? diaN : 0 : 0;
-                    var horaN = form[horaInicio];
-                    var horaF = form[horaFin];
-                    bool valHoraInicio = TimeOnly.TryParse(horaN, out TimeOnly iHoraInicio);
-                    bool valHoraFin = TimeOnly.TryParse(horaF, out TimeOnly iHoraFin);
-
-                    horario.Add(new HorarioCrearDTO
-                    {
-                        DiaNumero = iDiaNumero,
-                        HoraInicio = iHoraInicio,
-                        HoraFin = iHoraFin,
-                    });
-                    idexHora++;
-                }
-                modelo.Horario = horario;
-                int indexCat = 0;
-                while (true)
-                {
-                    var idCategoria = $"Categoria[{indexCat}].catg_Id";
-                    if (!form.ContainsKey(idCategoria)) break;
-                    Guid id = form.TryGetValue(idCategoria, out var catg_Id) ? Guid.TryParse(catg_Id, out Guid idC) ? idC : Guid.Empty : Guid.Empty;
-                    categorias.Add(new CategoriaPorUsuarioCrearDTO { catg_Id = id });
-                    indexCat++;
-                }
-                modelo.Categoria = categorias;
-                int indexTel = 0;
-                while (true)
-                {
-                    var idTipoTelefono = $"Telefono[{indexTel}].idTipoTelefono";
-                    var Nutelefono = $"Telefono[{indexTel}].Telefono";
-                    if (!form.ContainsKey(idTipoTelefono) || !form.ContainsKey(Nutelefono)) break;
-                    Guid id = form.TryGetValue(idTipoTelefono, out var idTipo) ? Guid.TryParse(idTipo, out Guid idT) ? idT : Guid.Empty : Guid.Empty;
-                    string numero = form.TryGetValue(Nutelefono, out var NumeTele) ? NumeTele.ToString() : string.Empty;
-
-                    telefono.Add(new TelefonosUsuariosCrearDTO { idTipoTelefono = id, Telefono = numero });
-                    indexTel++;
-                }
-                modelo.Telefono = telefono;
-                return modelo;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<ServiceResult> CrearUsaurio(UsuarioCrearDTO model)
+        public async Task<ServiceResult> CrearUsaurio(UserCreateRequest model)
         {
             try
             {
@@ -351,11 +264,11 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 if (!Guid.TryParse(cong, out Guid idParticualar))
                     throw new Exception("No se pudo convertir la configuracion 'IdTipoUsuarioParticular' a Guid");
 
-                var tipoRe = await _userRepository.GetTipoIdAsync(model.tipUs_Id) 
-                    ?? throw new Exception($"Al Crear Un usuario no se encontro Tipo Usuario con Id{model.tipUs_Id}");
+                var tipoRe = await _userRepository.GetTipoIdAsync(model.UserTypeId) 
+                    ?? throw new Exception($"Al Crear Un usuario no se encontro Tipo Usuario con Id{model.UserTypeId}");
 
-                var subLugar = await _subdivicionLugarRepository.GetByIdAsync(model.subLug_Id) 
-                    ?? throw new Exception($"Al crear un usuario no se encontro un regitro tbSubdivicionLugar con Id {model.subLug_Id}");
+                var subLugar = await _subdivicionLugarRepository.GetByIdAsync(model.SubPlaceId) 
+                    ?? throw new Exception($"Al crear un usuario no se encontro un regitro tbSubdivicionLugar con Id {model.SubPlaceId}");
 
                 //await _userRepository.ValidarSiExisteCorreo(model.Correo);
 
@@ -363,8 +276,8 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 //    await _userRepository.ValidarSiExisteLosTelefonos(model.Telefono.Select(a => a.Telefono));
 
                 //Crear contraseñas incriptadas
-                model.PasswordSal = Guid.NewGuid().ToString();
-                model.Password = EncryptPass.GeneratePassword(model.Password, model.PasswordSal);
+                string passwordSal = Guid.NewGuid().ToString();
+                model.Password = EncryptPass.GeneratePassword(model.Password, passwordSal);
                 //Ruta imagen
                 var congTamLog = await _baseServices.GetConfiguracion("TamañoLogo");
 
@@ -373,54 +286,54 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
 
 
                 var congRutLog = await _baseServices.GetConfiguracion("SubRutaLogo");
-                
+                string rutaLogo = "";
                 if (model.Logo != null)
                 {
                     //var rutaLogo = await _baseServices.GuardarArchivo(tamanoLogo, congRutLog, model.Logo);
                     //model.RutaLogo = rutaLogo;
-                    model.RutaLogo = "https://apicircular.blob.core.windows.net/logos/0fa7ca0c-a08b-435d-9002-587811bcc5c3.jpg";
+                    rutaLogo = "https://apicircular.blob.core.windows.net/logos/0fa7ca0c-a08b-435d-9002-587811bcc5c3.jpg";
                 }
 
                 var modelUbicacion = await _ubicacionRepository.AddAsync(new tbUbicacion
                 {
-                    subLug_Id = model.subLug_Id,
+                    subLug_Id = model.SubPlaceId,
                     ubc_Latitud = model.Latitud,
                     ubc_Longitub = model.Longitub
                 });
 
                 var usuario = new tbInfoUnicaUsuario
                 {
-                    usInf_Nombre = model.Nombre,
-                    usInf_RutaPaginaWed = model.PaginaWed,
-                    tipUs_Id = model.tipUs_Id,
-                    usInf_RutaLogo = model.RutaLogo,
+                    usInf_Nombre = model.BusinessName,
+                    usInf_RutaPaginaWed = model.WebsitePath,
+                    tipUs_Id = model.UserTypeId,
+                    usInf_RutaLogo = rutaLogo,
                     tbUsuarios = new List<tbUsuarios> {
                         new() {
-                            user_Descripcion = model.Descripcion,
+                            user_Descripcion = model.Description,
                             user_Correo = model.Correo,
                             user_Facebook = model.Facebook,
                             user_WhatsApp = model.WhatsApp??false,
                             user_Password = model.Password,
-                            user_PasswordSal = model.PasswordSal,
-                            user_NombreUsuario = model.NombreUsuario,
+                            user_PasswordSal = passwordSal,
+                            user_NombreUsuario = model.UserName,
                             ubc_Id = modelUbicacion.ubc_Id,
-                            user_Intagram = model.Intagram,
-                            user_Envio = model.Envio?? false,
-                            tipIde_Id = model.tipIde_Id,
-                            user_Identificacion = model.Identidad,
+                            user_Intagram = model.Instagram,
+                            user_Envio = model.Shipping ?? false,
+                            tipIde_Id = model.TypeOfIdentity,
+                            user_Identificacion = model.Identity,
                             user_FechaCreacion = DateTime.Now,
                             user_UsuarioPrincipal = true,
-                            tbHorario = [.. model.Horario.Select(a => new tbHorario
+                            tbHorario = [.. model.Schedule.Select(a => new tbHorario
                             {
                                 hor_DiaNumero = a.DiaNumero,
                                 hor_HoraInicio = a.HoraInicio,
                                 hor_HoraFin = a.HoraFin
                             })],
-                            tbCategoriaItem = [.. model.Categoria.Select(a=> new tbCategoriaItem {
+                            tbCategoriaItem = [.. model.Category.Select(a=> new tbCategoriaItem {
                                 catg_Id = a.catg_Id
                             })],
-                            tbUsuarioTelefono = [.. model.Telefono.Select(a=> new tbUsuarioTelefono {
-                                tipTel_Id = a.idTipoTelefono,
+                            tbUsuarioTelefono = [.. model.Telephone.Select(a=> new tbUsuarioTelefono {
+                                tipTel_Id = a.IdTipoTelefono,
                                 usTel_Numero = a.Telefono
                             })],
                             tbUsuariosClaims =
@@ -443,7 +356,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 {
                     Configuration = _configuration,
                     IdUsuario = idUsuario.ToString(),
-                    NombreUsuario = model.NombreUsuario,
+                    NombreUsuario = model.UserName,
                     Expira = DateTime.Now.AddMinutes(5),
                     Roles = []
                 };

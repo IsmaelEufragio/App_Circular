@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../global/colors.dart';
 
@@ -10,13 +11,19 @@ class UserField extends StatelessWidget {
     this.maxLines = 1,
     this.onChanged,
     this.keyboardType = TextInputType.text,
+    this.validator,
+    this.autovalidateMode,
+    this.inputFormatters,
   });
 
   final String label;
   final String value;
   final int maxLines;
   final Function(String)? onChanged;
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
   final TextInputType keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -46,7 +53,11 @@ class UserField extends StatelessWidget {
           ),
         ),
       ),
+      obscureText: keyboardType == TextInputType.visiblePassword,
       onChanged: onChanged,
+      validator: validator,
+      autovalidateMode: autovalidateMode,
+      inputFormatters: inputFormatters,
     );
   }
 }

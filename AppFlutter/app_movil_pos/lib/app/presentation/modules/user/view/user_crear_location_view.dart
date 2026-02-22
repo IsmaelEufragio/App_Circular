@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../global/colors.dart';
 import '../controller/user_crear_controller.dart';
 import '../widgets/user_dropdow.dart';
 
@@ -20,8 +19,37 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView>
   @override
   void initState() {
     super.initState();
-    context.read<UserCrearController>().permisos();
+    final controller = context.read<UserCrearController>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!controller.state.isPermissionGranted) {
+        _sowDialogoPermiso();
+      } else {
+        controller.getCurrentLocation();
+      }
+    });
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  _sowDialogoPermiso() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permiso de Ubicación'),
+          content: const Text(
+              'Por favor, habilita el permiso de ubicación en la configuración de la aplicación.  Es neceario para mostrar al ubicacion de su negocio.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.read<UserCrearController>().openAppSettings();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Abrir Configuración'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -31,14 +59,20 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
 
     switch (state) {
       case AppLifecycleState.resumed:
         // App visible y activa (usuario regresó)
         print('App resumida - Usuario regresó');
-        context.read<UserCrearController>().permisos();
+        final controller = context.read<UserCrearController>();
+        final permiso = await controller.permisos();
+        if (!permiso) {
+          _sowDialogoPermiso();
+        } else {
+          controller.getCurrentLocation();
+        }
         setState(() {});
         break;
 
@@ -105,74 +139,77 @@ class _UserCrearLocationViewState extends State<UserCrearLocationView>
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Form(
+          key: widget.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              UserDropdow(
-                optionDeparta: optionDeparta,
+              UserDropdow<String>(
+                isIcon: true,
+                option: optionDeparta,
                 label: 'Departamento',
                 selectedValue: controller.state.selectedDepartamentoId,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validDepartamento,
                 onSelected: (value) {
-                  if (value == null) return;
+                  if (value == null ||
+                      value == controller.state.selectedDepartamentoId) return;
                   setState(() {
                     controller.onSelectedDepartamentoIdChanged(value);
+                    controller.onSelectedMunicipioIdChanged('');
+                    controller.onSelectedLugarIdChanged('');
+                    controller.onSelectedColonyIdChanged('');
                   });
                 },
               ),
-              UserDropdow(
-                optionDeparta: optionMunicipio,
+              UserDropdow<String>(
+                key: ValueKey(
+                    'municipio_${controller.state.selectedDepartamentoId}'),
+                isIcon: true,
+                option: optionMunicipio,
                 label: 'Municipio',
                 selectedValue: controller.state.selectedMunicipioId,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validMinicipio,
                 onSelected: (value) {
-                  if (value == null) return;
+                  if (value == null ||
+                      value == controller.state.selectedMunicipioId) return;
                   setState(() {
                     controller.onSelectedMunicipioIdChanged(value);
+                    controller.onSelectedLugarIdChanged('');
+                    controller.onSelectedColonyIdChanged('');
                   });
                 },
               ),
-              UserDropdow(
-                optionDeparta: optionLugar,
+              UserDropdow<String>(
+                key: ValueKey('lugar_${controller.state.selectedMunicipioId}'),
+                isIcon: true,
+                option: optionLugar,
                 label: 'Mas Conocido',
                 selectedValue: controller.state.selectedLugarId,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validLugar,
                 onSelected: (value) {
-                  if (value == null) return;
+                  if (value == null ||
+                      value == controller.state.selectedLugarId) return;
                   setState(() {
                     controller.onSelectedLugarIdChanged(value);
+                    controller.onSelectedColonyIdChanged('');
                   });
                 },
               ),
               UserDropdow(
-                optionDeparta: optionColonia,
+                key: ValueKey('colonia_${controller.state.selectedLugarId}'),
+                isIcon: true,
+                option: optionColonia,
                 label: 'Colonia',
                 selectedValue: controller.state.selectedColonyId,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validColinia,
                 onSelected: (value) {
                   if (value == null) return;
                   controller.onSelectedColonyIdChanged(value);
                 },
               ),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      if (controller.state.isPermissionGranted) {
-                        controller.getCurrentLocation();
-                      } else {
-                        controller.openAppSettings();
-                      }
-                    },
-                    icon: const Icon(Icons.my_location),
-                    color: controller.state.isPermissionGranted
-                        ? AppColors.sucess
-                        : AppColors.info,
-                  ),
-                  Text(
-                    controller.state.isPermissionGranted
-                        ? ''
-                        : 'Es necesario otorgar permisos de ubicación',
-                    style: const TextStyle(color: AppColors.alert),
-                  ),
-                ],
-              )
             ],
           ),
         ),

@@ -4,10 +4,13 @@ import 'package:provider/provider.dart';
 import '../../../../domain/enums.dart';
 import '../../../global/colors.dart';
 import '../controller/user_crear_controller.dart';
+import '../widgets/navigation_buttons.dart';
 import '../widgets/user_header.dart';
+import 'user_crear_account_view.dart';
 import 'user_crear_contact_view.dart';
 import 'user_crear_info_view.dart';
 import 'user_crear_location_view.dart';
+import 'user_crear_schedule_view.dart';
 
 class CrearUserForm extends StatefulWidget {
   const CrearUserForm({
@@ -26,44 +29,11 @@ class _CrearUserFormState extends State<CrearUserForm> {
   final GlobalKey<FormState> _formKeyStep1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyStep2 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyStep3 = GlobalKey<FormState>();
-  int _currentPage = 0;
-  final int _totalPages = 3;
-
-  void _nextPage() {
-    if (_currentPage != _totalPages - 1) {
-      setState(() {
-        _currentPage++;
-      });
-    } else {
-      context.read<UserCrearController>().submit();
-    }
-  }
-
-  void _goToPreviousPage() {
-    if (_currentPage > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _goToNextPage() {
-    if (_currentPage < _totalPages - 1) {
-      // Validar paso actual antes de continuar
-      if (true) {
-        _pageController.nextPage(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
-    } else {
-      //_submitForm();
-    }
-  }
-
+  final GlobalKey<FormState> _formKeyStep4 = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyStep5 = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final controller = context.read<UserCrearController>();
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -83,47 +53,44 @@ class _CrearUserFormState extends State<CrearUserForm> {
             children: [
               const SizedBox(height: 10),
               const UserHeader(),
-              const SizedBox(height: 20),
               Expanded(
                 child: PageView(
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPage = page;
-                    });
-                  },
                   children: [
                     CrearUserInfoView(formKey: _formKeyStep1),
                     CrearUserContactView(formKey: _formKeyStep2),
                     UserCrearLocationView(formKey: _formKeyStep3),
+                    UserCrearScheduleView(formKey: _formKeyStep4),
+                    UserCrearAccountView(formKey: _formKeyStep5),
                   ],
                 ),
               ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _goToPreviousPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                      ),
-                      child: const Text('Atrás'),
-                    ),
-                    Text(
-                      'Paso ${_currentPage + 1} de $_totalPages',
-                      style: const TextStyle(color: AppColors.info),
-                    ),
-                    ElevatedButton(
-                      onPressed: _goToNextPage,
-                      child: Text(_currentPage == _totalPages - 1
-                          ? 'Enviar'
-                          : 'Siguiente'),
-                    ),
-                  ],
+                child: NavigationButtons(
+                  pageController: _pageController,
+                  controller: controller,
+                  keyForm: (paginaActual) {
+                    switch (paginaActual) {
+                      case 0:
+                        _formKeyStep1.currentState?.validate();
+                        break;
+                      case 1:
+                        _formKeyStep2.currentState?.validate();
+                        break;
+                      case 2:
+                        _formKeyStep3.currentState?.validate();
+                        break;
+                      case 3:
+                        _formKeyStep4.currentState?.validate();
+                        break;
+                      case 4:
+                        _formKeyStep5.currentState?.validate();
+                      default:
+                    }
+                  },
                 ),
               ),
             ],

@@ -35,30 +35,29 @@ class CrearUserInfoView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserField(
-                label: 'Nombre',
+                label: 'Nombre Comercial',
                 maxLines: 1,
-                onChanged: controller.onUserNameChanged,
-                value: controller.state.nombre,
+                onChanged: controller.onNombreComercialChanged,
+                value: controller.state.nombreComercial,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validNombreComercial,
               ),
               UserField(
                 label: 'Description',
                 maxLines: 1,
                 onChanged: controller.onDescripcionChanged,
                 value: controller.state.descripcion,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validDescripcion,
               ),
               UserField(
-                label: 'RTN - Institucion',
+                label: 'RTN - Institucion o del fundadador',
                 maxLines: 1,
                 onChanged: controller.onRtnChanged,
                 value: controller.state.rtn,
                 keyboardType: TextInputType.number,
-              ),
-              UserField(
-                label: 'RTN - Personal',
-                maxLines: 1,
-                onChanged: controller.onRtnPersonalChanged,
-                value: controller.state.rtnPersonal,
-                keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: controller.validRtn,
               ),
               // Selector múltiple de categorías usando el widget genérico
               const SizedBox(height: 20),
@@ -67,7 +66,7 @@ class CrearUserInfoView extends StatelessWidget {
                   hintText: 'Buscar categoría',
                 ),
                 items: items,
-                //controller: controller.multiSelectController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 enabled: true,
                 searchEnabled: true,
                 chipDecoration: const ChipDecoration(
@@ -109,11 +108,15 @@ class CrearUserInfoView extends StatelessWidget {
                   textColor: AppColors.fondo,
                   selectedIcon: Icon(Icons.check_box, color: AppColors.fondo),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor seleccione al menos una categoría';
+                validator: (dropdownItems) {
+                  if (dropdownItems == null) {
+                    return controller.validCategories(null);
                   }
-                  return null;
+                  final categories = <BusinessCategory>[];
+                  for (final item in dropdownItems) {
+                    categories.add(item.value);
+                  }
+                  return controller.validCategories(categories);
                 },
                 onSelectionChange: (selectedItems) {
                   controller.onSelectedCategoriesChanged(selectedItems);

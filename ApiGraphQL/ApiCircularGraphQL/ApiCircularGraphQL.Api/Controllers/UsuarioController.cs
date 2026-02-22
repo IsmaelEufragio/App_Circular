@@ -1,4 +1,5 @@
-﻿using ApiCircularGraphQL.Application.Services.Interfaces;
+﻿using ApiCircularGraphQL.Application.DTOs.Usuarios;
+using ApiCircularGraphQL.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -19,24 +20,12 @@ namespace ApiCircularGraphQL.Api.Controllers
         }
 
         [HttpPost, Route("CrearUsuario")]
-        public async Task<IActionResult> CrearUsuario(IFormCollection form)
+        public async Task<IActionResult> CrearUsuario(UserCreateRequest request)
         {
             try
             {
-                var modelo = _userService.ConvertirAUsuario(form);
-                var validationContext = new ValidationContext(modelo, null, null);
-                var validationResults = new List<ValidationResult>();
-                var isValid = Validator.TryValidateObject(modelo, validationContext, validationResults, true);
-                if (isValid)
-                {
-                    var resul = await _userService.CrearUsaurio(modelo);
-                    return ApiServiceResult(resul);
-                }
-                else
-                {
-                    var errores = validationResults.Select(result => result.ErrorMessage).ToList();
-                    return BadRequest(errores);
-                }
+                var resul = await _userService.CrearUsaurio(request);
+                return ApiServiceResult(resul);
             }
             catch (Exception ex)
             {

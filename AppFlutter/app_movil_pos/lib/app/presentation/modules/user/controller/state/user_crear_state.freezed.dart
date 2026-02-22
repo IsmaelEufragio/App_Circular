@@ -16,10 +16,11 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$UserCrearState {
-  String get nombre => throw _privateConstructorUsedError;
+  String get nombreUsuario => throw _privateConstructorUsedError;
+  String get password => throw _privateConstructorUsedError;
+  String get nombreComercial => throw _privateConstructorUsedError;
   String get descripcion => throw _privateConstructorUsedError;
   String get rtn => throw _privateConstructorUsedError;
-  String get rtnPersonal => throw _privateConstructorUsedError;
   String get telefono => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get facebook => throw _privateConstructorUsedError;
@@ -31,6 +32,7 @@ mixin _$UserCrearState {
   List<BusinessCategory> get optiondCategories =>
       throw _privateConstructorUsedError;
   List<Department> get departamentos => throw _privateConstructorUsedError;
+  List<Schedule> get horarios => throw _privateConstructorUsedError;
   String get selectedDepartamentoId => throw _privateConstructorUsedError;
   String get selectedMunicipioId => throw _privateConstructorUsedError;
   String get selectedLugarId => throw _privateConstructorUsedError;
@@ -38,6 +40,7 @@ mixin _$UserCrearState {
   double get latitude => throw _privateConstructorUsedError;
   double get longitude => throw _privateConstructorUsedError;
   bool get isPermissionGranted => throw _privateConstructorUsedError;
+  File? get logo => throw _privateConstructorUsedError;
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
@@ -53,10 +56,11 @@ abstract class $UserCrearStateCopyWith<$Res> {
       _$UserCrearStateCopyWithImpl<$Res, UserCrearState>;
   @useResult
   $Res call(
-      {String nombre,
+      {String nombreUsuario,
+      String password,
+      String nombreComercial,
       String descripcion,
       String rtn,
-      String rtnPersonal,
       String telefono,
       String email,
       String facebook,
@@ -66,13 +70,15 @@ abstract class $UserCrearStateCopyWith<$Res> {
       List<BusinessCategory> selectedCategories,
       List<BusinessCategory> optiondCategories,
       List<Department> departamentos,
+      List<Schedule> horarios,
       String selectedDepartamentoId,
       String selectedMunicipioId,
       String selectedLugarId,
       String selectedColonyId,
       double latitude,
       double longitude,
-      bool isPermissionGranted});
+      bool isPermissionGranted,
+      File? logo});
 }
 
 /// @nodoc
@@ -90,10 +96,11 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? nombre = null,
+    Object? nombreUsuario = null,
+    Object? password = null,
+    Object? nombreComercial = null,
     Object? descripcion = null,
     Object? rtn = null,
-    Object? rtnPersonal = null,
     Object? telefono = null,
     Object? email = null,
     Object? facebook = null,
@@ -103,6 +110,7 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
     Object? selectedCategories = null,
     Object? optiondCategories = null,
     Object? departamentos = null,
+    Object? horarios = null,
     Object? selectedDepartamentoId = null,
     Object? selectedMunicipioId = null,
     Object? selectedLugarId = null,
@@ -110,11 +118,20 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
     Object? latitude = null,
     Object? longitude = null,
     Object? isPermissionGranted = null,
+    Object? logo = freezed,
   }) {
     return _then(_value.copyWith(
-      nombre: null == nombre
-          ? _value.nombre
-          : nombre // ignore: cast_nullable_to_non_nullable
+      nombreUsuario: null == nombreUsuario
+          ? _value.nombreUsuario
+          : nombreUsuario // ignore: cast_nullable_to_non_nullable
+              as String,
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String,
+      nombreComercial: null == nombreComercial
+          ? _value.nombreComercial
+          : nombreComercial // ignore: cast_nullable_to_non_nullable
               as String,
       descripcion: null == descripcion
           ? _value.descripcion
@@ -123,10 +140,6 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
       rtn: null == rtn
           ? _value.rtn
           : rtn // ignore: cast_nullable_to_non_nullable
-              as String,
-      rtnPersonal: null == rtnPersonal
-          ? _value.rtnPersonal
-          : rtnPersonal // ignore: cast_nullable_to_non_nullable
               as String,
       telefono: null == telefono
           ? _value.telefono
@@ -164,6 +177,10 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
           ? _value.departamentos
           : departamentos // ignore: cast_nullable_to_non_nullable
               as List<Department>,
+      horarios: null == horarios
+          ? _value.horarios
+          : horarios // ignore: cast_nullable_to_non_nullable
+              as List<Schedule>,
       selectedDepartamentoId: null == selectedDepartamentoId
           ? _value.selectedDepartamentoId
           : selectedDepartamentoId // ignore: cast_nullable_to_non_nullable
@@ -192,6 +209,10 @@ class _$UserCrearStateCopyWithImpl<$Res, $Val extends UserCrearState>
           ? _value.isPermissionGranted
           : isPermissionGranted // ignore: cast_nullable_to_non_nullable
               as bool,
+      logo: freezed == logo
+          ? _value.logo
+          : logo // ignore: cast_nullable_to_non_nullable
+              as File?,
     ) as $Val);
   }
 }
@@ -205,10 +226,11 @@ abstract class _$$UserCrearStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String nombre,
+      {String nombreUsuario,
+      String password,
+      String nombreComercial,
       String descripcion,
       String rtn,
-      String rtnPersonal,
       String telefono,
       String email,
       String facebook,
@@ -218,13 +240,15 @@ abstract class _$$UserCrearStateImplCopyWith<$Res>
       List<BusinessCategory> selectedCategories,
       List<BusinessCategory> optiondCategories,
       List<Department> departamentos,
+      List<Schedule> horarios,
       String selectedDepartamentoId,
       String selectedMunicipioId,
       String selectedLugarId,
       String selectedColonyId,
       double latitude,
       double longitude,
-      bool isPermissionGranted});
+      bool isPermissionGranted,
+      File? logo});
 }
 
 /// @nodoc
@@ -240,10 +264,11 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? nombre = null,
+    Object? nombreUsuario = null,
+    Object? password = null,
+    Object? nombreComercial = null,
     Object? descripcion = null,
     Object? rtn = null,
-    Object? rtnPersonal = null,
     Object? telefono = null,
     Object? email = null,
     Object? facebook = null,
@@ -253,6 +278,7 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
     Object? selectedCategories = null,
     Object? optiondCategories = null,
     Object? departamentos = null,
+    Object? horarios = null,
     Object? selectedDepartamentoId = null,
     Object? selectedMunicipioId = null,
     Object? selectedLugarId = null,
@@ -260,11 +286,20 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
     Object? latitude = null,
     Object? longitude = null,
     Object? isPermissionGranted = null,
+    Object? logo = freezed,
   }) {
     return _then(_$UserCrearStateImpl(
-      nombre: null == nombre
-          ? _value.nombre
-          : nombre // ignore: cast_nullable_to_non_nullable
+      nombreUsuario: null == nombreUsuario
+          ? _value.nombreUsuario
+          : nombreUsuario // ignore: cast_nullable_to_non_nullable
+              as String,
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String,
+      nombreComercial: null == nombreComercial
+          ? _value.nombreComercial
+          : nombreComercial // ignore: cast_nullable_to_non_nullable
               as String,
       descripcion: null == descripcion
           ? _value.descripcion
@@ -273,10 +308,6 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
       rtn: null == rtn
           ? _value.rtn
           : rtn // ignore: cast_nullable_to_non_nullable
-              as String,
-      rtnPersonal: null == rtnPersonal
-          ? _value.rtnPersonal
-          : rtnPersonal // ignore: cast_nullable_to_non_nullable
               as String,
       telefono: null == telefono
           ? _value.telefono
@@ -314,6 +345,10 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
           ? _value._departamentos
           : departamentos // ignore: cast_nullable_to_non_nullable
               as List<Department>,
+      horarios: null == horarios
+          ? _value._horarios
+          : horarios // ignore: cast_nullable_to_non_nullable
+              as List<Schedule>,
       selectedDepartamentoId: null == selectedDepartamentoId
           ? _value.selectedDepartamentoId
           : selectedDepartamentoId // ignore: cast_nullable_to_non_nullable
@@ -342,6 +377,10 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
           ? _value.isPermissionGranted
           : isPermissionGranted // ignore: cast_nullable_to_non_nullable
               as bool,
+      logo: freezed == logo
+          ? _value.logo
+          : logo // ignore: cast_nullable_to_non_nullable
+              as File?,
     ));
   }
 }
@@ -350,10 +389,11 @@ class __$$UserCrearStateImplCopyWithImpl<$Res>
 
 class _$UserCrearStateImpl implements _UserCrearState {
   _$UserCrearStateImpl(
-      {this.nombre = '',
+      {this.nombreUsuario = '',
+      this.password = '',
+      this.nombreComercial = '',
       this.descripcion = '',
       this.rtn = '',
-      this.rtnPersonal = '',
       this.telefono = '',
       this.email = '',
       this.facebook = '',
@@ -363,29 +403,35 @@ class _$UserCrearStateImpl implements _UserCrearState {
       final List<BusinessCategory> selectedCategories = const [],
       final List<BusinessCategory> optiondCategories = const [],
       final List<Department> departamentos = const [],
+      final List<Schedule> horarios = const [],
       this.selectedDepartamentoId = '',
       this.selectedMunicipioId = '',
       this.selectedLugarId = '',
       this.selectedColonyId = '',
       this.latitude = 0,
       this.longitude = 0,
-      this.isPermissionGranted = false})
+      this.isPermissionGranted = false,
+      this.logo})
       : _selectedCategories = selectedCategories,
         _optiondCategories = optiondCategories,
-        _departamentos = departamentos;
+        _departamentos = departamentos,
+        _horarios = horarios;
 
   @override
   @JsonKey()
-  final String nombre;
+  final String nombreUsuario;
+  @override
+  @JsonKey()
+  final String password;
+  @override
+  @JsonKey()
+  final String nombreComercial;
   @override
   @JsonKey()
   final String descripcion;
   @override
   @JsonKey()
   final String rtn;
-  @override
-  @JsonKey()
-  final String rtnPersonal;
   @override
   @JsonKey()
   final String telefono;
@@ -433,6 +479,15 @@ class _$UserCrearStateImpl implements _UserCrearState {
     return EqualUnmodifiableListView(_departamentos);
   }
 
+  final List<Schedule> _horarios;
+  @override
+  @JsonKey()
+  List<Schedule> get horarios {
+    if (_horarios is EqualUnmodifiableListView) return _horarios;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_horarios);
+  }
+
   @override
   @JsonKey()
   final String selectedDepartamentoId;
@@ -454,10 +509,12 @@ class _$UserCrearStateImpl implements _UserCrearState {
   @override
   @JsonKey()
   final bool isPermissionGranted;
+  @override
+  final File? logo;
 
   @override
   String toString() {
-    return 'UserCrearState(nombre: $nombre, descripcion: $descripcion, rtn: $rtn, rtnPersonal: $rtnPersonal, telefono: $telefono, email: $email, facebook: $facebook, instagram: $instagram, whatsapp: $whatsapp, domicilio: $domicilio, selectedCategories: $selectedCategories, optiondCategories: $optiondCategories, departamentos: $departamentos, selectedDepartamentoId: $selectedDepartamentoId, selectedMunicipioId: $selectedMunicipioId, selectedLugarId: $selectedLugarId, selectedColonyId: $selectedColonyId, latitude: $latitude, longitude: $longitude, isPermissionGranted: $isPermissionGranted)';
+    return 'UserCrearState(nombreUsuario: $nombreUsuario, password: $password, nombreComercial: $nombreComercial, descripcion: $descripcion, rtn: $rtn, telefono: $telefono, email: $email, facebook: $facebook, instagram: $instagram, whatsapp: $whatsapp, domicilio: $domicilio, selectedCategories: $selectedCategories, optiondCategories: $optiondCategories, departamentos: $departamentos, horarios: $horarios, selectedDepartamentoId: $selectedDepartamentoId, selectedMunicipioId: $selectedMunicipioId, selectedLugarId: $selectedLugarId, selectedColonyId: $selectedColonyId, latitude: $latitude, longitude: $longitude, isPermissionGranted: $isPermissionGranted, logo: $logo)';
   }
 
   @override
@@ -465,12 +522,15 @@ class _$UserCrearStateImpl implements _UserCrearState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UserCrearStateImpl &&
-            (identical(other.nombre, nombre) || other.nombre == nombre) &&
+            (identical(other.nombreUsuario, nombreUsuario) ||
+                other.nombreUsuario == nombreUsuario) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
+            (identical(other.nombreComercial, nombreComercial) ||
+                other.nombreComercial == nombreComercial) &&
             (identical(other.descripcion, descripcion) ||
                 other.descripcion == descripcion) &&
             (identical(other.rtn, rtn) || other.rtn == rtn) &&
-            (identical(other.rtnPersonal, rtnPersonal) ||
-                other.rtnPersonal == rtnPersonal) &&
             (identical(other.telefono, telefono) ||
                 other.telefono == telefono) &&
             (identical(other.email, email) || other.email == email) &&
@@ -488,6 +548,7 @@ class _$UserCrearStateImpl implements _UserCrearState {
                 .equals(other._optiondCategories, _optiondCategories) &&
             const DeepCollectionEquality()
                 .equals(other._departamentos, _departamentos) &&
+            const DeepCollectionEquality().equals(other._horarios, _horarios) &&
             (identical(other.selectedDepartamentoId, selectedDepartamentoId) ||
                 other.selectedDepartamentoId == selectedDepartamentoId) &&
             (identical(other.selectedMunicipioId, selectedMunicipioId) ||
@@ -501,16 +562,18 @@ class _$UserCrearStateImpl implements _UserCrearState {
             (identical(other.longitude, longitude) ||
                 other.longitude == longitude) &&
             (identical(other.isPermissionGranted, isPermissionGranted) ||
-                other.isPermissionGranted == isPermissionGranted));
+                other.isPermissionGranted == isPermissionGranted) &&
+            (identical(other.logo, logo) || other.logo == logo));
   }
 
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
-        nombre,
+        nombreUsuario,
+        password,
+        nombreComercial,
         descripcion,
         rtn,
-        rtnPersonal,
         telefono,
         email,
         facebook,
@@ -520,13 +583,15 @@ class _$UserCrearStateImpl implements _UserCrearState {
         const DeepCollectionEquality().hash(_selectedCategories),
         const DeepCollectionEquality().hash(_optiondCategories),
         const DeepCollectionEquality().hash(_departamentos),
+        const DeepCollectionEquality().hash(_horarios),
         selectedDepartamentoId,
         selectedMunicipioId,
         selectedLugarId,
         selectedColonyId,
         latitude,
         longitude,
-        isPermissionGranted
+        isPermissionGranted,
+        logo
       ]);
 
   /// Create a copy of UserCrearState
@@ -541,10 +606,11 @@ class _$UserCrearStateImpl implements _UserCrearState {
 
 abstract class _UserCrearState implements UserCrearState {
   factory _UserCrearState(
-      {final String nombre,
+      {final String nombreUsuario,
+      final String password,
+      final String nombreComercial,
       final String descripcion,
       final String rtn,
-      final String rtnPersonal,
       final String telefono,
       final String email,
       final String facebook,
@@ -554,22 +620,26 @@ abstract class _UserCrearState implements UserCrearState {
       final List<BusinessCategory> selectedCategories,
       final List<BusinessCategory> optiondCategories,
       final List<Department> departamentos,
+      final List<Schedule> horarios,
       final String selectedDepartamentoId,
       final String selectedMunicipioId,
       final String selectedLugarId,
       final String selectedColonyId,
       final double latitude,
       final double longitude,
-      final bool isPermissionGranted}) = _$UserCrearStateImpl;
+      final bool isPermissionGranted,
+      final File? logo}) = _$UserCrearStateImpl;
 
   @override
-  String get nombre;
+  String get nombreUsuario;
+  @override
+  String get password;
+  @override
+  String get nombreComercial;
   @override
   String get descripcion;
   @override
   String get rtn;
-  @override
-  String get rtnPersonal;
   @override
   String get telefono;
   @override
@@ -589,6 +659,8 @@ abstract class _UserCrearState implements UserCrearState {
   @override
   List<Department> get departamentos;
   @override
+  List<Schedule> get horarios;
+  @override
   String get selectedDepartamentoId;
   @override
   String get selectedMunicipioId;
@@ -602,6 +674,8 @@ abstract class _UserCrearState implements UserCrearState {
   double get longitude;
   @override
   bool get isPermissionGranted;
+  @override
+  File? get logo;
 
   /// Create a copy of UserCrearState
   /// with the given fields replaced by the non-null parameter values.
