@@ -117,7 +117,8 @@ namespace ApiCircularGraphQL.Infrastructure.Persistence.Repositories
                 throw new Exception("El Correo a validar no tiene el formato valido");
 
             using var context = _contextFactory.CreateDbContext();
-            bool result = await context.tbUsuarios.AnyAsync(a => a.user_Correo.Equals(correo, StringComparison.CurrentCultureIgnoreCase));
+            bool result = await context.tbUsuarios
+                .AnyAsync(a => a.user_Correo.ToLower() == correo.ToLower());
             if (result)
                 throw new Exception($"Ya existe el correo {correo}");
 

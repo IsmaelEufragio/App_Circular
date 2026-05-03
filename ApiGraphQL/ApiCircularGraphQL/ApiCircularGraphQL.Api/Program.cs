@@ -6,11 +6,13 @@ using ApiCircularGraphQL.Application.Services.Interfaces;
 using ApiCircularGraphQL.CrossCutting.Helpers;
 using ApiCircularGraphQL.Domain.Interfaces;
 using ApiCircularGraphQL.Infrastructure;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddAzureKeyVault(new Uri("https://apicirculargraphql.vault.azure.net/"), new DefaultAzureCredential());
 builder.Services.AddControllers();
 builder.Services.AddConfigurationJWT(builder.Configuration);// JWT
 builder.Services.AddGraphQLServices();// GraphQL

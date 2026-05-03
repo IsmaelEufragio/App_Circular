@@ -63,7 +63,8 @@ namespace ApiCircularGraphQL.Api.Configurations
 
 
             //services.AddSingleton<IAuthorizationHandler, CustomAuthorizationHandler>();
-            services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TokenValidationRequerementHandler>();
+            //services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TokenValidationRequerementHandler>();
+            services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TokenValidationRequerementHandler>();
             return services;
         }
     }

@@ -23,23 +23,24 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
     {
         private readonly IUserRepository _userRepository;
         private readonly IBaseServices _baseServices;
-        private readonly ICategoriaRepository _categoriaRepository;
         private readonly ISubdivicionLugarRepository _subdivicionLugarRepository;
         private readonly IUbicacionRepository _ubicacionRepository;
+        private readonly IVerificationCodeRepository _verificationCodeRepository;
         private readonly IConfiguration _configuration;
         public UserService(IUserRepository userRepository,
             IBaseServices baseServices,
             ICategoriaRepository categoriaRepository,
             ISubdivicionLugarRepository subdivicionLugarRepository,
             IUbicacionRepository ubicacionRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IVerificationCodeRepository verificationCodeRepository)
         {
             _userRepository = userRepository;
             _baseServices = baseServices;
-            _categoriaRepository = categoriaRepository;
             _subdivicionLugarRepository = subdivicionLugarRepository;
             _ubicacionRepository = ubicacionRepository;
             _configuration = configuration;
+            _verificationCodeRepository = verificationCodeRepository;
         }
         public IEnumerable<UserDTO> GetUserData()
         {
@@ -270,10 +271,13 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 var subLugar = await _subdivicionLugarRepository.GetByIdAsync(model.SubPlaceId) 
                     ?? throw new Exception($"Al crear un usuario no se encontro un regitro tbSubdivicionLugar con Id {model.SubPlaceId}");
 
-                //await _userRepository.ValidarSiExisteCorreo(model.Correo);
+                var correo = await _userRepository.ValidarSiExisteCorreo(model.Correo);
+                if (correo)
+                    throw new Exception($"El Correo '{model.Correo}' ya esta registrado");
 
-                //if(model.Telefono.Count> 0)
-                //    await _userRepository.ValidarSiExisteLosTelefonos(model.Telefono.Select(a => a.Telefono));
+
+                if (model.Telephone.Count > 0)
+                    await _userRepository.ValidarSiExisteLosTelefonos(model.Telephone.Select(a => a.Telefono));
 
                 //Crear contraseñas incriptadas
                 string passwordSal = Guid.NewGuid().ToString();
@@ -349,35 +353,29 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                 };
 
                 var idUsuario = await _userRepository.CrearUsuarioPrincipal(usuario);
-                //var idUsuario = Guid.Parse("5a4fdf62-62ff-4a6b-a06d-a6288eb550e1");
-                //Generar Token Para Verificar Usuario
+                
+                var codigo = await _verificationCodeRepository.GenerarCodigo(idUsuario.ToString(), DateTimeOffset.UtcNow.AddMinutes(5));
+                var CorreoModel = new EmailDTO
+                {
+                    Asunto = "Verificacion Correo",
+                    DestinoCorreo = model.Correo,
+                    Cuerpo = $"Codigo Verificacion {codigo}"
+                };
+                await _baseServices.Correo(CorreoModel);
+
+
+                var rolDB = await _userRepository.RolesUsuario(idUsuario);
+                var claims = await _userRepository.ClaimsUsuario(idUsuario);
 
                 var tokenModel = new CrearTokenModel()
                 {
                     Configuration = _configuration,
                     IdUsuario = idUsuario.ToString(),
                     NombreUsuario = model.UserName,
-                    Expira = DateTime.Now.AddMinutes(5),
-                    Roles = []
+                    Expira = null,
+                    Roles = rolDB,
+                    Claims = claims,
                 };
-                var tokeValidar = JwtHelper.GenerateToken(tokenModel) ?? throw new Exception("No se pudo generar el Token para validar el usuario.");
-                Guid idTipoTokenCorreo = Guid.Parse(await _baseServices.GetConfiguracion("IdTipoTokenVarificacionCorreo"));
-                await _userRepository.GuardarToken(idUsuario, idTipoTokenCorreo, tokeValidar);
-
-                var ruta = await _baseServices.GetConfiguracion("ApiRutaToken");
-                var CorreoModel = new EmailDTO
-                {
-                    Asunto = "Verificacion Del token",
-                    DestinoCorreo = model.Correo,
-                    Cuerpo = $"{ruta}{tokeValidar}"
-                };
-                await _baseServices.Correo(CorreoModel);
-                //Genera Token Por si Edita el Correo.
-                var rolDB = await _userRepository.RolesUsuario(idUsuario);
-                tokenModel.Roles = rolDB?? [];
-                var claims = await _userRepository.ClaimsUsuario(idUsuario);
-                tokenModel.Claims = claims;
-                tokenModel.Expira = null;
                 var token = JwtHelper.GenerateToken(tokenModel) ?? throw new Exception("No se pudo generar el Token para validar el usuario.");
 
                 Guid idTipoTokenLogin = Guid.Parse(await _baseServices.GetConfiguracion("IdTipoTokenLogin"));
@@ -386,7 +384,7 @@ namespace ApiCircularGraphQL.Application.Services.Implementations
                     Data = new { token, CorreoEnviado = true}, 
                     Success = true, 
                     Type = ServiceResultType.Success, 
-                    Message = $"Se envio el correo verificacion. al Correo {model.Correo}, Revise el Spam." 
+                    Message = $"Se envio un codigo de verificacion. al Correo {model.Correo}, Revise el Spam." 
                 };
             }
             catch (Exception ex)

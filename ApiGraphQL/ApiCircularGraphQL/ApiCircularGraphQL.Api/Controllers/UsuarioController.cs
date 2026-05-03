@@ -1,8 +1,10 @@
-﻿using ApiCircularGraphQL.Application.DTOs.Usuarios;
+﻿using ApiCircularGraphQL.Application.DTOs;
+using ApiCircularGraphQL.Application.DTOs.Usuarios;
 using ApiCircularGraphQL.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace ApiCircularGraphQL.Api.Controllers
 {
@@ -12,7 +14,6 @@ namespace ApiCircularGraphQL.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IBaseServices _baseServices;
-
         public UsuarioController(IUserService userService, IBaseServices baseServices)
         {
             _userService = userService;
